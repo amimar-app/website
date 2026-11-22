@@ -17,6 +17,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/img/icon-192.png">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Amimar","url":"https://amimar.app","logo":"https://amimar.app/img/icon-512.png"}</script>
+<script>try{var t=localStorage.getItem('amimar_theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 <script>
 (function () {
   try {
@@ -234,6 +235,17 @@ footer{border-top:1px solid var(--line)}
 .pc-only .pc-phone{border-color:var(--green);color:var(--green)}
 .pc-x{background:none;border:0;color:var(--muted);font:inherit;font-size:15px;padding:8px;cursor:pointer}
 
+.theme{flex:0 0 auto;margin-inline-start:auto;width:40px;height:40px;border:0;border-radius:10px;background:var(--soft);color:var(--green);display:grid;place-items:center;cursor:pointer;padding:0}
+.theme:hover{filter:brightness(.96)}
+.theme+.langs{margin-inline-start:-12px}
+@media(max-width:600px){.nav .wrap{gap:14px}.theme{width:36px;height:36px}.theme+.langs{margin-inline-start:-6px}}
+@media(max-width:350px){.nav .wrap{gap:8px;padding-inline:10px}.theme+.langs{margin-inline-start:0}.langs a{padding-inline:7px}}
+.theme .sun{display:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme .sun{display:block}:root:not([data-theme=light]) .theme .moon{display:none}}
+:root[data-theme=dark] .theme .sun{display:block}:root[data-theme=dark] .theme .moon{display:none}
+
+
+
 .langs{display:flex;gap:2px;background:var(--soft);border-radius:10px;padding:3px}
 .langs a{min-width:34px;height:32px;display:grid;place-items:center;padding:0 8px;border-radius:8px;text-decoration:none;font-weight:800;font-size:13.5px;color:var(--muted)}
 .langs a[aria-current]{background:var(--green);color:#fff}
@@ -257,6 +269,10 @@ footer{border-top:1px solid var(--line)}
       <a href="#start">خطوات البدء</a>
       <a href="#faq">الأسئلة الشائعة</a>
     </nav>
+    <button type="button" class="theme" id="themeBtn" aria-label="الوضع الليلي أو النهاري">
+      <svg class="moon" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg>
+      <svg class="sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+    </button>
     <div class="langs" role="navigation" aria-label="Language / اللغة"><a href="/" hreflang="ar" lang="ar" data-lang="ar" aria-current="true">ع</a><a href="/tr/" hreflang="tr" lang="tr" data-lang="tr">TR</a><a href="/en/" hreflang="en" lang="en" data-lang="en">EN</a></div>
     <a class="btn b-green b-small" href="#download">حمّل الآن</a>
   </div>
@@ -503,6 +519,12 @@ footer{border-top:1px solid var(--line)}
     gal.scrollBy({ left: step * Number(b.dataset.dir), behavior: 'smooth' });
   }));
 
+  // night/day button: switches against what is showing now and remembers the choice
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    r.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('amimar_theme', r.dataset.theme); } catch {}
+  });
   // phones can't run the Windows program: explain instead of starting a download that goes nowhere
   const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const dlg = document.getElementById('pcOnly');
