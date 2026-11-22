@@ -211,6 +211,15 @@ footer{border-top:1px solid var(--line)}
 
 
 
+.pc-only{border:0;border-radius:22px;padding:26px 22px 18px;max-width:min(380px,calc(100vw - 32px));background:var(--card);color:var(--ink);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.pc-only::backdrop{background:rgba(10,20,15,.55)}
+.pc-only h3{margin:10px 0 8px;font-size:20px}
+.pc-only p{color:var(--muted);font-size:15.5px}
+.pc-btns{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.pc-btns .btn{width:100%;justify-content:center}
+.pc-only .pc-phone{border-color:var(--green);color:var(--green)}
+.pc-x{background:none;border:0;color:var(--muted);font:inherit;font-size:15px;padding:8px;cursor:pointer}
+
 .langs{display:flex;gap:2px;background:var(--soft);border-radius:10px;padding:3px}
 .langs a{min-width:34px;height:32px;display:grid;place-items:center;padding:0 8px;border-radius:8px;text-decoration:none;font-weight:800;font-size:13.5px;color:var(--muted)}
 .langs a[aria-current]{background:var(--green);color:#fff}
@@ -442,6 +451,17 @@ footer{border-top:1px solid var(--line)}
   </div>
 </footer>
 
+<dialog class="pc-only" id="pcOnly" aria-labelledby="pcT">
+  <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" fill="none" stroke="var(--green)" stroke-width="1.8"/><path d="M8 21h8M12 17v4" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round"/></svg>
+  <h3 id="pcT">The Windows program is downloaded on a computer</h3>
+  <p>Open this site on your computer to download the program, or get the phone app from the store.</p>
+  <div class="pc-btns">
+    <button type="button" class="btn b-green" id="pcCopy" data-done="Link copied ✓">Copy the site link</button>
+    <a class="btn b-line pc-phone" href="#download" id="pcPhone">Phone app</a>
+    <button type="button" class="pc-x" id="pcClose">Close</button>
+  </div>
+</dialog>
+
 <script>
 {
   const tiles = [['Black tea', '120'], ['Olive oil', '385'], ['Sugar 2 kg', '85'], ['Basmati rice', '185'], ['Coffee', '260'], ['Pasta', '45'], ['Milk', '38'], ['White cheese', '210'], ['Biscuits', '30']];
@@ -469,6 +489,20 @@ footer{border-top:1px solid var(--line)}
     gal.scrollBy({ left: step * Number(b.dataset.dir), behavior: 'smooth' });
   }));
 
+  // phones can't run the Windows program: explain instead of starting a download that goes nowhere
+  const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const dlg = document.getElementById('pcOnly');
+  if (phone && dlg && dlg.showModal) {
+    document.querySelectorAll('a[href$="Amimar-Setup.exe"]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); dlg.showModal(); }));
+    const copy = document.getElementById('pcCopy'), label = copy.textContent;
+    copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(location.origin + location.pathname); copy.textContent = copy.dataset.done; setTimeout(() => { copy.textContent = label; }, 2500); }
+      catch { if (navigator.share) navigator.share({ url: location.origin + location.pathname }).catch(() => {}); }
+    });
+    document.getElementById('pcPhone').addEventListener('click', () => dlg.close());
+    document.getElementById('pcClose').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  }
   document.querySelectorAll('.langs a').forEach((a) => a.addEventListener('click', () => { try { localStorage.setItem('amimar_lang', a.dataset.lang); } catch {} }));
   // store links stay empty until the apps are live: put the address in href and the click works again
   document.querySelectorAll('[data-store]').forEach((l) => { if (l.getAttribute('href') === '#') l.addEventListener('click', (e) => e.preventDefault()); });
