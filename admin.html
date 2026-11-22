@@ -114,6 +114,12 @@ button:disabled{opacity:.55;cursor:default}
 .prices td:first-child,.prices th:first-child{width:36px;color:var(--muted)}
 .pnotes{margin:12px 0 0;padding-inline-start:20px;font-size:14.5px;color:var(--muted)}
 .pnotes li{margin:4px 0}.pnotes b{color:var(--ink)}
+.two{display:grid;grid-template-columns:330px minmax(0,1fr);gap:14px;align-items:start}
+.two .card{margin-bottom:0}.two{margin-bottom:14px}
+.pcard{position:sticky;top:12px}
+.pcard .earn{font-size:14px}.pcard .earn th,.pcard .earn td{padding:8px 4px}
+.pcard .pnotes{font-size:13px;padding-inline-start:16px}
+@media(max-width:900px){.two{grid-template-columns:minmax(0,1fr)}.pcard{position:static;order:2}}
 </style>
 </head>
 <body>
@@ -158,7 +164,24 @@ button:disabled{opacity:.55;cursor:default}
       <div class="stat"><b id="sOff" style="color:var(--red)">0</b><span>منتهٍ أو ملغى</span></div>
     </div>
 
-    <section class="card">
+    <div class="two">
+    <section class="card pcard">
+      <h2>الأسعار</h2>
+      <table class="earn prices">
+        <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
+        <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
+        <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
+        <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
+        <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
+        <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
+        <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
+      </table>
+      <ul class="pnotes">
+        <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
+        <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
+      </ul>
+    </section>
+    <section class="card fcard">
       <h2>تفعيل أو تمديد اشتراك</h2>
       <label for="fEmail">بريد المشترك</label>
       <input id="fEmail" type="email" list="emails" placeholder="name@example.com" autocomplete="off">
@@ -197,23 +220,7 @@ button:disabled{opacity:.55;cursor:default}
       </div>
       <div class="msg" id="fMsg"></div>
     </section>
-
-    <section class="card">
-      <h2>الأسعار</h2>
-      <table class="earn prices">
-        <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
-        <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
-        <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
-        <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
-        <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
-        <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
-        <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
-      </table>
-      <ul class="pnotes">
-        <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
-        <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
-      </ul>
-    </section>
+    </div>
 
     <section class="card">
       <h2>الأرباح</h2>
