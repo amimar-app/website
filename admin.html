@@ -58,9 +58,20 @@ button:disabled{opacity:.55;cursor:default}
 .t-trial{background:var(--goldsoft);color:var(--gold)}
 .t-expired,.t-canceled{background:var(--redsoft);color:var(--red)}
 .empty{color:var(--muted);text-align:center;padding:18px}
+.earn{width:100%;border-collapse:collapse;font-size:15px}
+.earn th,.earn td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:start}
+.earn th{font-size:13.5px;color:var(--muted);font-weight:800}
+.earn td.num{font-weight:900;direction:ltr;text-align:right;white-space:nowrap}
+.earn tr.hl td{color:var(--green)}
+.pay{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.pay .amt{font-weight:900;direction:ltr;white-space:nowrap;color:var(--green)}
+.pay .who{font-weight:800;direction:ltr;text-align:right;overflow-wrap:anywhere}
+.pay .meta{grid-column:1/-1;font-size:13.5px;color:var(--muted)}
+.pay button{min-height:36px;padding:0 12px;font-size:14px}
 .hide{display:none!important}
 .hint{font-size:13.5px;color:var(--muted);margin-top:6px}
-@media(max-width:640px){.row{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.row-pay{grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr)}
+@media(max-width:640px){.row,.row-pay{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -131,15 +142,25 @@ button:disabled{opacity:.55;cursor:default}
         <div><label for="fEmp">عدد الموظفين</label>
           <input id="fEmp" type="number" min="0" step="1" value="0" inputmode="numeric"></div>
       </div>
-      <label for="fCountry">البلد</label>
-      <select id="fCountry"></select>
-      <p class="hint">عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. يُملأ البلد تلقائياً من جهاز المشترك، ويمكنك تعديله هنا.</p>
+      <div class="row row-pay">
+        <div><label for="fCountry">البلد</label><select id="fCountry"></select></div>
+        <div><label for="fAmount">المبلغ المدفوع</label><input id="fAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"></div>
+        <div><label for="fCur">العملة</label><select id="fCur"><option value="TRY">ليرة تركية ₺</option><option value="USD">دولار $</option><option value="EUR">يورو €</option></select></div>
+      </div>
+      <p class="hint">عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. يُملأ البلد تلقائياً من جهاز المشترك، ويمكنك تعديله هنا. إذا كتبت المبلغ المدفوع، يُسجَّل مع التفعيل في قسم الأرباح.</p>
       <div class="btns">
         <button class="b-green" id="fGo">تفعيل</button>
         <button class="b-line" id="fSaveCountry">حفظ البلد فقط</button>
         <button class="b-red" id="fCancel">إلغاء الاشتراك</button>
       </div>
       <div class="msg" id="fMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>الأرباح</h2>
+      <div id="earnSum"></div>
+      <h2 style="font-size:16px;margin-top:18px">الدفعات</h2>
+      <div class="list" id="payList"></div>
     </section>
 
     <section class="card">
@@ -175,6 +196,9 @@ button:disabled{opacity:.55;cursor:default}
     ['DK','الدنمارك'],['NO','النرويج'],['CH','سويسرا'],['IT','إيطاليا'],['ES','إسبانيا'],['GR','اليونان'],
     ['CY','قبرص'],['RU','روسيا'],['AZ','أذربيجان'],['IR','إيران'],['US','الولايات المتحدة'],['CA','كندا'],
     ['BR','البرازيل'],['AU','أستراليا']]; // same list as the server (v16)
+  const SYM = { TRY: '₺', USD: '$', EUR: '€' };
+  const money = (n, c) => `${SYM[c] || c} ${Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  let pays = [], payErr = '';
   const codeOf = (name) => (COUNTRIES.find(([c, n]) => n === name || c === name) || [''])[0];
   const STATE = { active: 'فعّال', trial: 'تجربة', expired: 'منتهٍ', canceled: 'ملغى' };
   const $ = (id) => document.getElementById(id);
@@ -285,6 +309,9 @@ button:disabled{opacity:.55;cursor:default}
     $('list').innerHTML = '<div class="empty">جارٍ التحميل…</div>';
     try { rows = await rpc('amimar_admin_list') || []; }
     catch (e) { $('list').textContent = ''; show($('fMsg'), e.message, false); return; }
+    try { pays = await rpc('amimar_admin_payments') || []; payErr = ''; }
+    catch (e) { pays = []; payErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v20 في Supabase لتفعيل قسم الأرباح' : e.message; }
+    drawEarnings();
     const n = (s) => rows.filter((r) => r.state === s).length;
     $('sAll').textContent = rows.length; $('sActive').textContent = n('active'); $('sTrial').textContent = n('trial'); $('sOff').textContent = n('expired') + n('canceled');
     const cf = $('cf'), keepC = cf.value; cf.length = 1;
@@ -308,7 +335,9 @@ button:disabled{opacity:.55;cursor:default}
       const tag = document.createElement('span'); tag.className = 'tag t-' + r.state; tag.textContent = STATE[r.state] || r.state;
       const meta = document.createElement('div'); meta.className = 'meta';
       const ends = r.ends ? `ينتهي ${iso(r.ends)}` + (r.state === 'active' || r.state === 'trial' ? ` (${r.days_left} يوماً)` : '') : '';
-      meta.textContent = [r.business, r.country || 'البلد غير معروف', PLAN[r.plan_kind] || PLAN[0],
+      const paid = {}; pays.filter((p) => (p.email || '').toLowerCase() === (r.email || '').toLowerCase()).forEach((p) => { paid[p.currency] = (paid[p.currency] || 0) + Number(p.amount); });
+      const paidTxt = Object.keys(paid).length ? 'دفع ' + Object.entries(paid).map(([c, v]) => money(v, c)).join(' + ') : '';
+      meta.textContent = [r.business, r.country || 'البلد غير معروف', paidTxt, PLAN[r.plan_kind] || PLAN[0],
         r.max_employees ? `${r.max_employees} موظفاً` : 'موظفون بلا حد', ends, `سجّل ${iso(r.joined)}`].filter(Boolean).join(' · ');
       b.append(em, tag, meta);
       b.addEventListener('click', () => {
@@ -317,6 +346,51 @@ button:disabled{opacity:.55;cursor:default}
         $('fEmail').scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
       box.appendChild(b);
+    }
+  }
+
+  const monthsTxt = (n) => !n ? '' : n === 1 ? 'شهر' : n === 2 ? 'شهران' : n <= 10 ? `${n} أشهر` : `${n} شهراً`;
+  function drawEarnings() {
+    const sum = $('earnSum'), list = $('payList');
+    sum.textContent = ''; list.textContent = '';
+    if (payErr) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = payErr; sum.appendChild(d); return; }
+    const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+    const periods = [
+      ['هذا الشهر', (d) => d.getFullYear() === y && d.getMonth() === m, true],
+      ['الشهر الماضي', (d) => { const lm = new Date(y, m - 1, 1); return d.getFullYear() === lm.getFullYear() && d.getMonth() === lm.getMonth(); }],
+      ['هذه السنة', (d) => d.getFullYear() === y],
+      ['الكل', () => true],
+    ];
+    const curs = [...new Set(pays.map((p) => p.currency))];
+    if (!curs.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'لم تُسجَّل أي دفعة بعد. اكتب المبلغ عند التفعيل.'; sum.appendChild(d); }
+    else {
+      const t = document.createElement('table'); t.className = 'earn';
+      const hr = t.insertRow(); const th0 = document.createElement('th'); th0.textContent = 'الفترة'; hr.appendChild(th0);
+      curs.forEach((c) => { const th = document.createElement('th'); th.textContent = c === 'TRY' ? 'ليرة تركية' : c === 'USD' ? 'دولار' : c === 'EUR' ? 'يورو' : c; hr.appendChild(th); });
+      const thn = document.createElement('th'); thn.textContent = 'الدفعات'; hr.appendChild(thn);
+      for (const [name, inP, hl] of periods) {
+        const tr = t.insertRow(); if (hl) tr.className = 'hl';
+        const ps = pays.filter((p) => inP(new Date(p.paid_at)));
+        tr.insertCell().textContent = name;
+        curs.forEach((c) => { const td = tr.insertCell(); td.className = 'num'; td.textContent = money(ps.filter((p) => p.currency === c).reduce((a, p) => a + Number(p.amount), 0), c); });
+        const tdn = tr.insertCell(); tdn.className = 'num'; tdn.textContent = ps.length;
+      }
+      sum.appendChild(t);
+    }
+    for (const p of pays.slice(0, 100)) {
+      const d = document.createElement('div'); d.className = 'pay';
+      const who = document.createElement('div'); who.className = 'who'; who.textContent = p.email;
+      const amt = document.createElement('div'); amt.className = 'amt'; amt.textContent = money(p.amount, p.currency);
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'b-red'; del.textContent = 'حذف';
+      let armedDel = null;
+      del.addEventListener('click', async () => {
+        if (!armedDel) { del.classList.add('sure'); del.textContent = 'تأكيد الحذف'; armedDel = setTimeout(() => { armedDel = null; del.classList.remove('sure'); del.textContent = 'حذف'; }, 5000); return; }
+        clearTimeout(armedDel); del.disabled = true;
+        try { await rpc('amimar_admin_delete_payment', { p_id: p.id }); await load(); } catch (e) { show($('fMsg'), e.message, false); del.disabled = false; }
+      });
+      const meta = document.createElement('div'); meta.className = 'meta';
+      meta.textContent = [p.business, PLAN[p.plan_kind] || '', monthsTxt(p.months), iso(String(p.paid_at).slice(0, 10)), p.note].filter(Boolean).join(' · ');
+      d.append(who, amt, del, meta); list.appendChild(d);
     }
   }
 
@@ -337,12 +411,18 @@ button:disabled{opacity:.55;cursor:default}
     const email = $('fEmail').value.trim(), emp = Number($('fEmp').value || 0);
     if (!validEmail(email)) { show($('fMsg'), 'اكتب بريد المشترك بشكل صحيح', false); return; }
     if (!Number.isInteger(emp) || emp < 0) { show($('fMsg'), 'عدد الموظفين رقم صحيح، و0 يعني غير محدود', false); return; }
+    if ($('fAmount').value && !(Number($('fAmount').value) >= 0)) { show($('fMsg'), 'المبلغ المدفوع رقم صحيح أو عشري', false); return; }
     $('fGo').disabled = true;
     try {
       const res = await rpc('amimar_admin_activate', { p_email: email, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_max_employees: emp });
       if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد. يجب أن يسجّل المشترك في Amimar أولاً', false);
       else {
         if ($('fCountry').value) await rpc('amimar_admin_set_country', { p_email: email, p_code: $('fCountry').value });
+        const amount = Number($('fAmount').value || 0);
+        if (amount > 0) {
+          await rpc('amimar_admin_add_payment', { p_email: email, p_amount: amount, p_currency: $('fCur').value, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_note: null });
+          $('fAmount').value = '';
+        }
         show($('fMsg'), `تم التفعيل: ${email} · ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}`, true); await load();
       }
     } catch (e) { show($('fMsg'), e.message, false); }
@@ -386,6 +466,9 @@ button:disabled{opacity:.55;cursor:default}
 
   { const sel = $('fCountry'); const o0 = document.createElement('option'); o0.value = ''; o0.textContent = '— بدون تغيير —'; sel.appendChild(o0);
     for (const [c, n] of COUNTRIES) { const o = document.createElement('option'); o.value = c; o.textContent = n; sel.appendChild(o); } }
+
+  try { const c = localStorage.getItem('amimar_admin_cur'); if (c) $('fCur').value = c; } catch {}
+  $('fCur').addEventListener('change', () => { try { localStorage.setItem('amimar_admin_cur', $('fCur').value); } catch {} });
 
   if (session && session.access) enter();
 }
