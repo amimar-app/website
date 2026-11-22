@@ -18,7 +18,7 @@
 --gold:light-dark(#B5853A,#D3A85A);--red:light-dark(#C2412D,#E0664F);--redsoft:light-dark(#F8E3DE,#3A1D17);--goldsoft:light-dark(#F5EBD7,#2E2614)}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.6 Tajawal,"Segoe UI",Tahoma,sans-serif}
-.wrap{max-width:980px;margin-inline:auto;padding:16px}
+.wrap{max-width:1120px;margin-inline:auto;padding:16px}
 header{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:6px 0 16px}
 header h1{margin:0;font-size:22px;font-weight:900}
 header h1 b{color:var(--green)}
@@ -49,10 +49,34 @@ button:disabled{opacity:.55;cursor:default}
 .tools input{flex:1 1 220px}
 .tools select{flex:0 0 150px}
 .list{display:flex;flex-direction:column;gap:8px}
-.sub{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;text-align:start;width:100%;font:inherit;color:inherit}
-.sub:hover,.sub:focus-visible{border-color:var(--green);outline:none}
-.sub .em{font-weight:800;direction:ltr;text-align:right;overflow-wrap:anywhere}
-.sub .meta{grid-column:1/-1;font-size:13.5px;color:var(--muted)}
+.count{font-size:13.5px;color:var(--muted);margin:-4px 0 10px}
+/* subscribers: a table on wide screens, cards on phones */
+.subs{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sh,.sub{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.4fr) minmax(0,1.3fr) minmax(0,1fr) 96px;gap:12px;align-items:center;padding:10px 14px}
+.sh{background:var(--soft);font-size:13px;font-weight:800;color:var(--muted)}
+.sub{background:var(--card);border:0;border-radius:0;min-height:0;border-top:1px solid var(--line);cursor:pointer;text-align:start;width:100%;font:inherit;color:inherit;font-size:14.5px;line-height:1.45}
+.sub:first-of-type{border-top:0}
+.sub:hover,.sub:focus-visible{background:var(--bg);outline:none}
+.sub:focus-visible{box-shadow:inset 3px 0 0 var(--green)}
+.c{display:flex;flex-direction:column;min-width:0}
+.c b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c small{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mail{direction:ltr;text-align:right;unicode-bidi:plaintext}
+.c b.mail{font-weight:700;font-size:14px}
+.c .lb{display:none}
+.c.st{align-items:flex-start;gap:3px}
+.paid{font-weight:800;color:var(--green);direction:ltr;text-align:right}
+.none{color:var(--muted)}
+.soon{color:var(--red)!important;font-weight:700}
+@media(max-width:820px){
+  .sh{display:none}
+  .subs{border:0;border-radius:0;gap:8px;overflow:visible}
+  .sub{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;border:1px solid var(--line)!important;border-radius:14px;padding:12px 14px}
+  .sub .who{grid-column:1/2}
+  .sub .st{grid-column:2/3;grid-row:1;align-items:flex-end;text-align:end}
+  .sub .who{grid-column:1/2;grid-row:1}
+  .c .lb{display:block;font-size:12px;color:var(--muted);font-weight:700}
+}
 .tag{font-size:13px;font-weight:800;border-radius:99px;padding:2px 10px;white-space:nowrap}
 .t-active{background:var(--soft);color:var(--green)}
 .t-trial{background:var(--goldsoft);color:var(--gold)}
@@ -63,11 +87,12 @@ button:disabled{opacity:.55;cursor:default}
 .earn th{font-size:13.5px;color:var(--muted);font-weight:800}
 .earn td.num{font-weight:900;direction:ltr;text-align:right;white-space:nowrap}
 .earn tr.hl td{color:var(--green)}
-.pay{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
-.pay .amt{font-weight:900;direction:ltr;white-space:nowrap;color:var(--green)}
-.pay .who{font-weight:800;direction:ltr;text-align:right;overflow-wrap:anywhere}
-.pay .meta{grid-column:1/-1;font-size:13.5px;color:var(--muted)}
-.pay button{min-height:36px;padding:0 12px;font-size:14px}
+.pays{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.pay{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:9px 14px;font-size:14.5px}
+.pay:first-child{border-top:0}
+.pay .amt{font-weight:900;direction:ltr;text-align:right;white-space:nowrap;color:var(--green)}
+.pay button{min-height:34px;padding:0 12px;font-size:13.5px}
+@media(max-width:820px){.pay{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}.pay .pl,.pay .dt{grid-column:1/2}.pay .amt{grid-column:2/3;grid-row:1}.pay button{grid-column:2/3;grid-row:2/4;align-self:end}}
 .hide{display:none!important}
 .hint{font-size:13.5px;color:var(--muted);margin-top:6px}
 .row-pay{grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr)}
@@ -160,7 +185,7 @@ button:disabled{opacity:.55;cursor:default}
       <h2>الأرباح</h2>
       <div id="earnSum"></div>
       <h2 style="font-size:16px;margin-top:18px">الدفعات</h2>
-      <div class="list" id="payList"></div>
+      <div class="pays" id="payList"></div>
     </section>
 
     <section class="card">
@@ -177,7 +202,8 @@ button:disabled{opacity:.55;cursor:default}
         </select>
         <button class="b-line" id="reload">تحديث</button>
       </div>
-      <div class="list" id="list"></div>
+      <div class="count" id="count"></div>
+      <div class="subs" id="list"></div>
     </section>
 
     <div class="btns" style="justify-content:center"><button class="b-line" id="out">تسجيل الخروج</button></div>
@@ -322,24 +348,45 @@ button:disabled{opacity:.55;cursor:default}
     draw();
   }
 
+  // small helpers that build elements from text only (all values come from customers' accounts, never HTML)
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const cell = (cls, label, main, sub, mainCls, subCls) => {
+    const c = el('div', 'c ' + (cls || ''));
+    if (label) c.append(el('span', 'lb', label));
+    const m = el('b', mainCls || '', main); m.title = main; c.append(m);
+    if (sub) { const s = el('small', subCls || '', sub); s.title = sub; c.append(s); }
+    return c;
+  };
+  const daysTxt = (n) => n <= 0 ? 'ينتهي اليوم' : n === 1 ? 'متبقٍّ يوم واحد' : n === 2 ? 'متبقٍّ يومان' : n <= 10 ? `متبقٍّ ${n} أيام` : `متبقٍّ ${n} يوماً`;
+  const empTxt = (n) => !n ? 'موظفون بلا حدّ' : n === 1 ? 'موظف واحد' : n === 2 ? 'موظفان' : n <= 10 ? `حتى ${n} موظفين` : `حتى ${n} موظفاً`;
+
   function draw() {
     const q = $('q').value.trim().toLowerCase(), st = $('st').value, cv = $('cf').value, box = $('list');
     box.textContent = '';
     const shown = rows.filter((r) => (!st || r.state === st) && (!cv || (r.country || 'غير معروف') === cv) &&
       (!q || [r.email, r.business, r.country].some((v) => String(v || '').toLowerCase().includes(q))));
-    if (!shown.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'لا توجد نتائج'; box.appendChild(d); return; }
+    $('count').textContent = rows.length ? (shown.length === rows.length ? `${rows.length} مشترك` : `يظهر ${shown.length} من ${rows.length}`) : '';
+    if (!shown.length) { box.appendChild(el('div', 'empty', 'لا توجد نتائج')); return; }
+    const head = el('div', 'sh');
+    ['المشترك', 'البلد', 'الباقة', 'الانتهاء', 'المدفوع', 'الحالة'].forEach((t) => head.append(el('span', '', t)));
+    box.appendChild(head);
     for (const r of shown) {
-      // every value comes from customers' accounts: written as text, never as HTML
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'sub';
-      const em = document.createElement('div'); em.className = 'em'; em.textContent = r.email || '—';
-      const tag = document.createElement('span'); tag.className = 'tag t-' + r.state; tag.textContent = STATE[r.state] || r.state;
-      const meta = document.createElement('div'); meta.className = 'meta';
-      const ends = r.ends ? `ينتهي ${iso(r.ends)}` + (r.state === 'active' || r.state === 'trial' ? ` (${r.days_left} يوماً)` : '') : '';
+      const b = el('button', 'sub'); b.type = 'button';
+      const live = r.state === 'active' || r.state === 'trial';
+      const who = r.business
+        ? cell('who', '', r.business, r.email || '—', '', 'mail')
+        : cell('who', '', r.email || '—', '', 'mail');
+      const country = cell('', 'البلد', r.country || 'غير معروف', '', r.country ? '' : 'none');
+      const plan = cell('', 'الباقة', PLAN[r.plan_kind] || PLAN[0], empTxt(r.max_employees));
+      const ends = r.ends
+        ? cell('', 'الانتهاء', iso(r.ends), live ? daysTxt(r.days_left) : 'انتهى', 'mail', live && r.days_left <= 7 ? 'soon' : '')
+        : cell('', 'الانتهاء', '—', '', 'none');
       const paid = {}; pays.filter((p) => (p.email || '').toLowerCase() === (r.email || '').toLowerCase()).forEach((p) => { paid[p.currency] = (paid[p.currency] || 0) + Number(p.amount); });
-      const paidTxt = Object.keys(paid).length ? 'دفع ' + Object.entries(paid).map(([c, v]) => money(v, c)).join(' + ') : '';
-      meta.textContent = [r.business, r.country || 'البلد غير معروف', paidTxt, PLAN[r.plan_kind] || PLAN[0],
-        r.max_employees ? `${r.max_employees} موظفاً` : 'موظفون بلا حد', ends, `سجّل ${iso(r.joined)}`].filter(Boolean).join(' · ');
-      b.append(em, tag, meta);
+      const ent = Object.entries(paid);
+      const money_ = ent.length ? cell('', 'المدفوع', ent.map(([c, v]) => money(v, c)).join(' + '), '', 'paid') : cell('', 'المدفوع', 'لا شيء', '', 'none');
+      const stc = el('div', 'c st');
+      stc.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state), el('small', '', `سجّل ${iso(r.joined)}`));
+      b.append(who, country, plan, ends, money_, stc);
       b.addEventListener('click', () => {
         $('fEmail').value = r.email || ''; $('fPlan').value = String(r.plan_kind && PLAN[r.plan_kind] ? r.plan_kind : 6);
         $('fEmp').value = String(r.max_employees || 0); $('fCountry').value = codeOf(r.country); $('fMsg').className = 'msg'; resetCancel();
@@ -377,20 +424,21 @@ button:disabled{opacity:.55;cursor:default}
       }
       sum.appendChild(t);
     }
+    if (pays.length) list.classList.remove('hide'); else list.classList.add('hide');
     for (const p of pays.slice(0, 100)) {
-      const d = document.createElement('div'); d.className = 'pay';
-      const who = document.createElement('div'); who.className = 'who'; who.textContent = p.email;
-      const amt = document.createElement('div'); amt.className = 'amt'; amt.textContent = money(p.amount, p.currency);
-      const del = document.createElement('button'); del.type = 'button'; del.className = 'b-red'; del.textContent = 'حذف';
+      const d = el('div', 'pay');
+      const who = p.business ? cell('', '', p.business, p.email, '', 'mail') : cell('', '', p.email, '', 'mail');
+      const pl = cell('pl', '', PLAN[p.plan_kind] || '—', [monthsTxt(p.months), p.note].filter(Boolean).join(' · '));
+      const dt = cell('dt', '', iso(String(p.paid_at).slice(0, 10)), '', 'mail');
+      const amt = el('div', 'amt', money(p.amount, p.currency));
+      const del = el('button', 'b-red', 'حذف'); del.type = 'button';
       let armedDel = null;
       del.addEventListener('click', async () => {
         if (!armedDel) { del.classList.add('sure'); del.textContent = 'تأكيد الحذف'; armedDel = setTimeout(() => { armedDel = null; del.classList.remove('sure'); del.textContent = 'حذف'; }, 5000); return; }
         clearTimeout(armedDel); del.disabled = true;
         try { await rpc('amimar_admin_delete_payment', { p_id: p.id }); await load(); } catch (e) { show($('fMsg'), e.message, false); del.disabled = false; }
       });
-      const meta = document.createElement('div'); meta.className = 'meta';
-      meta.textContent = [p.business, PLAN[p.plan_kind] || '', monthsTxt(p.months), iso(String(p.paid_at).slice(0, 10)), p.note].filter(Boolean).join(' · ');
-      d.append(who, amt, del, meta); list.appendChild(d);
+      d.append(who, pl, dt, amt, del); list.appendChild(d);
     }
   }
 
