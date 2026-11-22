@@ -1,17 +1,27 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Amimar — Delete account</title><style>body{font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;max-width:760px;margin:0 auto;padding:24px 18px;color:#17211C;background:#F2ECE2;line-height:1.7}
 h1{color:#1E8A5E;font-size:24px}h2{font-size:18px;margin-top:26px}section{background:#FCFAF5;border:1px solid #E6DFD2;border-radius:14px;padding:6px 20px 14px;margin:18px 0}
-nav a{margin-inline-end:12px;color:#1E8A5E;font-weight:700;text-decoration:none}small{color:#6E776F}</style><link rel="icon" href="/favicon.ico" sizes="48x48">
+nav a{margin-inline-end:12px;color:#1E8A5E;font-weight:700;text-decoration:none}small{color:#6E776F}
+.js section{display:none}.js section.on{display:block}nav{display:flex;gap:6px;flex-wrap:wrap}nav a{margin:0;padding:6px 12px;border-radius:10px;background:#E3F1E9}nav a.on{background:#1E8A5E;color:#fff}nav .home{background:none;padding-inline:0;margin-inline-end:8px}</style><link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-</head><body><nav><a href="#ar">العربية</a><a href="#tr">Türkçe</a><a href="#en">English</a></nav><section id="ar" dir="rtl" lang="ar"><h1>حذف حساب Amimar</h1><p>يمكنك حذف حسابك وكل بياناته بإحدى طريقتين:</p>
+</head><body><nav><a class="home" href="/">← Amimar</a><a href="#ar">العربية</a><a href="#tr">Türkçe</a><a href="#en">English</a></nav><section id="ar" dir="rtl" lang="ar"><h1>حذف حساب Amimar</h1><p>يمكنك حذف حسابك وكل بياناته بإحدى طريقتين:</p>
 <h2>1. من التطبيق (فوري)</h2><ol><li>افتح تطبيق Amimar وسجّل الدخول.</li><li>الإعدادات ← <b>حذف الحساب</b>.</li><li>أكّد مرتين.</li></ol>
 <p>أو من برنامج الكمبيوتر: الإعدادات ← الحساب والمزامنة ← <b>حذف الحساب</b>.</p>
 <h2>2. بالبريد</h2><p>أرسل من بريد حسابك إلى <b>amimar.app@gmail.com</b> بعنوان «Delete account» وسنحذفه خلال 7 أيام.</p>
 <h2>ما الذي يُحذف</h2><p>الحساب وتسجيل الدخول، وكل البيانات في السحابة (العملاء، الفواتير، الموظفون، الرواتب، المخزون، المهام…)، والصور، والنسخ الاحتياطية. لا نحتفظ بأي نسخة. البيانات المحفوظة على جهاز الكمبيوتر نفسه تبقى عليه حتى تحذف البرنامج.</p></section><section id="tr" dir="ltr" lang="tr"><h1>Amimar hesabını silme</h1><p>Hesabınızı ve tüm verilerini iki yoldan silebilirsiniz:</p>
-<h2>1. Uygulamadan (hemen)</h2><ol><li>Amimar uygulamasını açıp giriş yapın.</li><li>Ayarlar ← <b>Hesabı sil</b>.</li><li>İki kez onaylayın.</li></ol>
-<p>Ya da bilgisayar programından: Ayarlar ← Hesap ve eşitleme ← <b>Hesabı sil</b>.</p>
+<h2>1. Uygulamadan (hemen)</h2><ol><li>Amimar uygulamasını açıp giriş yapın.</li><li>Ayarlar → <b>Hesabı sil</b>.</li><li>İki kez onaylayın.</li></ol>
+<p>Ya da bilgisayar programından: Ayarlar → Hesap ve eşitleme → <b>Hesabı sil</b>.</p>
 <h2>2. E-postayla</h2><p>Hesabınızın e-postasından <b>amimar.app@gmail.com</b> adresine «Delete account» konusuyla yazın; 7 gün içinde sileriz.</p>
 <h2>Neler silinir</h2><p>Hesap ve giriş, buluttaki tüm veriler, fotoğraflar ve yedekler. Hiçbir kopya tutulmaz. Bilgisayarın kendisindeki veriler programı kaldırana kadar orada kalır.</p></section><section id="en" dir="ltr" lang="en"><h1>Delete your Amimar account</h1><p>You can delete your account and all its data in either way:</p>
 <h2>1. In the app (at once)</h2><ol><li>Open the Amimar app and sign in.</li><li>Settings → <b>Delete account</b>.</li><li>Confirm twice.</li></ol>
 <p>Or in the computer program: Settings → Account &amp; sync → <b>Delete account</b>.</p>
 <h2>2. By e-mail</h2><p>Write from your account's e-mail to <b>amimar.app@gmail.com</b> with the subject «Delete account»; we delete it within 7 days.</p>
-<h2>What is deleted</h2><p>The account and its sign-in, all data in the cloud (customers, invoices, employees, payroll, stock, tasks…), photos and backups. No copy is kept. Data saved on the computer itself stays there until you remove the program.</p></section><small>© Amimar</small></body></html>
+<h2>What is deleted</h2><p>The account and its sign-in, all data in the cloud (customers, invoices, employees, payroll, stock, tasks…), photos and backups. No copy is kept. Data saved on the computer itself stays there until you remove the program.</p></section><small>© Amimar</small><script>
+document.documentElement.classList.add('js');
+function pick(){var h=location.hash.slice(1);if(['ar','tr','en'].indexOf(h)<0){try{h=localStorage.getItem('amimar_lang')}catch(e){}
+if(['ar','tr','en'].indexOf(h)<0){var l=String(navigator.language||'').toLowerCase();h=l.indexOf('ar')===0?'ar':l.indexOf('tr')===0?'tr':'en'}}
+document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id===h)});
+document.querySelectorAll('nav a').forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+h)});
+document.documentElement.lang=h;document.documentElement.dir=h==='ar'?'rtl':'ltr'}
+document.querySelectorAll('nav a').forEach(function(a){a.addEventListener('click',function(){try{localStorage.setItem('amimar_lang',a.getAttribute('href').slice(1))}catch(e){}})});
+addEventListener('hashchange',pick);pick();
+</script></body></html>
