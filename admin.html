@@ -227,6 +227,13 @@ button:disabled{opacity:.55;cursor:default}
   }
 
   // ---- second step (TOTP) ----
+  // the server sends the QR as raw SVG text after «data:…,»; characters like # break it, so encode it properly
+  function qrSrc(qr) {
+    if (!qr || /;base64,/.test(qr)) return qr;
+    let svg = qr.slice(qr.indexOf(',') + 1);
+    if (/^%3C/i.test(svg)) { try { svg = decodeURIComponent(svg); } catch {} }
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
   let mfaFactor = null;
   async function startMfa() {
     $('mfaMsg').className = 'msg'; $('mfaCode').value = '';
@@ -239,7 +246,7 @@ button:disabled{opacity:.55;cursor:default}
       for (const f of totp) { try { await api('DELETE', `/auth/v1/factors/${f.id}`); } catch {} }
       const f = await api('POST', '/auth/v1/factors', { factor_type: 'totp', friendly_name: 'Amimar Admin', issuer: 'Amimar' });
       mfaFactor = f.id;
-      $('mfaQr').src = f.totp.qr_code;
+      $('mfaQr').src = qrSrc(f.totp.qr_code);
       $('mfaSecret').textContent = f.totp.secret;
       $('mfaSetup').classList.remove('hide');
     }
