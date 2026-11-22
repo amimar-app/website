@@ -74,13 +74,27 @@ button:disabled{opacity:.55;cursor:default}
   <!-- sign in -->
   <section class="card" id="loginBox">
     <h2>تسجيل الدخول</h2>
-    <p class="hint">بحساب Amimar الخاص بالإدارة. لا تعمل هذه الصفحة إلا للحسابات المصرّح لها.</p>
+    <p class="hint">بحساب Amimar الخاص بالإدارة، ثم برمز من تطبيق المصادقة. لا تعمل هذه الصفحة إلا للحسابات المصرّح لها.</p>
     <label for="lEmail">البريد الإلكتروني</label>
     <input id="lEmail" type="email" autocomplete="username">
     <label for="lPass">كلمة المرور</label>
     <input id="lPass" type="password" autocomplete="current-password">
     <div class="btns"><button class="b-green" id="lGo">دخول</button></div>
     <div class="msg" id="lMsg"></div>
+  </section>
+
+  <!-- second step: code from the authenticator app -->
+  <section class="card hide" id="mfaBox">
+    <h2>التحقق بخطوتين</h2>
+    <div id="mfaSetup" class="hide">
+      <p class="hint">مرة واحدة فقط: افتح تطبيق Google Authenticator أو Microsoft Authenticator، واختر «إضافة حساب»، ثم امسح هذا الرمز. إن لم تستطع المسح، أدخل المفتاح المكتوب تحته يدوياً.</p>
+      <div style="display:flex;justify-content:center;margin:12px 0"><img id="mfaQr" alt="رمز QR للتحقق بخطوتين" width="200" height="200" style="background:#fff;border-radius:12px;padding:8px"></div>
+      <p class="hint" style="text-align:center">المفتاح: <b id="mfaSecret" style="direction:ltr;display:inline-block;letter-spacing:1px;overflow-wrap:anywhere"></b></p>
+    </div>
+    <label for="mfaCode">الرمز المكوّن من 6 أرقام من تطبيق المصادقة</label>
+    <input id="mfaCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" style="direction:ltr;text-align:center;letter-spacing:6px;font-size:22px">
+    <div class="btns"><button class="b-green" id="mfaGo">تحقّق</button><button class="b-line" id="mfaBack">رجوع</button></div>
+    <div class="msg" id="mfaMsg"></div>
   </section>
 
   <div id="app" class="hide">
@@ -165,6 +179,17 @@ button:disabled{opacity:.55;cursor:default}
     return { access: j.access_token, refresh: j.refresh_token, email: j.user && j.user.email };
   }
 
+  async function api(method, path, body) {
+    const r = await fetch(`${URL_}${path}`, {
+      method, headers: { apikey: KEY, Authorization: `Bearer ${session.access}`, 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.msg || j.message || j.error_description || 'تعذّر الاتصال بالخادم');
+    return j;
+  }
+  const aal = () => { try { return JSON.parse(atob(session.access.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).aal; } catch { return ''; } };
+
   async function rpc(name, args, retry = true) {
     const r = await fetch(`${URL_}/rest/v1/rpc/${name}`, {
       method: 'POST',
@@ -180,24 +205,62 @@ button:disabled{opacity:.55;cursor:default}
     if (!r.ok) {
       const m = (j && (j.message || j.hint)) || '';
       if (/not allowed/.test(m)) throw new Error('هذا الحساب لا يملك صلاحية الإدارة');
-      if (/Could not find|does not exist/.test(m)) throw new Error('شغّل ملف SQL v17 في Supabase أولاً');
+      if (/Could not find|does not exist/.test(m)) throw new Error('شغّل ملفات SQL حتى v18 في Supabase أولاً');
       throw new Error(m || 'تعذّر الاتصال بالخادم');
     }
     return j;
   }
 
-  function signOut() { keep(null); $('app').classList.add('hide'); $('loginBox').classList.remove('hide'); $('who').textContent = ''; }
+  function signOut() { keep(null); mfaFactor = null; ['app', 'mfaBox'].forEach((id) => $(id).classList.add('hide')); $('loginBox').classList.remove('hide'); $('who').textContent = ''; }
 
   async function enter() {
     $('lMsg').className = 'msg';
     try {
       const ok = await rpc('amimar_is_admin');
       if (ok !== true) { const e = session.email; signOut(); show($('lMsg'), `الحساب ${e || ''} لا يملك صلاحية الإدارة`, false); return; }
-      $('loginBox').classList.add('hide'); $('app').classList.remove('hide');
+      $('loginBox').classList.add('hide');
       $('who').textContent = session.email || '';
+      if (aal() !== 'aal2') { await startMfa(); return; }
+      $('mfaBox').classList.add('hide'); $('app').classList.remove('hide');
       await load();
     } catch (e) { signOut(); show($('lMsg'), e.message, false); }
   }
+
+  // ---- second step (TOTP) ----
+  let mfaFactor = null;
+  async function startMfa() {
+    $('mfaMsg').className = 'msg'; $('mfaCode').value = '';
+    const user = await api('GET', '/auth/v1/user');
+    const totp = (user.factors || []).filter((f) => f.factor_type === 'totp');
+    const ready = totp.find((f) => f.status === 'verified');
+    if (ready) { mfaFactor = ready.id; $('mfaSetup').classList.add('hide'); }
+    else {
+      // first time: drop half-finished setups, then show a new QR code to scan
+      for (const f of totp) { try { await api('DELETE', `/auth/v1/factors/${f.id}`); } catch {} }
+      const f = await api('POST', '/auth/v1/factors', { factor_type: 'totp', friendly_name: 'Amimar Admin', issuer: 'Amimar' });
+      mfaFactor = f.id;
+      $('mfaQr').src = f.totp.qr_code;
+      $('mfaSecret').textContent = f.totp.secret;
+      $('mfaSetup').classList.remove('hide');
+    }
+    $('mfaBox').classList.remove('hide');
+    $('mfaCode').focus();
+  }
+
+  $('mfaGo').addEventListener('click', async () => {
+    const code = $('mfaCode').value.replace(/\D/g, '');
+    if (code.length !== 6) { show($('mfaMsg'), 'اكتب الرمز المكوّن من 6 أرقام', false); return; }
+    $('mfaGo').disabled = true;
+    try {
+      const ch = await api('POST', `/auth/v1/factors/${mfaFactor}/challenge`, {});
+      const j = await api('POST', `/auth/v1/factors/${mfaFactor}/verify`, { challenge_id: ch.id, code });
+      keep({ access: j.access_token, refresh: j.refresh_token, email: session.email });
+      await enter();
+    } catch (e) { show($('mfaMsg'), /invalid|expired/i.test(e.message) ? 'الرمز غير صحيح أو انتهت صلاحيته، جرّب الرمز الجديد' : e.message, false); }
+    finally { $('mfaGo').disabled = false; }
+  });
+  $('mfaCode').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('mfaGo').click(); });
+  $('mfaBack').addEventListener('click', signOut);
 
   async function load() {
     $('list').innerHTML = '<div class="empty">جارٍ التحميل…</div>';
