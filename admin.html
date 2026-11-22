@@ -47,7 +47,7 @@ button:disabled{opacity:.55;cursor:default}
 .stat span{font-size:13.5px;color:var(--muted)}
 .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .tools input{flex:1 1 220px}
-.tools select{flex:0 0 160px}
+.tools select{flex:0 0 150px}
 .list{display:flex;flex-direction:column;gap:8px}
 .sub{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;text-align:start;width:100%;font:inherit;color:inherit}
 .sub:hover,.sub:focus-visible{border-color:var(--green);outline:none}
@@ -131,9 +131,12 @@ button:disabled{opacity:.55;cursor:default}
         <div><label for="fEmp">عدد الموظفين</label>
           <input id="fEmp" type="number" min="0" step="1" value="0" inputmode="numeric"></div>
       </div>
-      <p class="hint">عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه.</p>
+      <label for="fCountry">البلد</label>
+      <select id="fCountry"></select>
+      <p class="hint">عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. يُملأ البلد تلقائياً من جهاز المشترك، ويمكنك تعديله هنا.</p>
       <div class="btns">
         <button class="b-green" id="fGo">تفعيل</button>
+        <button class="b-line" id="fSaveCountry">حفظ البلد فقط</button>
         <button class="b-red" id="fCancel">إلغاء الاشتراك</button>
       </div>
       <div class="msg" id="fMsg"></div>
@@ -143,6 +146,7 @@ button:disabled{opacity:.55;cursor:default}
       <h2>المشتركون</h2>
       <div class="tools">
         <input id="q" type="search" placeholder="ابحث بالبريد أو اسم العمل أو البلد">
+        <select id="cf"><option value="">كل البلدان</option></select>
         <select id="st">
           <option value="">كل الحالات</option>
           <option value="active">فعّال</option>
@@ -164,6 +168,14 @@ button:disabled{opacity:.55;cursor:default}
   const URL_ = 'https://wgbkeyjxlvnlvnktaceu.supabase.co';
   const KEY = 'sb_publishable_Uml5PUTleBheCLTOLJ7iVQ_BcadaI3g'; // the public app key (the same one inside the apps)
   const PLAN = { 0: 'كامل', 1: 'الحضور والانصراف فقط', 2: 'الرواتب فقط', 3: 'إدارة الموظفين الكاملة', 4: 'المبيعات فقط', 5: 'المبيعات والرواتب', 6: 'المتكامل' };
+  const COUNTRIES = [['TR','تركيا'],['SY','سوريا'],['LB','لبنان'],['JO','الأردن'],['IQ','العراق'],['PS','فلسطين'],['EG','مصر'],
+    ['SA','السعودية'],['AE','الإمارات'],['KW','الكويت'],['QA','قطر'],['BH','البحرين'],['OM','عُمان'],['YE','اليمن'],
+    ['LY','ليبيا'],['TN','تونس'],['DZ','الجزائر'],['MA','المغرب'],['SD','السودان'],['MR','موريتانيا'],
+    ['DE','ألمانيا'],['NL','هولندا'],['SE','السويد'],['AT','النمسا'],['BE','بلجيكا'],['FR','فرنسا'],['GB','بريطانيا'],
+    ['DK','الدنمارك'],['NO','النرويج'],['CH','سويسرا'],['IT','إيطاليا'],['ES','إسبانيا'],['GR','اليونان'],
+    ['CY','قبرص'],['RU','روسيا'],['AZ','أذربيجان'],['IR','إيران'],['US','الولايات المتحدة'],['CA','كندا'],
+    ['BR','البرازيل'],['AU','أستراليا']]; // same list as the server (v16)
+  const codeOf = (name) => (COUNTRIES.find(([c, n]) => n === name || c === name) || [''])[0];
   const STATE = { active: 'فعّال', trial: 'تجربة', expired: 'منتهٍ', canceled: 'ملغى' };
   const $ = (id) => document.getElementById(id);
   let session = null, rows = [];
@@ -205,7 +217,7 @@ button:disabled{opacity:.55;cursor:default}
     if (!r.ok) {
       const m = (j && (j.message || j.hint)) || '';
       if (/not allowed/.test(m)) throw new Error('هذا الحساب لا يملك صلاحية الإدارة');
-      if (/Could not find|does not exist/.test(m)) throw new Error('شغّل ملفات SQL حتى v18 في Supabase أولاً');
+      if (/Could not find|does not exist/.test(m)) throw new Error('شغّل ملفات SQL حتى v19 في Supabase أولاً');
       throw new Error(m || 'تعذّر الاتصال بالخادم');
     }
     return j;
@@ -275,15 +287,18 @@ button:disabled{opacity:.55;cursor:default}
     catch (e) { $('list').textContent = ''; show($('fMsg'), e.message, false); return; }
     const n = (s) => rows.filter((r) => r.state === s).length;
     $('sAll').textContent = rows.length; $('sActive').textContent = n('active'); $('sTrial').textContent = n('trial'); $('sOff').textContent = n('expired') + n('canceled');
+    const cf = $('cf'), keepC = cf.value; cf.length = 1;
+    [...new Set(rows.map((r) => r.country || 'غير معروف'))].sort().forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
+    cf.value = [...cf.options].some((o) => o.value === keepC) ? keepC : '';
     const dl = $('emails'); dl.textContent = '';
     rows.forEach((r) => { const o = document.createElement('option'); o.value = r.email || ''; dl.appendChild(o); });
     draw();
   }
 
   function draw() {
-    const q = $('q').value.trim().toLowerCase(), st = $('st').value, box = $('list');
+    const q = $('q').value.trim().toLowerCase(), st = $('st').value, cv = $('cf').value, box = $('list');
     box.textContent = '';
-    const shown = rows.filter((r) => (!st || r.state === st) &&
+    const shown = rows.filter((r) => (!st || r.state === st) && (!cv || (r.country || 'غير معروف') === cv) &&
       (!q || [r.email, r.business, r.country].some((v) => String(v || '').toLowerCase().includes(q))));
     if (!shown.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'لا توجد نتائج'; box.appendChild(d); return; }
     for (const r of shown) {
@@ -293,12 +308,12 @@ button:disabled{opacity:.55;cursor:default}
       const tag = document.createElement('span'); tag.className = 'tag t-' + r.state; tag.textContent = STATE[r.state] || r.state;
       const meta = document.createElement('div'); meta.className = 'meta';
       const ends = r.ends ? `ينتهي ${iso(r.ends)}` + (r.state === 'active' || r.state === 'trial' ? ` (${r.days_left} يوماً)` : '') : '';
-      meta.textContent = [r.business, r.country, PLAN[r.plan_kind] || PLAN[0],
+      meta.textContent = [r.business, r.country || 'البلد غير معروف', PLAN[r.plan_kind] || PLAN[0],
         r.max_employees ? `${r.max_employees} موظفاً` : 'موظفون بلا حد', ends, `سجّل ${iso(r.joined)}`].filter(Boolean).join(' · ');
       b.append(em, tag, meta);
       b.addEventListener('click', () => {
         $('fEmail').value = r.email || ''; $('fPlan').value = String(r.plan_kind && PLAN[r.plan_kind] ? r.plan_kind : 6);
-        $('fEmp').value = String(r.max_employees || 0); $('fMsg').className = 'msg'; resetCancel();
+        $('fEmp').value = String(r.max_employees || 0); $('fCountry').value = codeOf(r.country); $('fMsg').className = 'msg'; resetCancel();
         $('fEmail').scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
       box.appendChild(b);
@@ -326,7 +341,10 @@ button:disabled{opacity:.55;cursor:default}
     try {
       const res = await rpc('amimar_admin_activate', { p_email: email, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_max_employees: emp });
       if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد. يجب أن يسجّل المشترك في Amimar أولاً', false);
-      else { show($('fMsg'), `تم التفعيل: ${email} · ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}`, true); await load(); }
+      else {
+        if ($('fCountry').value) await rpc('amimar_admin_set_country', { p_email: email, p_code: $('fCountry').value });
+        show($('fMsg'), `تم التفعيل: ${email} · ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}`, true); await load();
+      }
     } catch (e) { show($('fMsg'), e.message, false); }
     finally { $('fGo').disabled = false; }
   });
@@ -347,10 +365,27 @@ button:disabled{opacity:.55;cursor:default}
     finally { $('fCancel').disabled = false; }
   });
 
+  $('fSaveCountry').addEventListener('click', async () => {
+    const email = $('fEmail').value.trim(), code = $('fCountry').value;
+    if (!validEmail(email)) { show($('fMsg'), 'اكتب بريد المشترك بشكل صحيح', false); return; }
+    if (!code) { show($('fMsg'), 'اختر البلد أولاً', false); return; }
+    $('fSaveCountry').disabled = true;
+    try {
+      const res = await rpc('amimar_admin_set_country', { p_email: email, p_code: code });
+      if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد', false);
+      else { show($('fMsg'), `حُفظ البلد: ${email} · ${$('fCountry').selectedOptions[0].text}`, true); await load(); }
+    } catch (e) { show($('fMsg'), e.message, false); }
+    finally { $('fSaveCountry').disabled = false; }
+  });
+
+  $('cf').addEventListener('change', draw);
   $('q').addEventListener('input', draw);
   $('st').addEventListener('change', draw);
   $('reload').addEventListener('click', load);
   $('out').addEventListener('click', signOut);
+
+  { const sel = $('fCountry'); const o0 = document.createElement('option'); o0.value = ''; o0.textContent = '— بدون تغيير —'; sel.appendChild(o0);
+    for (const [c, n] of COUNTRIES) { const o = document.createElement('option'); o.value = c; o.textContent = n; sel.appendChild(o); } }
 
   if (session && session.access) enter();
 }
