@@ -111,6 +111,9 @@ button:disabled{opacity:.55;cursor:default}
 .ln .paid{flex:0 0 90px;text-align:left;font-size:15px}
 @media(max-width:820px){.ln{flex-wrap:wrap}.ln .paid{flex:0 0 auto}}
 .ln .nm b.mail{font-size:14px;font-weight:700}
+.prices td:first-child,.prices th:first-child{width:36px;color:var(--muted)}
+.pnotes{margin:12px 0 0;padding-inline-start:20px;font-size:14.5px;color:var(--muted)}
+.pnotes li{margin:4px 0}.pnotes b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -193,6 +196,23 @@ button:disabled{opacity:.55;cursor:default}
         <button class="b-red" id="fCancel">إلغاء الاشتراك</button>
       </div>
       <div class="msg" id="fMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>الأسعار</h2>
+      <table class="earn prices">
+        <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
+        <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
+        <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
+        <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
+        <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
+        <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
+        <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
+      </table>
+      <ul class="pnotes">
+        <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
+        <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
+      </ul>
     </section>
 
     <section class="card">
