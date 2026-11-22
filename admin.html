@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://wgbkeyjxlvnlvnktaceu.supabase.co; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Amimar · إدارة الاشتراكات</title>
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;
+--bg:light-dark(#F2ECE2,#0E1512);--card:light-dark(#FCFAF5,#17211C);--ink:light-dark(#17211C,#EAF0EB);--muted:light-dark(#5F6A62,#9DAAA1);
+--line:light-dark(#E2D9C9,#26322C);--green:light-dark(#1E8A5E,#2FA673);--soft:light-dark(#E3F1E9,#15301F);
+--gold:light-dark(#B5853A,#D3A85A);--red:light-dark(#C2412D,#E0664F);--redsoft:light-dark(#F8E3DE,#3A1D17);--goldsoft:light-dark(#F5EBD7,#2E2614)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.6 Tajawal,"Segoe UI",Tahoma,sans-serif}
+.wrap{max-width:980px;margin-inline:auto;padding:16px}
+header{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:6px 0 16px}
+header h1{margin:0;font-size:22px;font-weight:900}
+header h1 b{color:var(--green)}
+header .who{margin-inline-start:auto;font-size:14px;color:var(--muted);text-align:end;direction:ltr;overflow-wrap:anywhere}
+@media(max-width:640px){header h1{font-size:19px}header .who{flex-basis:100%;text-align:right}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+h2{margin:0 0 12px;font-size:19px;font-weight:900}
+label{display:block;font-weight:800;font-size:14px;margin:12px 0 6px}
+input,select{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:0 14px;font:600 16px Tajawal,sans-serif}
+input:focus,select:focus{outline:none;border-color:var(--green)}
+input[type=email],input[type=password]{direction:ltr;text-align:right}
+.row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button{min-height:48px;padding:0 20px;border-radius:12px;border:1.5px solid transparent;font:800 16px Tajawal,sans-serif;cursor:pointer}
+button:disabled{opacity:.55;cursor:default}
+.b-green{background:var(--green);color:#fff}
+.b-line{background:transparent;border-color:var(--line);color:var(--ink)}
+.b-red{background:transparent;border-color:var(--red);color:var(--red)}
+.b-red.sure{background:var(--red);color:#fff}
+.msg{margin-top:12px;padding:10px 14px;border-radius:12px;font-weight:700;display:none}
+.msg.ok{display:block;background:var(--soft);color:var(--green)}
+.msg.err{display:block;background:var(--redsoft);color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font-size:26px;font-weight:900}
+.stat span{font-size:13.5px;color:var(--muted)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.tools input{flex:1 1 220px}
+.tools select{flex:0 0 160px}
+.list{display:flex;flex-direction:column;gap:8px}
+.sub{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;text-align:start;width:100%;font:inherit;color:inherit}
+.sub:hover,.sub:focus-visible{border-color:var(--green);outline:none}
+.sub .em{font-weight:800;direction:ltr;text-align:right;overflow-wrap:anywhere}
+.sub .meta{grid-column:1/-1;font-size:13.5px;color:var(--muted)}
+.tag{font-size:13px;font-weight:800;border-radius:99px;padding:2px 10px;white-space:nowrap}
+.t-active{background:var(--soft);color:var(--green)}
+.t-trial{background:var(--goldsoft);color:var(--gold)}
+.t-expired,.t-canceled{background:var(--redsoft);color:var(--red)}
+.empty{color:var(--muted);text-align:center;padding:18px}
+.hide{display:none!important}
+.hint{font-size:13.5px;color:var(--muted);margin-top:6px}
+@media(max-width:640px){.row{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
+    <h1>A<b>mimar</b> · إدارة الاشتراكات</h1>
+    <div class="who" id="who"></div>
+  </header>
+
+  <!-- sign in -->
+  <section class="card" id="loginBox">
+    <h2>تسجيل الدخول</h2>
+    <p class="hint">بحساب Amimar الخاص بالإدارة. لا تعمل هذه الصفحة إلا للحسابات المصرّح لها.</p>
+    <label for="lEmail">البريد الإلكتروني</label>
+    <input id="lEmail" type="email" autocomplete="username">
+    <label for="lPass">كلمة المرور</label>
+    <input id="lPass" type="password" autocomplete="current-password">
+    <div class="btns"><button class="b-green" id="lGo">دخول</button></div>
+    <div class="msg" id="lMsg"></div>
+  </section>
+
+  <div id="app" class="hide">
+    <div class="stats">
+      <div class="stat"><b id="sAll">0</b><span>كل الحسابات</span></div>
+      <div class="stat"><b id="sActive" style="color:var(--green)">0</b><span>فعّال</span></div>
+      <div class="stat"><b id="sTrial" style="color:var(--gold)">0</b><span>تجربة</span></div>
+      <div class="stat"><b id="sOff" style="color:var(--red)">0</b><span>منتهٍ أو ملغى</span></div>
+    </div>
+
+    <section class="card">
+      <h2>تفعيل أو تمديد اشتراك</h2>
+      <label for="fEmail">بريد المشترك</label>
+      <input id="fEmail" type="email" list="emails" placeholder="name@example.com" autocomplete="off">
+      <datalist id="emails"></datalist>
+      <div class="row">
+        <div><label for="fPlan">الباقة</label>
+          <select id="fPlan">
+            <option value="6">المتكامل</option>
+            <option value="4">المبيعات فقط</option>
+            <option value="5">المبيعات والرواتب</option>
+            <option value="3">إدارة الموظفين الكاملة</option>
+            <option value="2">الرواتب فقط</option>
+            <option value="1">الحضور والانصراف فقط</option>
+          </select></div>
+        <div><label for="fMonths">المدة</label>
+          <select id="fMonths">
+            <option value="1">شهر</option>
+            <option value="3">3 أشهر</option>
+            <option value="6">6 أشهر</option>
+            <option value="12" selected>سنة</option>
+            <option value="24">سنتان</option>
+          </select></div>
+        <div><label for="fEmp">عدد الموظفين</label>
+          <input id="fEmp" type="number" min="0" step="1" value="0" inputmode="numeric"></div>
+      </div>
+      <p class="hint">عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه.</p>
+      <div class="btns">
+        <button class="b-green" id="fGo">تفعيل</button>
+        <button class="b-red" id="fCancel">إلغاء الاشتراك</button>
+      </div>
+      <div class="msg" id="fMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>المشتركون</h2>
+      <div class="tools">
+        <input id="q" type="search" placeholder="ابحث بالبريد أو اسم العمل أو البلد">
+        <select id="st">
+          <option value="">كل الحالات</option>
+          <option value="active">فعّال</option>
+          <option value="trial">تجربة</option>
+          <option value="expired">منتهٍ</option>
+          <option value="canceled">ملغى</option>
+        </select>
+        <button class="b-line" id="reload">تحديث</button>
+      </div>
+      <div class="list" id="list"></div>
+    </section>
+
+    <div class="btns" style="justify-content:center"><button class="b-line" id="out">تسجيل الخروج</button></div>
+  </div>
+</div>
+
+<script>
+{
+  const URL_ = 'https://wgbkeyjxlvnlvnktaceu.supabase.co';
+  const KEY = 'sb_publishable_Uml5PUTleBheCLTOLJ7iVQ_BcadaI3g'; // the public app key (the same one inside the apps)
+  const PLAN = { 0: 'كامل', 1: 'الحضور والانصراف فقط', 2: 'الرواتب فقط', 3: 'إدارة الموظفين الكاملة', 4: 'المبيعات فقط', 5: 'المبيعات والرواتب', 6: 'المتكامل' };
+  const STATE = { active: 'فعّال', trial: 'تجربة', expired: 'منتهٍ', canceled: 'ملغى' };
+  const $ = (id) => document.getElementById(id);
+  let session = null, rows = [];
+  try { session = JSON.parse(sessionStorage.getItem('amimar_admin') || 'null'); } catch { session = null; }
+
+  const show = (el, text, ok) => { el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'err'); };
+  const keep = (s) => { session = s; try { s ? sessionStorage.setItem('amimar_admin', JSON.stringify(s)) : sessionStorage.removeItem('amimar_admin'); } catch {} };
+
+  async function auth(body, grant) {
+    const r = await fetch(`${URL_}/auth/v1/token?grant_type=${grant}`, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error_description || j.msg || j.message || 'تعذّر تسجيل الدخول');
+    return { access: j.access_token, refresh: j.refresh_token, email: j.user && j.user.email };
+  }
+
+  async function rpc(name, args, retry = true) {
+    const r = await fetch(`${URL_}/rest/v1/rpc/${name}`, {
+      method: 'POST',
+      headers: { apikey: KEY, Authorization: `Bearer ${session.access}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(args || {}),
+    });
+    if (r.status === 401 && retry && session.refresh) {
+      try { keep({ ...await auth({ refresh_token: session.refresh }, 'refresh_token'), email: session.email }); }
+      catch { signOut(); throw new Error('انتهت الجلسة، سجّل الدخول من جديد'); }
+      return rpc(name, args, false);
+    }
+    const j = await r.json().catch(() => null);
+    if (!r.ok) {
+      const m = (j && (j.message || j.hint)) || '';
+      if (/not allowed/.test(m)) throw new Error('هذا الحساب لا يملك صلاحية الإدارة');
+      if (/Could not find|does not exist/.test(m)) throw new Error('شغّل ملف SQL v17 في Supabase أولاً');
+      throw new Error(m || 'تعذّر الاتصال بالخادم');
+    }
+    return j;
+  }
+
+  function signOut() { keep(null); $('app').classList.add('hide'); $('loginBox').classList.remove('hide'); $('who').textContent = ''; }
+
+  async function enter() {
+    $('lMsg').className = 'msg';
+    try {
+      const ok = await rpc('amimar_is_admin');
+      if (ok !== true) { const e = session.email; signOut(); show($('lMsg'), `الحساب ${e || ''} لا يملك صلاحية الإدارة`, false); return; }
+      $('loginBox').classList.add('hide'); $('app').classList.remove('hide');
+      $('who').textContent = session.email || '';
+      await load();
+    } catch (e) { signOut(); show($('lMsg'), e.message, false); }
+  }
+
+  async function load() {
+    $('list').innerHTML = '<div class="empty">جارٍ التحميل…</div>';
+    try { rows = await rpc('amimar_admin_list') || []; }
+    catch (e) { $('list').textContent = ''; show($('fMsg'), e.message, false); return; }
+    const n = (s) => rows.filter((r) => r.state === s).length;
+    $('sAll').textContent = rows.length; $('sActive').textContent = n('active'); $('sTrial').textContent = n('trial'); $('sOff').textContent = n('expired') + n('canceled');
+    const dl = $('emails'); dl.textContent = '';
+    rows.forEach((r) => { const o = document.createElement('option'); o.value = r.email || ''; dl.appendChild(o); });
+    draw();
+  }
+
+  function draw() {
+    const q = $('q').value.trim().toLowerCase(), st = $('st').value, box = $('list');
+    box.textContent = '';
+    const shown = rows.filter((r) => (!st || r.state === st) &&
+      (!q || [r.email, r.business, r.country].some((v) => String(v || '').toLowerCase().includes(q))));
+    if (!shown.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'لا توجد نتائج'; box.appendChild(d); return; }
+    for (const r of shown) {
+      // every value comes from customers' accounts: written as text, never as HTML
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'sub';
+      const em = document.createElement('div'); em.className = 'em'; em.textContent = r.email || '—';
+      const tag = document.createElement('span'); tag.className = 'tag t-' + r.state; tag.textContent = STATE[r.state] || r.state;
+      const meta = document.createElement('div'); meta.className = 'meta';
+      const ends = r.ends ? `ينتهي ${iso(r.ends)}` + (r.state === 'active' || r.state === 'trial' ? ` (${r.days_left} يوماً)` : '') : '';
+      meta.textContent = [r.business, r.country, PLAN[r.plan_kind] || PLAN[0],
+        r.max_employees ? `${r.max_employees} موظفاً` : 'موظفون بلا حد', ends, `سجّل ${iso(r.joined)}`].filter(Boolean).join(' · ');
+      b.append(em, tag, meta);
+      b.addEventListener('click', () => {
+        $('fEmail').value = r.email || ''; $('fPlan').value = String(r.plan_kind && PLAN[r.plan_kind] ? r.plan_kind : 6);
+        $('fEmp').value = String(r.max_employees || 0); $('fMsg').className = 'msg'; resetCancel();
+        $('fEmail').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      box.appendChild(b);
+    }
+  }
+
+  const iso = (d) => '\u2066' + d + '\u2069'; // keeps dates left-to-right inside Arabic text
+  const validEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+  $('lGo').addEventListener('click', async () => {
+    const email = $('lEmail').value.trim(), password = $('lPass').value;
+    if (!email || !password) { show($('lMsg'), 'اكتب البريد وكلمة المرور', false); return; }
+    $('lGo').disabled = true;
+    try { keep(await auth({ email, password }, 'password')); $('lPass').value = ''; await enter(); }
+    catch (e) { show($('lMsg'), /Invalid login/i.test(e.message) ? 'البريد أو كلمة المرور غير صحيحة' : e.message, false); }
+    finally { $('lGo').disabled = false; }
+  });
+  $('lPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('lGo').click(); });
+
+  $('fGo').addEventListener('click', async () => {
+    const email = $('fEmail').value.trim(), emp = Number($('fEmp').value || 0);
+    if (!validEmail(email)) { show($('fMsg'), 'اكتب بريد المشترك بشكل صحيح', false); return; }
+    if (!Number.isInteger(emp) || emp < 0) { show($('fMsg'), 'عدد الموظفين رقم صحيح، و0 يعني غير محدود', false); return; }
+    $('fGo').disabled = true;
+    try {
+      const res = await rpc('amimar_admin_activate', { p_email: email, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_max_employees: emp });
+      if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد. يجب أن يسجّل المشترك في Amimar أولاً', false);
+      else { show($('fMsg'), `تم التفعيل: ${email} · ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}`, true); await load(); }
+    } catch (e) { show($('fMsg'), e.message, false); }
+    finally { $('fGo').disabled = false; }
+  });
+
+  // cancelling asks for a second press instead of a pop-up
+  let armed = null;
+  function resetCancel() { clearTimeout(armed); armed = null; $('fCancel').classList.remove('sure'); $('fCancel').textContent = 'إلغاء الاشتراك'; }
+  $('fCancel').addEventListener('click', async () => {
+    const email = $('fEmail').value.trim();
+    if (!validEmail(email)) { show($('fMsg'), 'اكتب بريد المشترك بشكل صحيح', false); return; }
+    if (!armed) { $('fCancel').classList.add('sure'); $('fCancel').textContent = 'اضغط مرة أخرى للتأكيد'; armed = setTimeout(resetCancel, 5000); return; }
+    resetCancel(); $('fCancel').disabled = true;
+    try {
+      const res = await rpc('amimar_admin_cancel', { p_email: email });
+      if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد', false);
+      else { show($('fMsg'), `أُلغي اشتراك ${email}`, true); await load(); }
+    } catch (e) { show($('fMsg'), e.message, false); }
+    finally { $('fCancel').disabled = false; }
+  });
+
+  $('q').addEventListener('input', draw);
+  $('st').addEventListener('change', draw);
+  $('reload').addEventListener('click', load);
+  $('out').addEventListener('click', signOut);
+
+  if (session && session.access) enter();
+}
+</script>
+</body>
+</html>
