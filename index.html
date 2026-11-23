@@ -246,6 +246,7 @@ footer{border-top:1px solid var(--line)}
 
 
 
+
 .langs{display:flex;gap:2px;background:var(--soft);border-radius:10px;padding:3px}
 .langs a{min-width:34px;height:32px;display:grid;place-items:center;padding:0 8px;border-radius:8px;text-decoration:none;font-weight:800;font-size:13.5px;color:var(--muted)}
 .langs a[aria-current]{background:var(--green);color:#fff}
@@ -481,6 +482,18 @@ footer{border-top:1px solid var(--line)}
   </div>
 </footer>
 
+<dialog class="pc-only" id="soon" aria-labelledby="soonPlay">
+  <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="var(--green)" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round"/></svg>
+  <h3 id="soonPlay" data-for="play">قريباً على Google Play</h3>
+  <h3 id="soonApple" data-for="appstore">قريباً على App Store</h3>
+  <p data-for="play">يمكنك الآن تحميل البرنامج لنظام ويندوز، وسيتوفّر تطبيق الهاتف قريباً على Google Play.</p>
+  <p data-for="appstore">يمكنك الآن تحميل البرنامج لنظام ويندوز، وسيتوفّر تطبيق الهاتف قريباً على App Store.</p>
+  <div class="pc-btns">
+    <a class="btn b-green" href="https://github.com/amimar-app/amimar-releases/releases/latest/download/Amimar-Setup.exe">تحميل لنظام ويندوز</a>
+    <button type="button" class="pc-x" id="soonClose">إغلاق</button>
+  </div>
+</dialog>
+
 <dialog class="pc-only" id="pcOnly" aria-labelledby="pcT">
   <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" fill="none" stroke="var(--green)" stroke-width="1.8"/><path d="M8 21h8M12 17v4" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round"/></svg>
   <h3 id="pcT">برنامج ويندوز يُحمَّل من الحاسوب</h3>
@@ -541,7 +554,22 @@ footer{border-top:1px solid var(--line)}
   }
   document.querySelectorAll('.langs a').forEach((a) => a.addEventListener('click', () => { try { localStorage.setItem('amimar_lang', a.dataset.lang); } catch {} }));
   // store links stay empty until the apps are live: put the address in href and the click works again
-  document.querySelectorAll('[data-store]').forEach((l) => { if (l.getAttribute('href') === '#') l.addEventListener('click', (e) => e.preventDefault()); });
+  const soon = document.getElementById('soon');
+  document.querySelectorAll('[data-store]').forEach((l) => {
+    if (l.getAttribute('href') !== '#') return;
+    l.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!soon || !soon.showModal) return;
+      soon.querySelectorAll('[data-for]').forEach((x) => { x.hidden = x.dataset.for !== l.dataset.store; });
+      soon.setAttribute('aria-labelledby', l.dataset.store === 'play' ? 'soonPlay' : 'soonApple');
+      soon.showModal();
+    });
+  });
+  if (soon) {
+    document.getElementById('soonClose').addEventListener('click', () => soon.close());
+    soon.addEventListener('click', (e) => { if (e.target === soon) soon.close(); });
+    soon.querySelector('a').addEventListener('click', () => soon.close());
+  }
 
   const trades = ['بقالة وسوبرماركت', 'ملابس وأحذية', 'خياطة وأزياء', 'تجارة الجملة', 'هواتف وإلكترونيات', 'صيدلية', 'مطعم ومقهى', 'حلويات ومخابز', 'قطع غيار السيارات', 'أدوات ومواد بناء', 'مجوهرات', 'صالون تجميل وحلاقة', 'عيادة', 'شحن وتوصيل', 'مكتب عقاري', 'وغيرها…'];
   document.getElementById('chips').innerHTML = trades.map((x) => `<span>${x}</span>`).join('');
