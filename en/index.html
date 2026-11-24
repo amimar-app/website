@@ -256,6 +256,40 @@ footer{border-top:1px solid var(--line)}
 .langs a[aria-current]{background:var(--green);color:#fff}
 @media(max-width:820px){.langs{margin-inline-start:auto}}
 @media(max-width:440px){.nav .b-small{display:none}}
+
+/* what's new (bento) */
+.news{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:34px}
+.nw{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.nw h3{font-size:21px;font-weight:900;padding-inline-end:56px}.nw>p{margin:6px 0 0;color:var(--muted);font-size:15px}
+.nw .tag{position:absolute;top:20px;inset-inline-end:20px;font-size:12px;font-weight:800;color:var(--gold);border:1px solid currentColor;border-radius:99px;padding:1px 10px}
+.nw.w4{grid-column:span 4}.nw.w3{grid-column:span 3}.nw.w2{grid-column:span 2}
+.nw.ink{background:#17211C;border-color:#26322C;color:#EAF0EB}.nw.ink>p{color:#9DAAA1}
+.nw.grn{background:var(--green);border-color:var(--green);color:#fff}.nw.grn>p{color:#E3F4EA}.nw.grn .tag,.nw.ink .tag{color:#F2D9A8}
+.mini{margin-top:auto;padding-top:20px}
+.box{background:var(--screen);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:14px}
+.box .r{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}.box .r:last-child{border:0}
+.pl{font-size:12px;font-weight:800;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--green);white-space:nowrap}
+.pl.bad{background:#D9533B24;color:#D9533B}
+.whs{display:flex;gap:10px;align-items:stretch}
+.whs .box{flex:1}.whs b{display:block;font-size:13px;color:var(--muted);font-weight:700}.whs strong{font-size:26px;font-weight:900}
+.whs .ar{align-self:center;font-weight:900;color:var(--green);font-size:22px}
+[dir=ltr] .whs .ar{transform:scaleX(-1)}
+.cmp{display:flex;gap:14px;align-items:flex-end;height:116px}
+.cmp div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;text-align:center;font-size:13px;color:#9DAAA1}
+.cmp span{display:block;border-radius:10px 10px 4px 4px}
+.up{display:inline-block;margin-top:14px;background:#3DBA82;color:#0E1512;font-weight:900;border-radius:10px;padding:4px 10px;font-size:15px}
+.perm{display:grid;grid-template-columns:1fr auto auto;gap:7px 16px;align-items:center;font-size:14px;background:#ffffff1a;padding:14px;border-radius:16px}
+.perm i{font-style:normal;font-weight:800;color:#E3F4EA;font-size:12px}
+.ck{width:20px;height:20px;border-radius:6px;background:#fff;color:#1E8A5E;display:grid;place-items:center;font-weight:900;font-size:13px}
+.ck.off{background:transparent;border:1.5px solid #ffffff80;color:transparent}
+.ph{width:186px;margin-inline:auto;background:#17211C;border-radius:26px;padding:8px}
+.ph>div{background:var(--screen);border-radius:20px;padding:12px 14px;font-size:13px}
+.ph .big{font-size:26px;font-weight:900;color:var(--green);line-height:1.3}
+.devs{display:flex;gap:10px}
+.devs div{flex:1;border-radius:14px;padding:10px 12px;font-size:13.5px;font-weight:800;background:var(--screen);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.devs .no{background:#D9533B14;border-color:#D9533B55;color:#D9533B}
+@media(max-width:980px){.news{grid-template-columns:repeat(2,1fr)}.nw.w4,.nw.w3,.nw.w2{grid-column:span 1}.nw.w4{grid-column:span 2}}
+@media(max-width:640px){.news{grid-template-columns:1fr}.nw.w4{grid-column:auto}.whs{flex-wrap:wrap}.whs .ar{display:none}.whs .box{flex:1 1 40%}.whs .box:last-child{flex-basis:100%}.devs{flex-wrap:wrap}.devs div{flex:1 1 40%}.devs .no{flex-basis:100%}}
 </style>
 </head>
 <body>
@@ -373,6 +407,33 @@ footer{border-top:1px solid var(--line)}
       </ol>
     </div>
     <figure class="syncpic" style="margin:0"><img src="../img/sync.jpg" width="720" height="1280" alt="The computer's dashboard and the phone's home screen with the same numbers" loading="lazy"></figure>
+  </div>
+</section>
+
+<section class="band" id="new" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Latest updates</span>
+      <h2>New in Amimar</h2>
+      <p class="lead">Warehouses, cheques, installments and users with permissions, all on the computer and the phone together, with the same data.</p>
+    </div>
+    <div class="news">
+      <article class="nw w4"><span class="tag">New</span><h3>Warehouses</h3><p>See how much of each item is in each warehouse, move goods between them, and count a single warehouse.</p>
+        <div class="mini whs" aria-hidden="true"><div class="box"><b>Main warehouse</b><strong>240</strong> pcs</div><span class="ar">←</span><div class="box"><b>Market branch</b><strong>60</strong> pcs</div><div class="box"><b>Transfer TR-0012</b><span class="pl">20 pcs · done</span></div></div></article>
+      <article class="nw w2 ink"><span class="tag">New</span><h3>Compare periods</h3><p>This month against last month, side by side.</p>
+        <div class="mini" aria-hidden="true"><div class="cmp"><div><span style="height:60px;background:#3A4A42"></span>Last month</div><div><span style="height:96px;background:#3DBA82"></span>This month</div></div><span class="up">▲ 34% sales</span></div></article>
+      <article class="nw w2 grn"><span class="tag">New</span><h3>Users and permissions</h3><p>Each employee has a login, and you decide what they see.</p>
+        <div class="mini" aria-hidden="true"><div class="perm"><i>Section</i><i>Sees</i><i>Edits</i>
+          <span>Sales</span><span class="ck">✓</span><span class="ck">✓</span><span>Stock</span><span class="ck">✓</span><span class="ck off">✓</span><span>Profit</span><span class="ck off">✓</span><span class="ck off">✓</span></div></div></article>
+      <article class="nw w2"><span class="tag">New</span><h3>Cheques and installments</h3><p>Due dates, and a WhatsApp reminder to the customer.</p>
+        <div class="mini" aria-hidden="true"><div class="box"><div class="r"><span>Cheque · Ahmed</span><span class="pl">In 3 days</span></div><div class="r"><span>Installment 2 of 6</span><span class="pl bad">Overdue</span></div><div class="r"><span>Cheque · supplier</span><span class="pl">Paid</span></div></div></div></article>
+      <article class="nw w2"><span class="tag">New</span><h3>Employee portal</h3><p>Employees see their pay and attendance on their phone, and nothing else.</p>
+        <div class="mini" aria-hidden="true"><div class="ph"><div><b>Your pay so far</b><div class="big">8,450</div><div class="box" style="border:0;padding:0;background:none"><div class="r"><span>Days worked</span><b>22</b></div><div class="r"><span>Advances</span><b>1,000</b></div></div></div></div></div></article>
+      <article class="nw w3"><span class="tag">New</span><h3>Your account is protected</h3><p>The main email is open on one computer and one phone at a time, so nobody gets into your account from another device.</p>
+        <div class="mini devs" aria-hidden="true"><div>💻 Your computer<span class="pl">Open</span></div><div>📱 Your phone<span class="pl">Open</span></div><div class="no">📱 Another device<span>Refused</span></div></div></article>
+      <article class="nw w3"><span class="tag">New</span><h3>Seller name on invoices</h3><p>Every invoice shows who made the sale, so you know how each employee performs.</p>
+        <div class="mini" aria-hidden="true"><div class="box"><div class="r"><span>Invoice 1269</span><span>Seller: <b>Sam</b></span></div><div class="r"><span>Invoice 1270</span><span>Seller: <b>Leila</b></span></div></div></div></article>
+    </div>
   </div>
 </section>
 
@@ -521,9 +582,11 @@ footer{border-top:1px solid var(--line)}
     ['Point of sale', 'Fast barcode sales, retail or wholesale, with change and an 80 mm receipt.', 'M10 14h20v14H10zM14 14v-4h12v4M15 20h10M15 24h6', 'New', 's'],
     ['Invoices and returns', 'Sales invoices, returns, receipts and payment vouchers, with a preview before sharing, in three languages.', 'M13 9h14v22l-3.5-2-3.5 2-3.5-2-3.5 2zM17 15h6M17 20h6', '', 's'],
     ['Stock and stocktake', 'Barcode items, stocktake with the phone camera, and an alert before anything runs out.', 'M10 15l10-5 10 5v11l-10 5-10-5zM10 15l10 5 10-5M20 20v11', '', 's'],
+    ['Warehouses', 'The quantity of each item in each warehouse, moving goods between warehouses, and counting one warehouse.', 'M8 18l12-8 12 8v12H8zM14 30v-8h12v8M14 26h12', 'New', 's'],
     ['WhatsApp', 'Send invoices, account statements and payment reminders to your customers on WhatsApp in one tap.', 'M20 10a10 10 0 0 0-8.7 15l-1.3 5 5.2-1.3A10 10 0 1 0 20 10zM16 17c0 4 3 7 7 7l1.5-1.5-2-1.5-1 1c-1.5-.5-2.5-1.5-3-3l1-1-1.5-2z', '', 's'],
     ['Debts and accounts', 'An account for each customer and supplier, statements, part payments and full bookkeeping entries.', 'M10 28V12M10 28h20M15 24v-5M20 24v-9M25 24v-7', '', 'f'],
     ['Dashboard', 'Sales, collections, profit, top customers and items, month by month.', 'M11 29V19M17 29V13M23 29v-8M29 29V16', '', 'f'],
+    ['Compare periods', 'Compare your sales, profit and expenses between two months, two years or any two periods you choose.', 'M10 29h20M13 29v-8h5v8M22 29V14h5v15', 'New', 'f'],
     ['Cheques and installments', 'Received and given cheques with their due dates, and a customer debt split into installments with WhatsApp reminders.', 'M9 13h22v14H9zM13 19h8M13 23h5M26 22l2 2 3-4', 'New', 'f'],
     ['Multiple currencies', 'Buy and sell in any currency at a rate you set; balances and profit are worked out in your own currency.', 'M20 10a10 10 0 1 0 0 20a10 10 0 0 0 0-20zM23 16c-1-1-2-1.5-3-1.5c-2 0-3 1-3 2.5c0 3 6 2 6 5c0 1.5-1.2 2.5-3 2.5c-1.2 0-2.3-.5-3-1.5M20 12.5v2M20 25v2.5', '', 'f'],
     ['Fingerprint and attendance', 'Linked to the fingerprint device: attendance, lateness, overtime, days off and breaks, all worked out automatically.', 'M14 26c0-6 2.5-10 6-10s6 4 6 10M17 28c0-5 1-8 3-8s3 3 3 8M11 20c1-6 4.5-9 9-9s8 3 9 9', '', 'h'],

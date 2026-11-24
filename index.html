@@ -264,11 +264,46 @@ footer{border-top:1px solid var(--line)}
 
 
 
+
 .langs{display:flex;gap:2px;background:var(--soft);border-radius:10px;padding:3px}
 .langs a{min-width:34px;height:32px;display:grid;place-items:center;padding:0 8px;border-radius:8px;text-decoration:none;font-weight:800;font-size:13.5px;color:var(--muted)}
 .langs a[aria-current]{background:var(--green);color:#fff}
 @media(max-width:820px){.langs{margin-inline-start:auto}}
 @media(max-width:440px){.nav .b-small{display:none}}
+
+/* what's new (bento) */
+.news{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:34px}
+.nw{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.nw h3{font-size:21px;font-weight:900;padding-inline-end:56px}.nw>p{margin:6px 0 0;color:var(--muted);font-size:15px}
+.nw .tag{position:absolute;top:20px;inset-inline-end:20px;font-size:12px;font-weight:800;color:var(--gold);border:1px solid currentColor;border-radius:99px;padding:1px 10px}
+.nw.w4{grid-column:span 4}.nw.w3{grid-column:span 3}.nw.w2{grid-column:span 2}
+.nw.ink{background:#17211C;border-color:#26322C;color:#EAF0EB}.nw.ink>p{color:#9DAAA1}
+.nw.grn{background:var(--green);border-color:var(--green);color:#fff}.nw.grn>p{color:#E3F4EA}.nw.grn .tag,.nw.ink .tag{color:#F2D9A8}
+.mini{margin-top:auto;padding-top:20px}
+.box{background:var(--screen);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:14px}
+.box .r{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}.box .r:last-child{border:0}
+.pl{font-size:12px;font-weight:800;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--green);white-space:nowrap}
+.pl.bad{background:#D9533B24;color:#D9533B}
+.whs{display:flex;gap:10px;align-items:stretch}
+.whs .box{flex:1}.whs b{display:block;font-size:13px;color:var(--muted);font-weight:700}.whs strong{font-size:26px;font-weight:900}
+.whs .ar{align-self:center;font-weight:900;color:var(--green);font-size:22px}
+[dir=ltr] .whs .ar{transform:scaleX(-1)}
+.cmp{display:flex;gap:14px;align-items:flex-end;height:116px}
+.cmp div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;text-align:center;font-size:13px;color:#9DAAA1}
+.cmp span{display:block;border-radius:10px 10px 4px 4px}
+.up{display:inline-block;margin-top:14px;background:#3DBA82;color:#0E1512;font-weight:900;border-radius:10px;padding:4px 10px;font-size:15px}
+.perm{display:grid;grid-template-columns:1fr auto auto;gap:7px 16px;align-items:center;font-size:14px;background:#ffffff1a;padding:14px;border-radius:16px}
+.perm i{font-style:normal;font-weight:800;color:#E3F4EA;font-size:12px}
+.ck{width:20px;height:20px;border-radius:6px;background:#fff;color:#1E8A5E;display:grid;place-items:center;font-weight:900;font-size:13px}
+.ck.off{background:transparent;border:1.5px solid #ffffff80;color:transparent}
+.ph{width:186px;margin-inline:auto;background:#17211C;border-radius:26px;padding:8px}
+.ph>div{background:var(--screen);border-radius:20px;padding:12px 14px;font-size:13px}
+.ph .big{font-size:26px;font-weight:900;color:var(--green);line-height:1.3}
+.devs{display:flex;gap:10px}
+.devs div{flex:1;border-radius:14px;padding:10px 12px;font-size:13.5px;font-weight:800;background:var(--screen);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.devs .no{background:#D9533B14;border-color:#D9533B55;color:#D9533B}
+@media(max-width:980px){.news{grid-template-columns:repeat(2,1fr)}.nw.w4,.nw.w3,.nw.w2{grid-column:span 1}.nw.w4{grid-column:span 2}}
+@media(max-width:640px){.news{grid-template-columns:1fr}.nw.w4{grid-column:auto}.whs{flex-wrap:wrap}.whs .ar{display:none}.whs .box{flex:1 1 40%}.whs .box:last-child{flex-basis:100%}.devs{flex-wrap:wrap}.devs div{flex:1 1 40%}.devs .no{flex-basis:100%}}
 </style>
 </head>
 <body>
@@ -386,6 +421,33 @@ footer{border-top:1px solid var(--line)}
       </ol>
     </div>
     <figure class="syncpic" style="margin:0"><img src="img/sync.jpg" width="720" height="1280" alt="لوحة التحكم على الحاسوب والصفحة الرئيسية على الهاتف بالأرقام نفسها" loading="lazy"></figure>
+  </div>
+</section>
+
+<section class="band" id="new" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">آخر التحديثات</span>
+      <h2>جديد في Amimar</h2>
+      <p class="lead">مستودعات وشيكات وأقساط ومستخدمون بصلاحيات، تعمل كلها على الحاسوب والهاتف معاً، بالبيانات نفسها.</p>
+    </div>
+    <div class="news">
+      <article class="nw w4"><span class="tag">جديد</span><h3>المستودعات</h3><p>اعرف كمية كل صنف في كل مستودع، وانقل البضاعة بينها، واجرد مستودعاً واحداً.</p>
+        <div class="mini whs" aria-hidden="true"><div class="box"><b>المستودع الرئيسي</b><strong>240</strong> قطعة</div><span class="ar">←</span><div class="box"><b>فرع السوق</b><strong>60</strong> قطعة</div><div class="box"><b>نقل TR-0012</b><span class="pl">20 قطعة · تمّ</span></div></div></article>
+      <article class="nw w2 ink"><span class="tag">جديد</span><h3>مقارنة الفترات</h3><p>هذا الشهر مقابل الماضي، جنباً إلى جنب.</p>
+        <div class="mini" aria-hidden="true"><div class="cmp"><div><span style="height:60px;background:#3A4A42"></span>الشهر الماضي</div><div><span style="height:96px;background:#3DBA82"></span>هذا الشهر</div></div><span class="up">▲ 34% مبيعات</span></div></article>
+      <article class="nw w2 grn"><span class="tag">جديد</span><h3>المستخدمون والصلاحيات</h3><p>لكل موظف دخوله، وأنت تحدّد ما يراه.</p>
+        <div class="mini" aria-hidden="true"><div class="perm"><i>القسم</i><i>يرى</i><i>يعدّل</i>
+          <span>المبيعات</span><span class="ck">✓</span><span class="ck">✓</span><span>المخزون</span><span class="ck">✓</span><span class="ck off">✓</span><span>الأرباح</span><span class="ck off">✓</span><span class="ck off">✓</span></div></div></article>
+      <article class="nw w2"><span class="tag">جديد</span><h3>الشيكات والأقساط</h3><p>مواعيد الاستحقاق، وتذكير العميل عبر واتساب.</p>
+        <div class="mini" aria-hidden="true"><div class="box"><div class="r"><span>شيك · أحمد</span><span class="pl">بعد 3 أيام</span></div><div class="r"><span>قسط 2 من 6</span><span class="pl bad">متأخر</span></div><div class="r"><span>شيك · مورّد</span><span class="pl">مدفوع</span></div></div></div></article>
+      <article class="nw w2"><span class="tag">جديد</span><h3>بوابة الموظف</h3><p>يرى الموظف من هاتفه راتبه ودوامه، ولا شيء غيره.</p>
+        <div class="mini" aria-hidden="true"><div class="ph"><div><b>راتبك حتى اليوم</b><div class="big">8,450</div><div class="box" style="border:0;padding:0;background:none"><div class="r"><span>أيام الدوام</span><b>22</b></div><div class="r"><span>السُّلف</span><b>1,000</b></div></div></div></div></div></article>
+      <article class="nw w3"><span class="tag">جديد</span><h3>حسابك محمي</h3><p>البريد الرئيسي يعمل على حاسوب واحد وهاتف واحد في الوقت نفسه، فلا يدخل أحد إلى حسابك من جهاز آخر.</p>
+        <div class="mini devs" aria-hidden="true"><div>💻 حاسوبك<span class="pl">مفتوح</span></div><div>📱 هاتفك<span class="pl">مفتوح</span></div><div class="no">📱 جهاز آخر<span>مرفوض</span></div></div></article>
+      <article class="nw w3"><span class="tag">جديد</span><h3>اسم البائع على الفاتورة</h3><p>كل فاتورة تُظهر من باعها، فتعرف أداء كل موظف.</p>
+        <div class="mini" aria-hidden="true"><div class="box"><div class="r"><span>فاتورة 1269</span><span>البائع: <b>سامر</b></span></div><div class="r"><span>فاتورة 1270</span><span>البائع: <b>ليلى</b></span></div></div></div></article>
+    </div>
   </div>
 </section>
 
@@ -534,9 +596,11 @@ footer{border-top:1px solid var(--line)}
     ['نقطة البيع', 'بيع سريع بالرمز الشريطي، بسعر التجزئة أو الجملة، مع حساب الباقي وإيصال بعرض 80 مم.', 'M10 14h20v14H10zM14 14v-4h12v4M15 20h10M15 24h6', 'جديد', 's'],
     ['الفواتير والمرتجعات', 'فواتير بيع ومرتجعات وسندات قبض ودفع، مع معاينة قبل المشاركة وبثلاث لغات.', 'M13 9h14v22l-3.5-2-3.5 2-3.5-2-3.5 2zM17 15h6M17 20h6', '', 's'],
     ['المخزون والجرد', 'أصناف بالرمز الشريطي، وجرد بكاميرا الهاتف، وتنبيه قبل نفاد أي صنف.', 'M10 15l10-5 10 5v11l-10 5-10-5zM10 15l10 5 10-5M20 20v11', '', 's'],
+    ['المستودعات', 'كمية كل صنف في كل مستودع، ونقل البضاعة بين المستودعات، وجرد مستودع واحد.', 'M8 18l12-8 12 8v12H8zM14 30v-8h12v8M14 26h12', 'جديد', 's'],
     ['واتساب', 'أرسل الفواتير وكشوف الحساب وتذكيرات الدفع لعملائك عبر واتساب بضغطة.', 'M20 10a10 10 0 0 0-8.7 15l-1.3 5 5.2-1.3A10 10 0 1 0 20 10zM16 17c0 4 3 7 7 7l1.5-1.5-2-1.5-1 1c-1.5-.5-2.5-1.5-3-3l1-1-1.5-2z', '', 's'],
     ['الديون والحسابات', 'حساب لكل عميل ومورّد، وكشف حساب، ودفعات جزئية، وقيود محاسبية كاملة.', 'M10 28V12M10 28h20M15 24v-5M20 24v-9M25 24v-7', '', 'f'],
     ['لوحة المؤشرات', 'المبيعات والتحصيل والأرباح وأفضل العملاء والأصناف، شهراً بشهر.', 'M11 29V19M17 29V13M23 29v-8M29 29V16', '', 'f'],
+    ['مقارنة الفترات', 'قارن مبيعاتك وأرباحك ومصاريفك بين شهرين أو سنتين أو أي فترتين تختارهما.', 'M10 29h20M13 29v-8h5v8M22 29V14h5v15', 'جديد', 'f'],
     ['الشيكات والأقساط', 'شيكات واردة وصادرة بمواعيد استحقاقها، وتقسيط دين العميل على دفعات مع تذكير عبر واتساب.', 'M9 13h22v14H9zM13 19h8M13 23h5M26 22l2 2 3-4', 'جديد', 'f'],
     ['تعدد العملات', 'بِع واشترِ بأي عملة وبسعر صرف تحدّده، وتُحسب الأرصدة والأرباح بعملة برنامجك.', 'M20 10a10 10 0 1 0 0 20a10 10 0 0 0 0-20zM23 16c-1-1-2-1.5-3-1.5c-2 0-3 1-3 2.5c0 3 6 2 6 5c0 1.5-1.2 2.5-3 2.5c-1.2 0-2.3-.5-3-1.5M20 12.5v2M20 25v2.5', '', 'f'],
     ['البصمة والدوام', 'ربط بجهاز البصمة: الحضور والتأخير والعمل الإضافي والعطل والاستراحات، محسوبة تلقائياً.', 'M14 26c0-6 2.5-10 6-10s6 4 6 10M17 28c0-5 1-8 3-8s3 3 3 8M11 20c1-6 4.5-9 9-9s8 3 9 9', '', 'h'],
