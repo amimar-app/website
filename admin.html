@@ -280,6 +280,14 @@ small.cu{color:var(--green)!important;font-weight:700}
 .mi.on{border-color:var(--ink)}
 .open{flex:1;min-height:120px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
 .acc{display:grid;grid-template-columns:minmax(0,1fr) 86px 96px;align-items:center;gap:8px;padding:9px 12px;border-top:1px solid var(--line);width:100%;background:none;border-inline:0;border-bottom:0;text-align:start;font:inherit;color:inherit}
+.cu{border-top:1px solid var(--line)}.cu:first-child{border-top:0}
+.cuh{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:10px;align-items:center;width:100%;padding:9px 12px;background:none;border:0;text-align:start;font:inherit;color:inherit}
+.cuh:hover,.cu.opened .cuh{background:var(--bg)}
+.cuh .nm b{display:block;font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cuh .nm small{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cul{font-size:11.5px;color:var(--muted);font-weight:700;margin:2px 0}.cul .bar8{height:6px;margin-top:2px}
+.cue{padding:8px 12px 12px;background:var(--bg)}
+.cue .ed{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.cue .ed b{min-width:52px;font-size:13px}
+.cue .ed input{width:90px;min-height:32px}
 .acc:hover{background:var(--bg)}.acc.sel{background:var(--sel)}
 .acc.head{position:sticky;top:0;z-index:1;background:var(--head);border-top:0;font-size:12px;font-weight:800;color:var(--muted);cursor:default}
 .acc .nm b{display:block;font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -839,8 +847,60 @@ small.cu{color:var(--green)!important;font-weight:700}
       }
       box.append(o);
     }
+    drawCloudUsers(box, searching);
   }
   $('q').addEventListener('input', drawGroups);
+
+  // ---- who uses the cloud: each one's data and photos against his limit, and changing the limit ----
+  let qOpen = ''; // the account whose limits are open
+  function drawCloudUsers(box, searching) {
+    const list = storeRows.map((sq) => ({ sq, r: rowOf(sq.email), used: Number(sq.data_used) + Number(sq.photos_used) }))
+      .filter((x) => x.used > 0 || x.sq.data_custom || x.sq.photos_custom).filter((x) => matches(x.r || { email: x.sq.email }))
+      .sort((a, b) => b.used - a.used);
+    const on = openG === 'cloud';
+    const m = el('button', 'mi' + (on ? ' on' : '')); m.type = 'button';
+    const dot = el('span', 'dot'); dot.style.background = 'var(--ink)';
+    m.append(dot, el('span', '', 'مستخدمو السحابة'), el('b', '', String(list.length)), el('span', 'ch', on ? '▾' : '◂'));
+    m.addEventListener('click', () => { openG = on ? '' : 'cloud'; drawGroups(); });
+    box.append(m);
+    if (!on) return;
+    const o = el('div', 'open');
+    if (!storeRows.length) o.append(el('div', 'empty', useErr || 'لا توجد بيانات مساحة بعد'));
+    else if (!list.length) o.append(el('div', 'empty', searching ? 'لا توجد نتائج' : 'لا أحد يستخدم السحابة بعد'));
+    for (const { sq, r } of list) {
+      const row = el('div', 'cu' + (qOpen === sq.email ? ' opened' : ''));
+      const head = el('button', 'cuh'); head.type = 'button';
+      const nm = el('div', 'nm'); nm.append(el('b', '', nameOf(r, sq.email)), el('small', '', r && r.business ? sq.email : (r ? STATE[r.state] : '')));
+      const bars = el('div', 'cub');
+      for (const kind of ['data', 'photos']) {
+        const pct = quotaPct(sq, kind);
+        const line = el('div', 'cul'); line.append(el('span', '', `${KINDQ[kind]} ${sizeTxt(Number(sq[kind + '_used']))} / ${mbTxt(Number(sq[kind + '_limit_mb']))}${sq[kind + '_custom'] ? ' ★' : ''}`));
+        const b = el('div', 'bar8' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')), i = el('i'); i.style.width = Math.max(1, Math.min(100, pct * 100)).toFixed(1) + '%'; b.append(i); line.append(b);
+        bars.append(line);
+      }
+      head.append(nm, bars);
+      head.addEventListener('click', () => { qOpen = qOpen === sq.email ? '' : sq.email; drawGroups(); });
+      row.append(head);
+      if (qOpen === sq.email) {
+        const ed = el('div', 'cue');
+        for (const kind of ['data', 'photos']) {
+          const mb = Number(sq[kind + '_limit_mb']), custom = sq[kind + '_custom'];
+          const line = el('div', 'ed');
+          const inp = el('input'); inp.type = 'number'; inp.min = '10'; inp.max = '102400'; inp.step = '1'; inp.value = String(mb); inp.setAttribute('inputmode', 'numeric'); inp.setAttribute('aria-label', `${KINDQ[kind]} بالميغابايت`);
+          line.append(el('b', '', KINDQ[kind]), inp, el('span', 'hint', 'MB'));
+          for (const v of [500, 1024, 2048, 5120]) { const pb = el('button', 'pre', mbTxt(v)); pb.type = 'button'; pb.addEventListener('click', () => { inp.value = String(v); }); line.append(pb); }
+          line.append(btn('b-green sm', 'حفظ', () => { const n = Number(inp.value); if (!Number.isInteger(n) || n < 10 || n > 102400) { toast('المساحة رقم صحيح من 10 إلى 102400 MB', false); return; } qOpen = sq.email; setStorage(sq.email, kind, n); }));
+          if (custom) line.append(btn('b-line sm', 'الافتراضي', () => { qOpen = sq.email; setStorage(sq.email, kind, null); }));
+          ed.append(line);
+        }
+        ed.append(el('p', 'hint tiny', 'الافتراضي 100 MB للتجربة و1 GB للمشترك لكل واحدة. ★ = حد خاص. عند الامتلاء يتوقف الإضافة فقط، ولا يُحذف شيء.'));
+        if (r) ed.append(btn('b-line sm', 'المساحة والتفاصيل', () => openDrawer(r, 'space')));
+        row.append(ed);
+      }
+      o.append(row);
+    }
+    box.append(o);
+  }
 
   // ---- the form: activate / extend one account ----
   function fillForm(r) {
