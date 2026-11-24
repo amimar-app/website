@@ -269,6 +269,10 @@ small.cu{color:var(--green)!important;font-weight:700}
 .side{display:flex;flex-direction:column;margin:0;overflow:hidden}
 .side .tot{font-size:13px;font-weight:800;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:1px 10px}
 .side input{margin-bottom:10px}
+.cnts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:10px}
+.cn{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 8px;text-align:center;min-width:0}
+.cn span{display:block;font-size:11.5px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cn b{display:block;font-size:19px;font-weight:900}
 .groups{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
 .mi{display:flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font:800 15px Tajawal,sans-serif;width:100%;text-align:start;flex:none}
 .mi .dot{width:10px;height:10px;border-radius:99px;flex:none}
@@ -361,6 +365,7 @@ small.cu{color:var(--green)!important;font-weight:700}
     <!-- right: the subscribers, one group open at a time (the page never gets long) -->
     <section class="card side">
       <div class="sh"><h2>المشتركون</h2><span class="tot" id="cTot"></span></div>
+      <div class="cnts" id="cnts"></div>
       <input id="q" type="search" placeholder="ابحث بالاسم أو البريد أو البلد">
       <div id="groups" class="groups"></div>
     </section>
@@ -787,7 +792,7 @@ small.cu{color:var(--green)!important;font-weight:700}
     ['trial', 'تجربة مجانية', (r) => r.state === 'trial', 'var(--gold)', 1],
     ['off', 'غير فعّال', (r) => r.state !== 'active' && r.state !== 'trial', 'var(--red)', -1],
   ];
-  let openG = 'active';   // the group open on the right
+  let openG = '';         // the group open on the right ('' = all closed)
   let sel = '';           // the account in the form ('' = none yet, or a new one typed by email)
   const empOf = (email) => { const c = counts.find((x) => low(x.email) === low(email)); return c ? Number(c.employees) : null; };
   const matches = (r) => { const q = $('q').value.trim().toLowerCase(); return !q || [r.email, r.business, r.country].some((v) => low(v).includes(q)); };
@@ -796,19 +801,24 @@ small.cu{color:var(--green)!important;font-weight:700}
 
   function drawGroups() {
     $('cTot').textContent = String(rows.length);
+    // the small summary: all, then each group
+    const cn = $('cnts'); cn.textContent = '';
+    for (const [name, n, color] of [['الكل', rows.length, 'var(--ink)'], ...GROUPS.map(([, gname, inG, c]) => [gname, rows.filter(inG).length, c])]) {
+      const d = el('div', 'cn'); const b = el('b', '', String(n)); b.style.color = color; d.append(el('span', '', name), b); cn.append(d);
+    }
     const box = $('groups'); box.textContent = '';
     const searching = $('q').value.trim().length > 0;
     const lists = GROUPS.map(([key, , inG, , dir]) => [key, rows.filter(inG).filter(matches)
       .sort((a, b) => String(a.ends || '9').localeCompare(String(b.ends || '9')) * dir)]);
     // searching: open the first group that has a match, if the open one has none
-    if (searching && !lists.find(([k]) => k === openG)[1].length) { const hit = lists.find(([, l]) => l.length); if (hit) openG = hit[0]; }
+    if (searching && !(lists.find(([k]) => k === openG) || [, []])[1].length) { const hit = lists.find(([, l]) => l.length); if (hit) openG = hit[0]; }
     for (const [key, name, inG, color] of GROUPS) {
       const list = lists.find(([k]) => k === key)[1];
       const on = key === openG;
       const m = el('button', 'mi' + (on ? ' on' : '')); m.type = 'button';
       const dot = el('span', 'dot'); dot.style.background = color;
       m.append(dot, el('span', '', name), el('b', '', searching ? `${list.length} / ${rows.filter(inG).length}` : String(list.length)), el('span', 'ch', on ? '▾' : '◂'));
-      m.addEventListener('click', () => { openG = key; drawGroups(); });
+      m.addEventListener('click', () => { openG = openG === key ? '' : key; drawGroups(); });
       box.append(m);
       if (!on) continue;
       const o = el('div', 'open');
