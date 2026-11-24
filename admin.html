@@ -146,6 +146,10 @@ label{display:block;font-weight:800;font-size:12.5px;color:var(--muted);margin:1
 .td.paid{color:var(--green);font-weight:800;direction:ltr;text-align:right}
 .none{color:var(--muted)}
 .count{font-size:13px;color:var(--muted);margin:0 0 8px}
+.grp-subs{margin-bottom:18px}
+.grp-subs .gh{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+.grp-subs h3{margin:0;font-size:16px;font-weight:900}
+.grp-subs .empty{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px}
 
 /* payments, space, staff lists (kept from the old page) */
 .earn{width:100%;border-collapse:collapse;font-size:14.5px}
@@ -189,11 +193,16 @@ small.cu{color:var(--green)!important;font-weight:700}
 .prices td:first-child,.prices th:first-child{width:36px;color:var(--muted)}
 .pnotes{margin:12px 0 0;padding-inline-start:20px;font-size:14px;color:var(--muted)}
 .pnotes li{margin:5px 0}.pnotes b{color:var(--ink)}
-.pricecard{}
+.subgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.pricebox{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;position:sticky;top:0}
+.pricebox .dsec{margin-top:0}
+.pricebox .earn{font-size:13.5px}.pricebox .earn th,.pricebox .earn td{padding:7px 4px}
+.pricebox .pnotes{font-size:12.5px;padding-inline-start:16px}
+@media(max-width:760px){.subgrid{grid-template-columns:minmax(0,1fr)}.pricebox{position:static}}
 
 /* subscriber panel */
 .scrim{position:fixed;inset:0;background:#0007;z-index:20}
-.drawer{position:fixed;top:0;bottom:0;inset-inline-end:0;width:min(470px,100vw);background:var(--card);z-index:21;display:flex;flex-direction:column;box-shadow:0 0 40px #0004;border-inline-start:1px solid var(--line)}
+.drawer{position:fixed;top:0;bottom:0;inset-inline-end:0;width:min(880px,100vw);background:var(--card);z-index:21;display:flex;flex-direction:column;box-shadow:0 0 40px #0004;border-inline-start:1px solid var(--line)}
 .dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center}
 .av{flex:none;width:42px;height:42px;border-radius:12px;background:var(--soft);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:18px}
 .dh .tx{flex:1;min-width:0}
@@ -297,7 +306,6 @@ small.cu{color:var(--green)!important;font-weight:700}
       <button class="nav" data-v="pays"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v.01M18 15v.01"/></svg>الدفعات</button>
       <button class="nav" data-v="space"><svg viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6A3.8 3.8 0 0 1 17.5 18.5z"/></svg>المساحة</button>
       <button class="nav" data-v="staff"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l2.5 2.5M15 8l2 2"/></svg>الموظفون</button>
-      <button class="nav" data-v="prices"><svg viewBox="0 0 24 24"><path d="M3 12.5V4a1 1 0 0 1 1-1h8.5L21 11.5 12.5 20z"/><circle cx="8" cy="8" r="1.4"/></svg>الأسعار</button>
     </nav>
     <div class="me"><b id="who"></b><button id="out">خروج</button></div>
   </div></header>
@@ -331,9 +339,8 @@ small.cu{color:var(--green)!important;font-weight:700}
         <select id="cf" aria-label="البلد"><option value="">كل البلدان</option></select>
         <select id="pf" aria-label="الباقة"><option value="">كل الباقات</option></select>
       </div>
-      <div class="stf" id="stf"></div>
       <div class="count" id="count"></div>
-      <div class="tbl" id="list"></div>
+      <div id="list"></div>
     </section>
 
     <section class="view" id="v-pays">
@@ -359,27 +366,6 @@ small.cu{color:var(--green)!important;font-weight:700}
         <div id="usersList"></div>
       </div>
     </section>
-    <section class="view" id="v-prices">
-      <div class="shead"><h2>الأسعار</h2><p id="sub-prices"></p></div>
-      <div class="card pricecard">
-        <table class="earn prices">
-          <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
-          <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
-          <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
-          <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
-          <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
-          <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
-          <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
-          <tr><td>+</td><td>مستخدم إضافي</td><td class="num">—</td><td class="num">$ 20</td></tr>
-        </table>
-        <ul class="pnotes">
-          <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
-          <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
-          <li><b>المستخدمون:</b> كل حساب دخول لموظف (بوابة الموظف أو مستخدم بصلاحيات) بـ 20$ في السنة، وهو منفصل عن عدد الموظفين في الباقة. تحدّد عددهم في «عدد المستخدمين» عند تفعيل اشتراك المشترك.</li>
-        </ul>
-      </div>
-    </section>
-
   </main>
 </div>
 
@@ -399,7 +385,8 @@ small.cu{color:var(--green)!important;font-weight:700}
     <button data-t="pays">الدفعات<em id="dPaysN"></em></button>
   </div>
   <div class="db">
-    <div id="t-sub">
+    <div id="t-sub" class="subgrid">
+    <div class="subform">
       <div class="kv" id="dKv"></div>
       <div id="fEmailBox">
         <label for="fEmail">بريد المشترك</label>
@@ -445,6 +432,25 @@ small.cu{color:var(--green)!important;font-weight:700}
         <button class="btn b-red" id="fCancel">إلغاء الاشتراك</button>
       </div>
       <div class="msg" id="fMsg"></div>
+    </div>
+    <aside class="pricebox">
+      <div class="dsec">الأسعار</div>
+        <table class="earn prices">
+          <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
+          <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
+          <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
+          <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
+          <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
+          <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
+          <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
+          <tr><td>+</td><td>مستخدم إضافي</td><td class="num">—</td><td class="num">$ 20</td></tr>
+        </table>
+        <ul class="pnotes">
+          <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
+          <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
+          <li><b>المستخدمون:</b> كل حساب دخول لموظف (بوابة الموظف أو مستخدم بصلاحيات) بـ 20$ في السنة، وهو منفصل عن عدد الموظفين في الباقة. تحدّد عددهم في «عدد المستخدمين» عند تفعيل اشتراك المشترك.</li>
+        </ul>
+    </aside>
     </div>
     <div id="t-users" class="hide"></div>
     <div id="t-space" class="hide"></div>
@@ -768,7 +774,7 @@ small.cu{color:var(--green)!important;font-weight:700}
   // views
   // =====================================================================
   const VIEWS = {
-    home: 'الرئيسية', subs: 'المشتركون', pays: 'الدفعات والأرباح', prices: 'الأسعار', space: 'المساحة في السحابة', staff: 'حسابات الموظفين',
+    home: 'الرئيسية', subs: 'المشتركون', pays: 'الدفعات والأرباح', space: 'المساحة في السحابة', staff: 'حسابات الموظفين',
   };
   let view = 'home';
   const viewFromHash = () => { const h = location.hash.slice(1); return VIEWS[h] ? h : 'home'; };
@@ -796,7 +802,6 @@ small.cu{color:var(--green)!important;font-weight:700}
     $('vSub').textContent = `${iso(d.toLocaleDateString('en-GB').replace(/\//g, '.'))}${loadedAt ? ' · آخر تحديث ' + iso(loadedAt.toTimeString().slice(0, 5)) : ''}`;
     $('sub-subs').textContent = `${rows.length} حساب · ${n('active')} فعّال · ${n('trial')} تجربة · ${n('expired') + n('canceled')} منتهٍ أو ملغى`;
     $('sub-pays').textContent = pays.length ? `${pays.length} دفعة مسجّلة` : '';
-    $('sub-prices').textContent = 'أسعار الباقات كما تظهر للمشتركين';
     const g = globalBars(); $('sub-space').textContent = `المجموع ${sizeTxt(g.db + g.files)} · الأكبر أولاً`;
     const t = staffRows.reduce((a, x) => a + (x.users || []).length, 0); $('sub-staff').textContent = `${t} حساب دخول لدى ${staffRows.length} مشترك`;
   }
@@ -919,35 +924,48 @@ small.cu{color:var(--green)!important;font-weight:700}
     return rows.filter((r) => stFn(r) && (!cv || (r.country || 'غير معروف') === cv) && (!pv || String(Number(r.plan_kind) || 0) === pv)
       && (!q || [r.email, r.business, r.country].some((v) => low(v).includes(q))));
   }
+  // three lists: on the free trial · active · ended (a trial or a subscription that ran out, or was cancelled)
+  const GROUPS = [
+    ['trial', 'في التجربة المجانية', (r) => r.state === 'trial', 't-trial'],
+    ['active', 'المفعّلون', (r) => r.state === 'active', 't-active'],
+    ['off', 'انتهى (التجربة أو الاشتراك)', (r) => r.state !== 'trial' && r.state !== 'active', 't-expired'],
+  ];
   function drawSubs() {
-    const sb = $('stf'); sb.textContent = '';
-    for (const [key, name, fn] of ST_F) {
-      const b = el('button', key === stF ? 'on' : '', name); b.type = 'button'; b.append(el('em', '', String(rows.filter(fn).length)));
-      b.addEventListener('click', () => { stF = key; drawSubs(); }); sb.append(b);
-    }
     const box = $('list'); box.textContent = '';
     const shown = filtered();
     $('count').textContent = rows.length && shown.length !== rows.length ? `يظهر ${shown.length} من ${rows.length}` : '';
-    if (!shown.length) { box.append(el('div', 'empty', rows.length ? 'لا توجد نتائج' : 'لا يوجد مشتركون بعد')); return; }
-    const h = el('div', 'th');
-    for (const [t, c] of [['المشترك', ''], ['البلد', 'c-country'], ['الباقة', ''], ['الحالة', ''], ['ينتهي', ''], ['المستخدمون', ''], ['المساحة', 'c-space'], ['المدفوع', '']]) h.append(el('div', 'td ' + c, t));
-    box.append(h);
-    for (const r of shown) {
-      const k = el('button', 'tr' + (dr && low(dr.email) === low(r.email) ? ' sel' : '')); k.type = 'button';
-      const nm = el('div', 'td nm'); nm.append(el('b', r.business ? '' : 'mail', r.business || r.email || '—')); if (r.business) nm.append(el('small', 'mail', r.email));
-      const td = (cls, lb, text, tcls) => { const d = el('div', 'td ' + cls); if (lb) d.append(el('span', 'lb', lb)); d.append(el('span', tcls || '', text)); d.title = text; return d; };
-      const end = el('div', 'td end' + (soon(r) ? ' soon' : ''));
-      if (r.ends) { end.append(el('span', '', iso(r.ends))); end.append(el('small', soon(r) ? 'soon' : '', left(r))); } else end.append(el('span', 'none', '—'));
-      const us = staffOf(r.email), un = us ? (us.users || []).length : 0, seats = us ? us.seats || 0 : 0;
-      const ut = td('c-users', 'المستخدمون', un || seats ? `${un} / ${seats}` : '—', un > seats ? 'soon' : (un || seats ? '' : 'none'));
-      const u = usageOf(r.email), tot = u ? Number(u.db_bytes) + Number(u.file_bytes) : 0;
-      const st = el('div', 'td c-st'); st.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state));
-      const p = paidOf(r);
-      k.append(nm, td('c-country', '', r.country || '—', r.country ? '' : 'none'), td('c-plan', '', PLAN[r.plan_kind] || PLAN[0]), st, end, ut,
-        td('c-space', '', tot ? sizeTxt(tot) : '—', tot ? '' : 'none'), td('paid', '', p || '—', p ? '' : 'none'));
-      k.addEventListener('click', () => openDrawer(r, 'sub'));
-      box.append(k);
+    if (!rows.length) { box.append(el('div', 'empty', 'لا يوجد مشتركون بعد')); return; }
+    for (const [, title, inG, tag] of GROUPS) {
+      // the ones ending soonest first (the trials and subscriptions about to run out; the most recently ended)
+      const list = shown.filter(inG).sort((a, b) => String(a.ends || '9').localeCompare(String(b.ends || '9')) * (inG({ state: 'expired' }) ? -1 : 1));
+      const g = el('div', 'grp-subs');
+      const h = el('div', 'gh'); h.append(el('h3', '', title), el('span', 'tag ' + tag, String(list.length)));
+      g.append(h);
+      if (!list.length) { g.append(el('div', 'empty', 'لا أحد')); box.append(g); continue; }
+      const tb = el('div', 'tbl');
+      const hd = el('div', 'th');
+      for (const [t, c] of [['المشترك', ''], ['البلد', 'c-country'], ['الباقة', ''], ['الحالة', ''], ['ينتهي', ''], ['المستخدمون', ''], ['المساحة', 'c-space'], ['المدفوع', '']]) hd.append(el('div', 'td ' + c, t));
+      tb.append(hd);
+      for (const r of list) tb.append(subRow(r));
+      g.append(tb);
+      box.append(g);
     }
+  }
+  function subRow(r) {
+    const k = el('button', 'tr' + (dr && low(dr.email) === low(r.email) ? ' sel' : '')); k.type = 'button';
+    const nm = el('div', 'td nm'); nm.append(el('b', r.business ? '' : 'mail', r.business || r.email || '—')); if (r.business) nm.append(el('small', 'mail', r.email));
+    const td = (cls, lb, text, tcls) => { const d = el('div', 'td ' + cls); if (lb) d.append(el('span', 'lb', lb)); d.append(el('span', tcls || '', text)); d.title = text; return d; };
+    const end = el('div', 'td end' + (soon(r) ? ' soon' : ''));
+    if (r.ends) { end.append(el('span', '', iso(r.ends))); end.append(el('small', soon(r) ? 'soon' : '', left(r))); } else end.append(el('span', 'none', '—'));
+    const us = staffOf(r.email), un = us ? (us.users || []).length : 0, seats = us ? us.seats || 0 : 0;
+    const ut = td('c-users', 'المستخدمون', un || seats ? `${un} / ${seats}` : '—', un > seats ? 'soon' : (un || seats ? '' : 'none'));
+    const u = usageOf(r.email), tot = u ? Number(u.db_bytes) + Number(u.file_bytes) : 0;
+    const st = el('div', 'td c-st'); st.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state));
+    const p = paidOf(r);
+    k.append(nm, td('c-country', '', r.country || '—', r.country ? '' : 'none'), td('c-plan', '', PLAN[r.plan_kind] || PLAN[0]), st, end, ut,
+      td('c-space', '', tot ? sizeTxt(tot) : '—', tot ? '' : 'none'), td('paid', '', p || '—', p ? '' : 'none'));
+    k.addEventListener('click', () => openDrawer(r, 'sub'));
+    return k;
   }
   $('cf').addEventListener('change', drawSubs);
   $('pf').addEventListener('change', drawSubs);
