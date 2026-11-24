@@ -140,6 +140,14 @@ button:disabled{opacity:.55;cursor:default}
 .spc .warn{display:flex;align-items:center;justify-content:center;min-height:34px;padding:0 12px;border-radius:12px;border:1.5px solid var(--green);color:var(--green);font:800 13.5px Tajawal,sans-serif;text-decoration:none;white-space:nowrap}
 .spc button{min-height:34px;padding:0 12px;font-size:13.5px;white-space:nowrap}
 .spc .nobtn{min-width:92px}
+.qbar{display:block;height:7px;border-radius:99px;background:var(--bg);border:1px solid var(--line);overflow:hidden;margin-top:5px;max-width:220px}
+.qbar span{display:block;height:100%;background:var(--green);border-radius:99px}
+.qbar.warnq span{background:var(--gold)}.qbar.full span{background:var(--red)}
+.spc .q small.cu{color:var(--green);font-weight:700}
+.qed{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
+.qed input{width:110px;min-height:36px}
+.qed .pre{min-height:32px;padding:0 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);font:700 13px Tajawal,sans-serif;cursor:pointer;color:var(--ink)}
+.qed .hint{margin:0;flex-basis:100%}
 .bars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:4px}
 .bar{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px}
 .bar b{font-size:17px;direction:ltr;display:inline-block}
@@ -433,6 +441,8 @@ button:disabled{opacity:.55;cursor:default}
     drawEarnings();
     try { usage = await rpc('amimar_admin_usage') || []; useErr = ''; }
     catch (e) { usage = []; useErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v23 في Supabase لتفعيل قسم المساحة' : e.message; }
+    try { storeRows = await rpc('amimar_admin_storage') || []; }
+    catch (e) { storeRows = []; }
     drawSpace();
     try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
     catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
@@ -554,7 +564,13 @@ button:disabled{opacity:.55;cursor:default}
   });
 
   // ---- cloud space per subscriber, and freeing an ended subscription's space ----
-  let usage = [], useErr = '';
+  let usage = [], useErr = '', storeRows = [], openQ = '';
+  const storeOf = (email) => storeRows.find((x) => (x.email || '').toLowerCase() === (email || '').toLowerCase()) || null;
+  const mbTxt = (mb) => '\u2066' + (mb >= 1024 ? `${(mb / 1024).toFixed(mb % 1024 ? 1 : 0)} GB` : `${mb} MB`) + '\u2069';
+  async function setStorage(email, mb) {
+    try { await rpc('amimar_admin_set_storage', { p_email: email, p_mb: mb }); openQ = ''; show($('sMsg'), mb == null ? `رجعت مساحة ${email} للافتراضي` : `صارت مساحة ${email}: ${mbTxt(mb)}`, true); await load(); }
+    catch (e) { show($('sMsg'), /SQL/.test(e.message) ? 'شغّل ملف SQL v26 في Supabase أولاً' : /bad storage/.test(e.message) ? 'المساحة من 10 MB إلى 100 GB' : e.message, false); }
+  }
   const sizeTxt = (b) => '\u2066' + (b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : b >= 1024 ? `${Math.round(b / 1024)} KB` : b > 0 ? `${b} B` : '0') + '\u2069';
   const agoTxt = (d) => d <= 0 ? 'انتهى اليوم' : d === 1 ? 'انتهى منذ يوم' : d === 2 ? 'انتهى منذ يومين' : d <= 10 ? `انتهى منذ ${d} أيام` : `انتهى منذ ${d} يوماً`;
   async function storageFetch(path, init) {
@@ -619,6 +635,14 @@ button:disabled{opacity:.55;cursor:default}
       const d = el('div', 'spc');
       const who = r && r.business ? cell('who', '', r.business, u.em, '', 'mail') : cell('who', '', u.em || '—', '', 'mail');
       const sz = cell('', '', sizeTxt(total), `بيانات ${sizeTxt(Number(u.db_bytes))} · صور ونسخ ${sizeTxt(Number(u.file_bytes))}`, 'sz');
+      const sq = storeOf(u.em);
+      if (sq) {
+        // the files limit: photos and backups (the database rows are not counted in it)
+        const used = Number(sq.used_bytes), cap = Number(sq.limit_mb) * 1048576, pct = cap ? used / cap : 0;
+        sz.classList.add('q');
+        sz.append(el('small', sq.custom ? 'cu' : '', `الصور والنسخ ${sizeTxt(used)} من ${mbTxt(Number(sq.limit_mb))}${sq.custom ? ' · مساحة خاصة' : ''}`));
+        const qb = el('i', 'qbar' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')); const f = el('span'); f.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; qb.append(f); sz.append(qb);
+      }
       const rowsC = cell('', '', `${Number(u.db_rows).toLocaleString('en-US')} سطر`, `${Number(u.file_count)} ملف`);
       const st = el('div', 'c st');
       st.append(el('span', 'tag t-' + state, STATE[state] || state));
@@ -629,8 +653,11 @@ button:disabled{opacity:.55;cursor:default}
       const sinceWarn = warned ? Math.floor((Date.now() - warned.getTime()) / 86400000) : -1;
       if (warned) st.append(el('small', sinceWarn >= 30 ? 'soon' : '', sinceWarn <= 0 ? 'نُبّه اليوم' : `نُبّه منذ ${sinceWarn} يوماً`));
       d.classList.toggle('old', ended && (sinceWarn >= 30 || (!warned && days >= 180)));
+      const qbtn = el('button', 'b-line', 'المساحة'); qbtn.type = 'button';
+      qbtn.addEventListener('click', () => { openQ = openQ === u.em ? '' : u.em; drawSpace(); });
       if (ended && u.em !== session.email) {
         const acts = el('div', 'acts');
+        acts.append(qbtn);
         if (days >= 150 && u.em) {
           const w = el('a', 'warn', warned ? 'إعادة التنبيه' : 'إرسال تنبيه'); w.href = warnMail(u, r, u.ended_at);
           w.addEventListener('click', () => { setTimeout(async () => { try { await rpc('amimar_admin_mark_warned', { p_email: u.em }); await load(); } catch (e) { show($('sMsg'), e.message, false); } }, 400); });
@@ -649,7 +676,19 @@ button:disabled{opacity:.55;cursor:default}
           } catch (e) { show($('sMsg'), e.message, false); del.disabled = false; del.textContent = 'حذف بياناته'; }
         });
         acts.append(del); d.append(acts);
-      } else d.append(el('span', 'nobtn'));
+      } else { const acts = el('div', 'acts'); acts.append(qbtn); d.append(acts); }
+      if (openQ && openQ === u.em && sq) {
+        const ed = el('div', 'qed');
+        const inp = el('input'); inp.type = 'number'; inp.min = '10'; inp.max = '102400'; inp.step = '1'; inp.value = String(sq.limit_mb); inp.setAttribute('inputmode', 'numeric');
+        ed.append(el('b', '', 'المساحة (MB):'), inp);
+        for (const mb of [500, 1024, 2048, 5120, 10240]) { const pbt = el('button', 'pre', mbTxt(mb)); pbt.type = 'button'; pbt.addEventListener('click', () => { inp.value = String(mb); }); ed.append(pbt); }
+        const save = el('button', 'b-green', 'حفظ'); save.type = 'button';
+        save.addEventListener('click', () => { const n = Number(inp.value); if (!Number.isInteger(n) || n < 10 || n > 102400) { show($('sMsg'), 'المساحة رقم صحيح من 10 إلى 102400 MB', false); return; } setStorage(u.em, n); });
+        ed.append(save);
+        if (sq.custom) { const back = el('button', 'b-line', 'الافتراضي'); back.type = 'button'; back.addEventListener('click', () => setStorage(u.em, null)); ed.append(back); }
+        ed.append(el('p', 'hint', 'الافتراضي: 100 MB للتجربة، و2 GB للمشترك. المساحة للصور والنسخ الاحتياطية؛ عند امتلائها يتوقف رفع الصور والنسخ الجديدة فقط، ولا يُحذف شيء.'));
+        d.append(ed);
+      }
       list.appendChild(d);
     }
   }
