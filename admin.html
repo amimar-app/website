@@ -258,6 +258,60 @@ small.cu{color:var(--green)!important;font-weight:700}
   .f3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.f3>div:first-child{grid-column:1/-1}
 }
 
+
+/* one screen: subscribers on the right, activation / cloud / profits in the middle; nothing makes the page long */
+#app:not(.hide){height:100vh;display:flex;flex-direction:column}
+.layout{flex:1;min-height:0;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px;max-width:1400px;margin:0 auto;padding:16px 20px}
+.layout>*{min-height:0}
+.card .sh{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.card .sh h2{margin:0;font-size:18px;font-weight:900}
+.card .sh .lnk{margin-inline-start:auto;font-size:13px;color:var(--green);font-weight:800;background:none;border:0;padding:0}
+.side{display:flex;flex-direction:column;margin:0;overflow:hidden}
+.side .tot{font-size:13px;font-weight:800;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:1px 10px}
+.side input{margin-bottom:10px}
+.groups{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
+.mi{display:flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font:800 15px Tajawal,sans-serif;width:100%;text-align:start;flex:none}
+.mi .dot{width:10px;height:10px;border-radius:99px;flex:none}
+.mi b{margin-inline-start:auto;font-size:17px}.mi .ch{color:var(--muted);font-size:12px;width:14px;text-align:center}
+.mi.on{border-color:var(--ink)}
+.open{flex:1;min-height:120px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.acc{display:grid;grid-template-columns:minmax(0,1fr) 86px 96px;align-items:center;gap:8px;padding:9px 12px;border-top:1px solid var(--line);width:100%;background:none;border-inline:0;border-bottom:0;text-align:start;font:inherit;color:inherit}
+.acc:hover{background:var(--bg)}.acc.sel{background:var(--sel)}
+.acc.head{position:sticky;top:0;z-index:1;background:var(--head);border-top:0;font-size:12px;font-weight:800;color:var(--muted);cursor:default}
+.acc .nm b{display:block;font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc .nm small{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc .nm small.soon{color:var(--red)}
+.acc .n{text-align:center;font-weight:900;font-size:15px}
+.acc .n.bad{color:var(--red)}.acc .n.none{color:var(--muted);font-weight:600}
+.mid{display:flex;flex-direction:column;gap:12px;overflow:auto;padding-bottom:4px}
+.mid .card{margin:0}
+.actgrid{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px;align-items:start}
+.actform label{margin-top:8px}
+.kvs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.kvs>div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 9px;min-width:0}
+.kvs span{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
+.kvs b{display:block;font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hint.tiny{font-size:12px;margin:6px 0 8px;line-height:1.5}
+.dsec small{font-weight:700;color:var(--muted);font-size:11.5px;margin-inline-start:6px}
+.pricebox .earn td{padding:5px 2px}.pricebox .prices td:first-child{width:auto;color:var(--ink)}
+.actform input,.actform select{min-height:38px}.actform label{margin:6px 0 3px}
+.actform .sum{margin:8px 0 2px;padding:7px 10px}
+.actform .dacts{margin-top:8px}.actform .dacts .btn{min-height:36px;padding:0 12px}
+.row2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px}
+.profit{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.profit small{display:block;color:var(--muted);font-size:12.5px;font-weight:700}
+.profit b{display:block;font-size:22px;font-weight:900;color:var(--green);direction:ltr;text-align:right}
+.topbar .me button{margin-inline-start:6px}
+.drawer{width:min(520px,100vw)}
+@media(max-width:1100px){.actgrid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:560px){.row2{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:860px){
+  #app:not(.hide){height:auto;display:block}
+  .layout{grid-template-columns:minmax(0,1fr);padding:12px}
+  .mid{overflow:visible;order:-1}
+  .side{max-height:none}.open{max-height:60vh;flex:none}
+  .acc{grid-template-columns:minmax(0,1fr) 70px 78px}
+}
 </style>
 </head>
 <body>
@@ -300,102 +354,31 @@ small.cu{color:var(--green)!important;font-weight:700}
       <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
       <div><b>Amimar</b><small>لوحة الإدارة</small></div>
     </div>
-    <nav class="navs">
-      <button class="nav" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>الملخص</button>
-      <button class="nav" data-v="subs"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg>المشتركون<span class="ct" id="nSubs"></span></button>
-      <button class="nav" data-v="pays"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v.01M18 15v.01"/></svg>الدفعات</button>
-      <button class="nav" data-v="space"><svg viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6A3.8 3.8 0 0 1 17.5 18.5z"/></svg>المساحة</button>
-      <button class="nav" data-v="staff"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l2.5 2.5M15 8l2 2"/></svg>الموظفون</button>
-    </nav>
-    <div class="me"><b id="who"></b><button id="out">خروج</button></div>
+    <div class="me"><b id="who"></b><button id="reload">↻ تحديث</button><button id="out">خروج</button></div>
   </div></header>
 
-  <main class="main">
-    <div class="top">
-      <div><h1>لوحة الإدارة</h1><p id="vSub"></p></div>
-      <div class="sp">
-        <button class="btn b-line" id="reload">↻ تحديث</button>
-        <button class="btn b-green" id="newSub">＋ تفعيل اشتراك</button>
-      </div>
-    </div>
-
-    <section class="view" id="v-home">
-      <div class="shead"><h2>الملخص</h2><p id="sub-home"></p></div>
-      <div class="kpis" id="kpis"></div>
-      <div class="cols">
-        <div class="card"><h3>الفعّالون واستهلاكهم <span class="chip" id="actN"></span></h3><div id="actList"></div></div>
-        <div class="card"><h3>الدخل آخر 6 أشهر <button class="lnk" data-go="pays">كل الدفعات ↓</button></h3><div class="curs" id="curs"></div><div class="chart" id="chart"></div></div>
-      </div>
-      <div class="cols">
-        <div class="card"><h3>آخر الدفعات</h3><div id="lastPays"></div></div>
-        <div class="card"><h3>السحابة <button class="lnk" data-go="space">التفاصيل ↓</button></h3><div id="homeCloud"></div></div>
-      </div>
+  <div class="layout">
+    <!-- right: the subscribers, one group open at a time (the page never gets long) -->
+    <section class="card side">
+      <div class="sh"><h2>المشتركون</h2><span class="tot" id="cTot"></span></div>
+      <input id="q" type="search" placeholder="ابحث بالاسم أو البريد أو البلد">
+      <div id="groups" class="groups"></div>
     </section>
 
-    <section class="view" id="v-subs">
-      <div class="shead"><h2>المشتركون</h2><p id="sub-subs"></p></div>
-      <div class="filters">
-        <input id="q" type="search" placeholder="ابحث بالبريد أو اسم العمل أو البلد">
-        <select id="cf" aria-label="البلد"><option value="">كل البلدان</option></select>
-        <select id="pf" aria-label="الباقة"><option value="">كل الباقات</option></select>
-      </div>
-      <div class="count" id="count"></div>
-      <div id="list"></div>
-    </section>
-
-    <section class="view" id="v-pays">
-      <div class="shead"><h2>الدفعات والأرباح</h2><p id="sub-pays"></p></div>
-      <div class="card"><h3>الأرباح</h3><div id="earnSum"></div></div>
-      <div class="card"><h3>الدفعات</h3><div class="pays" id="payList"></div></div>
-    </section>
-
-    <section class="view" id="v-space">
-      <div class="shead"><h2>المساحة في السحابة</h2><p id="sub-space"></p></div>
-      <div class="card">
-        <div id="spaceSum"></div>
-        <p class="hint">من انتهى اشتراكه تبقى بياناته في السحابة حتى يجدّد. بعد 5 أشهر يظهر زر «إرسال تنبيه» يفتح رسالة جاهزة له، وبعد شهر من التنبيه يمكنك حذف بياناته لتوفير المساحة؛ يبقى حسابه وسجلّ اشتراكه ودفعاته، وتبقى بياناته على حاسوبه وتُرفع من جديد إن جدّد. لتغيير مساحة مشترك اضغط «إدارة».</p>
-        <div class="pays" id="spaceList"></div>
-      </div>
-    </section>
-
-    <section class="view" id="v-staff">
-      <div class="shead"><h2>حسابات الموظفين</h2><p id="sub-staff"></p></div>
-      <div class="card">
-        <div id="usersSum"></div>
-        <p class="hint">لكل مشترك: عدد المستخدمين المدفوعين، ونوع كل حساب، وآخر دخول. «خارج العدد» يعني أن المشترك أضاف أكثر من العدد المدفوع (بعد تخفيضه)، فهذا الحساب موقوف حتى ترفع العدد. اضغط على المشترك لتغيير العدد.</p>
-        <div id="usersList"></div>
-      </div>
-    </section>
-  </main>
-</div>
-
-<!-- one subscriber: everything about him in one panel -->
-<div class="scrim hide" id="scrim"></div>
-<aside class="drawer hide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dName">
-  <div class="dh">
-    <div class="av" id="dAv"></div>
-    <div class="tx"><b id="dName"></b><small id="dMail"></small></div>
-    <span id="dTag"></span>
-    <button class="x" id="dClose" aria-label="إغلاق">✕</button>
-  </div>
-  <div class="tabs" id="dTabs">
-    <button data-t="sub">الاشتراك</button>
-    <button data-t="users">المستخدمون<em id="dUsersN"></em></button>
-    <button data-t="space">المساحة</button>
-    <button data-t="pays">الدفعات<em id="dPaysN"></em></button>
-  </div>
-  <div class="db">
-    <div id="t-sub" class="subgrid">
-    <div class="subform">
-      <div class="kv" id="dKv"></div>
+    <!-- middle: activation with the prices, the cloud and the profits — always in view -->
+    <div class="mid">
+      <section class="card">
+        <div class="sh"><h2 id="fTitle">تفعيل اشتراك</h2><span id="fTag"></span><button class="lnk" id="fNew">＋ حساب آخر</button></div>
+        <div class="kvs hide" id="dKv"></div>
+        <div class="actgrid">
+          <div class="actform">
       <div id="fEmailBox">
         <label for="fEmail">بريد المشترك</label>
         <input id="fEmail" type="email" list="emails" placeholder="name@example.com" autocomplete="off">
         <datalist id="emails"></datalist>
-        <p class="hint">يجب أن يكون المشترك قد سجّل في Amimar أولاً. اختر بريده من القائمة.</p>
+        
       </div>
-      <div class="dsec" id="fHead">تمديد أو تعديل الاشتراك</div>
-      <div class="f2">
+            <div class="f2">
         <div><label for="fPlan">الباقة</label>
           <select id="fPlan">
             <option value="6">المتكامل</option>
@@ -424,36 +407,62 @@ small.cu{color:var(--green)!important;font-weight:700}
         <div><label for="fCur">العملة</label><select id="fCur"><option value="TRY">ليرة ₺</option><option value="USD">دولار $</option><option value="EUR">يورو €</option></select></div>
       </div>
       <div class="sum"><span>المبلغ المقترح</span><div id="fSugg">—</div></div>
-      <p class="hint">إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. إذا كتبت المبلغ المدفوع، يُسجَّل مع التفعيل في الدفعات. عدد المستخدمين: حسابات الدخول لموظفي المشترك، كل حساب بـ 20$ في السنة.</p>
+      <p class="hint tiny">إذا كان الاشتراك سارياً تُضاف المدة إلى نهايته، والمبلغ المدفوع يُسجَّل في الأرباح.</p>
       <div class="dacts">
         <button class="btn b-green" id="fGo">تفعيل</button>
         <button class="btn b-line" id="fSaveCountry">حفظ البلد فقط</button>
         <button class="btn b-line" id="fSaveUsers">حفظ عدد المستخدمين</button>
         <button class="btn b-red" id="fCancel">إلغاء الاشتراك</button>
+        <button class="btn b-line" id="fMore">المساحة والتفاصيل</button>
       </div>
       <div class="msg" id="fMsg"></div>
+          </div>
+          <aside class="pricebox">
+            <div class="dsec">الأسعار <small>شهري · سنوي</small></div>
+            <table class="earn prices">
+              <tr><td>الحضور والانصراف</td><td class="num">$5 · $50</td></tr>
+              <tr><td>الرواتب</td><td class="num">$7 · $70</td></tr>
+              <tr><td>الموظفين الكاملة</td><td class="num">$9 · $90</td></tr>
+              <tr><td>المبيعات</td><td class="num">$10 · $100</td></tr>
+              <tr><td>المبيعات والرواتب</td><td class="num">$15 · $150</td></tr>
+              <tr class="hl"><td>المتكامل</td><td class="num">$20 · $200</td></tr>
+              <tr><td>مستخدم إضافي</td><td class="num">— · $20</td></tr>
+            </table>
+            <p class="hint tiny">كل 10 موظفين فوق الـ 10 بـ $20. المحاسبة الكاملة في «المتكامل» فقط. المستخدم = حساب دخول لموظف، منفصل عن عدد الموظفين.</p>
+          </aside>
+        </div>
+      </section>
+      <div class="row2">
+      <section class="card">
+        <div class="sh"><h2>السحابة</h2><button class="lnk" id="measure">إعادة القياس</button></div>
+        <div id="cloud"></div>
+      </section>
+      <section class="card">
+        <div class="sh"><h2>الأرباح</h2></div>
+        <div class="profit"><small id="profitSince"></small><b id="profit">—</b><button class="btn b-line sm" id="profitReset">مسح وبدء من اليوم</button></div>
+      </section>
+      </div>
     </div>
-    <aside class="pricebox">
-      <div class="dsec">الأسعار</div>
-        <table class="earn prices">
-          <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
-          <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
-          <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
-          <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
-          <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
-          <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
-          <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
-          <tr><td>+</td><td>مستخدم إضافي</td><td class="num">—</td><td class="num">$ 20</td></tr>
-        </table>
-        <ul class="pnotes">
-          <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
-          <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
-          <li><b>المستخدمون:</b> كل حساب دخول لموظف (بوابة الموظف أو مستخدم بصلاحيات) بـ 20$ في السنة، وهو منفصل عن عدد الموظفين في الباقة. تحدّد عددهم في «عدد المستخدمين» عند تفعيل اشتراك المشترك.</li>
-        </ul>
-    </aside>
-    </div>
+  </div>
+</div>
+
+<!-- one subscriber's details: users, space, payments -->
+<div class="scrim hide" id="scrim"></div>
+<aside class="drawer hide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dName">
+  <div class="dh">
+    <div class="av" id="dAv"></div>
+    <div class="tx"><b id="dName"></b><small id="dMail"></small></div>
+    <span id="dTag"></span>
+    <button class="x" id="dClose" aria-label="إغلاق">✕</button>
+  </div>
+  <div class="tabs" id="dTabs">
+    <button data-t="space">المساحة</button>
+    <button data-t="users">المستخدمون<em id="dUsersN"></em></button>
+    <button data-t="pays">الدفعات<em id="dPaysN"></em></button>
+  </div>
+  <div class="db">
+    <div id="t-space"></div>
     <div id="t-users" class="hide"></div>
-    <div id="t-space" class="hide"></div>
     <div id="t-pays" class="hide"></div>
   </div>
 </aside>
@@ -543,7 +552,6 @@ small.cu{color:var(--green)!important;font-weight:700}
       $('who').textContent = session.email || '';
       if (aal() !== 'aal2') { await startMfa(); return; }
       $('mfaBox').classList.add('hide'); $('gate').classList.add('hide'); $('app').classList.remove('hide');
-      go(viewFromHash(), true);
       await load();
     } catch (e) { signOut(); show($('lMsg'), e.message, false); }
   }
@@ -592,7 +600,7 @@ small.cu{color:var(--green)!important;font-weight:700}
   $('mfaBack').addEventListener('click', signOut);
 
   // ---- data ----
-  let loading = false;
+  let loading = false, counts = [], profitSince = null, profitOk = false;
   async function load() {
     if (loading) return; loading = true; $('reload').disabled = true;
     try {
@@ -604,11 +612,12 @@ small.cu{color:var(--green)!important;font-weight:700}
       catch (e) { usage = []; useErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v23 في Supabase لتفعيل قسم المساحة' : e.message; }
       try { storeRows = await rpc('amimar_admin_storage') || []; }
       catch (e) { storeRows = []; }
+      try { counts = await rpc('amimar_admin_counts') || []; } catch (e) { counts = []; }
+      try { profitSince = await rpc('amimar_admin_profit_since'); profitOk = true; } catch (e) { profitSince = null; profitOk = false; }
       try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
       catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
       pays = [...pays].sort((a, b) => String(b.paid_at).localeCompare(String(a.paid_at)));
       loadedAt = new Date();
-      fillFilters();
       const dl = $('emails'); dl.textContent = '';
       rows.forEach((r) => { const o = document.createElement('option'); o.value = r.email || ''; dl.appendChild(o); });
       renderAll();
@@ -771,387 +780,179 @@ small.cu{color:var(--green)!important;font-weight:700}
   }
 
   // =====================================================================
-  // views
+  // the page: subscribers on the right, the form / cloud / profits in the middle
   // =====================================================================
-  const VIEWS = {
-    home: 'الرئيسية', subs: 'المشتركون', pays: 'الدفعات والأرباح', space: 'المساحة في السحابة', staff: 'حسابات الموظفين',
-  };
-  let view = 'home';
-  const viewFromHash = () => { const h = location.hash.slice(1); return VIEWS[h] ? h : 'home'; };
-  function go(v, quiet) {
-    if (!VIEWS[v]) v = 'home';
-    view = v;
-    document.querySelectorAll('.nav').forEach((n) => n.classList.toggle('on', n.dataset.v === v));
-    if (location.hash.slice(1) !== v) history.replaceState(null, '', '#' + v);
-    if (!quiet || v !== 'home') $('v-' + v).scrollIntoView({ behavior: quiet ? 'auto' : 'smooth', block: 'start' });
-  }
-  document.querySelectorAll('.nav').forEach((n) => n.addEventListener('click', () => go(n.dataset.v)));
-  document.querySelectorAll('[data-go]').forEach((n) => n.addEventListener('click', () => go(n.dataset.go)));
-  window.addEventListener('hashchange', () => { if (!$('app').classList.contains('hide')) go(viewFromHash()); });
-  // the section on screen is lit in the bar
-  if ('IntersectionObserver' in window) {
-    const seen = new IntersectionObserver((es) => {
-      for (const e of es) if (e.isIntersecting) { const v = e.target.id.slice(2); view = v; document.querySelectorAll('.nav').forEach((n) => n.classList.toggle('on', n.dataset.v === v)); }
-    }, { rootMargin: '-80px 0px -65% 0px' });
-    for (const k of Object.keys(VIEWS)) seen.observe($('v-' + k));
-  }
+  const GROUPS = [
+    ['active', 'فعّال', (r) => r.state === 'active', 'var(--green)', 1],
+    ['trial', 'تجربة مجانية', (r) => r.state === 'trial', 'var(--gold)', 1],
+    ['off', 'غير فعّال', (r) => r.state !== 'active' && r.state !== 'trial', 'var(--red)', -1],
+  ];
+  let openG = 'active';   // the group open on the right
+  let sel = '';           // the account in the form ('' = none yet, or a new one typed by email)
+  const empOf = (email) => { const c = counts.find((x) => low(x.email) === low(email)); return c ? Number(c.employees) : null; };
+  const matches = (r) => { const q = $('q').value.trim().toLowerCase(); return !q || [r.email, r.business, r.country].some((v) => low(v).includes(q)); };
 
-  const n = (s) => rows.filter((r) => r.state === s).length;
-  function subtitle() {
-    const d = new Date();
-    $('vSub').textContent = `${iso(d.toLocaleDateString('en-GB').replace(/\//g, '.'))}${loadedAt ? ' · آخر تحديث ' + iso(loadedAt.toTimeString().slice(0, 5)) : ''}`;
-    $('sub-subs').textContent = `${rows.length} حساب · ${n('active')} فعّال · ${n('trial')} تجربة · ${n('expired') + n('canceled')} منتهٍ أو ملغى`;
-    $('sub-pays').textContent = pays.length ? `${pays.length} دفعة مسجّلة` : '';
-    const g = globalBars(); $('sub-space').textContent = `المجموع ${sizeTxt(g.db + g.files)} · الأكبر أولاً`;
-    const t = staffRows.reduce((a, x) => a + (x.users || []).length, 0); $('sub-staff').textContent = `${t} حساب دخول لدى ${staffRows.length} مشترك`;
-  }
+  function renderAll() { drawGroups(); drawCloud(); drawProfit(); drawForm(); if (dr) drawDrawer(); }
 
-  function renderAll() {
-    drawHome(); drawSubs(); drawEarnings(); drawSpace(); drawUsers();
-    $('nSubs').textContent = rows.length || '';
-    subtitle();
-    if (dr) drawDrawer();
-  }
-
-  // ---- home ----
-  let chartCur = '';
-  function drawHome() {
-    // numbers at the top
-    const k = $('kpis'); k.textContent = '';
-    const kpi = (label, value, sub, color, small) => { const d = el('div', 'kpi'); d.append(el('span', '', label)); const b = el('b', small ? 'sm' : '', value); if (color) b.style.color = color; b.title = value; d.append(b, el('small', '', sub)); k.append(d); };
-    const trialsSoon = rows.filter((r) => r.state === 'trial' && soon(r)).length;
-    const now = new Date(), y = now.getFullYear(), m = now.getMonth(), lm = new Date(y, m - 1, 1);
-    const inMonth = (p, yy, mm) => { const d = new Date(p.paid_at); return d.getFullYear() === yy && d.getMonth() === mm; };
-    const thisM = sumTxt(pays.filter((p) => inMonth(p, y, m))), lastM = sumTxt(pays.filter((p) => inMonth(p, lm.getFullYear(), lm.getMonth())));
-    const g = globalBars();
-    kpi('مشتركون فعّالون', String(n('active')), `من أصل ${rows.length} حساب`, 'var(--green)');
-    kpi('في التجربة', String(n('trial')), trialsSoon ? `${trialsSoon} تنتهي خلال 7 أيام` : 'لا تجربة تنتهي قريباً', 'var(--gold)');
-    kpi('دخل هذا الشهر', thisM || '0', `الشهر الماضي: ${lastM ? '⁦' + lastM + '⁩' : '0'}`, 'var(--green)', thisM.length > 12);
-    // the server's two spaces, each with how full it is
-    for (const [label, used, cp, capTxt] of [['مساحة البيانات', g.db, SERVER_DB, SERVER_DB_TXT], ['مساحة الصور', g.files, SERVER_FILES, SERVER_FILES_TXT]]) {
-      const pct = cp ? used / cp : 0;
-      const d = el('div', 'kpi');
-      d.append(el('span', '', label));
-      const b = el('b', '', sizeTxt(used)); d.append(b);
-      const bar = el('div', 'bar8' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')), fi = el('i'); fi.style.width = Math.max(1, Math.min(100, pct * 100)).toFixed(1) + '%'; bar.append(fi);
-      bar.style.margin = '6px 0 4px';
-      d.append(bar, el('small', '', `${iso(Math.round(pct * 1000) / 10 + '%')} من ${iso(capTxt)}`));
-      k.append(d);
-    }
-
-    // every active subscriber and what he uses (data and photos against his own limit), the biggest first
-    const list = $('actList'); list.textContent = '';
-    const act = rows.filter((r) => r.state === 'active').map((r) => {
-      const sq = storeOf(r.email), u = usageOf(r.email);
-      const used = sq ? Number(sq.data_used) + Number(sq.photos_used) : u ? Number(u.db_bytes) + Number(u.file_bytes) : 0;
-      return { r, sq, used };
-    }).sort((a, b) => b.used - a.used);
-    $('actN').textContent = String(act.length);
-    if (!act.length) list.append(el('div', 'empty', 'لا يوجد مشترك فعّال بعد'));
-    for (const { r, sq, used } of act) {
-      const d = el('div', 'act');
-      const head = el('div', 'ah'), tx = el('div', 'tx');
-      tx.append(el('b', '', nameOf(r)), el('small', '', `${PLAN[r.plan_kind] || PLAN[0]} · ${left(r)}`));
-      head.append(tx, el('span', 'num', sizeTxt(used)));
-      d.append(head);
-      if (sq) for (const kind of ['data', 'photos']) {
-        const pct = quotaPct(sq, kind);
-        d.append(meter(KINDQ[kind], `${sizeTxt(Number(sq[kind + '_used']))} من ${mbTxt(Number(sq[kind + '_limit_mb']))}`, pct));
+  function drawGroups() {
+    $('cTot').textContent = String(rows.length);
+    const box = $('groups'); box.textContent = '';
+    const searching = $('q').value.trim().length > 0;
+    const lists = GROUPS.map(([key, , inG, , dir]) => [key, rows.filter(inG).filter(matches)
+      .sort((a, b) => String(a.ends || '9').localeCompare(String(b.ends || '9')) * dir)]);
+    // searching: open the first group that has a match, if the open one has none
+    if (searching && !lists.find(([k]) => k === openG)[1].length) { const hit = lists.find(([, l]) => l.length); if (hit) openG = hit[0]; }
+    for (const [key, name, inG, color] of GROUPS) {
+      const list = lists.find(([k]) => k === key)[1];
+      const on = key === openG;
+      const m = el('button', 'mi' + (on ? ' on' : '')); m.type = 'button';
+      const dot = el('span', 'dot'); dot.style.background = color;
+      m.append(dot, el('span', '', name), el('b', '', searching ? `${list.length} / ${rows.filter(inG).length}` : String(list.length)), el('span', 'ch', on ? '▾' : '◂'));
+      m.addEventListener('click', () => { openG = key; drawGroups(); });
+      box.append(m);
+      if (!on) continue;
+      const o = el('div', 'open');
+      const h = el('div', 'acc head'); h.append(el('span', '', 'الحساب'), el('span', 'n', 'الموظفون'), el('span', 'n', 'المستخدمون'));
+      o.append(h);
+      if (!list.length) o.append(el('div', 'empty', searching ? 'لا توجد نتائج' : 'لا أحد'));
+      for (const r of list) {
+        const k = el('button', 'acc' + (low(r.email) === low(sel) ? ' sel' : '')); k.type = 'button';
+        const nm = el('div', 'nm'); nm.append(el('b', r.business ? '' : 'mail', r.business || r.email || '—'));
+        nm.append(el('small', soon(r) ? 'soon' : '', [r.business ? r.email : '', r.ends ? `${iso(r.ends)} · ${left(r)}` : ''].filter(Boolean).join(' · ')));
+        const e = empOf(r.email);
+        const us = staffOf(r.email), un = us ? (us.users || []).length : 0, seats = us ? us.seats || 0 : 0;
+        k.append(nm, el('span', 'n' + (e == null ? ' none' : ''), e == null ? '—' : String(e)),
+          el('span', 'n' + (un > seats ? ' bad' : un || seats ? '' : ' none'), un || seats ? `${un} / ${seats}` : '0'));
+        k.title = r.email || '';
+        k.addEventListener('click', () => selectAccount(r));
+        o.append(k);
       }
-      d.addEventListener('click', () => openDrawer(r, 'space'));
-      list.append(d);
+      box.append(o);
     }
-
-    // income chart, one currency at a time
-    const curs = [...new Set(pays.map((p) => p.currency))].sort((a, b) => paysCount(b) - paysCount(a));
-    function paysCount(c) { return pays.filter((p) => p.currency === c).length; }
-    if (!curs.includes(chartCur)) chartCur = curs[0] || '';
-    const cb = $('curs'); cb.textContent = '';
-    if (curs.length > 1) for (const c of curs) { const b = el('button', c === chartCur ? 'on' : '', CURNAME[c] || c); b.type = 'button'; b.addEventListener('click', () => { chartCur = c; drawHome(); }); cb.append(b); }
-    const ch = $('chart'); ch.textContent = '';
-    if (payErr) { ch.append(el('div', 'empty', payErr)); }
-    else if (!pays.length) { ch.append(el('div', 'empty', 'لم تُسجَّل أي دفعة بعد')); }
-    else {
-      const months = []; for (let i = 5; i >= 0; i--) { const d = new Date(y, m - i, 1); months.push([d.getFullYear(), d.getMonth()]); }
-      const vals = months.map(([yy, mm]) => pays.filter((p) => p.currency === chartCur && inMonth(p, yy, mm)).reduce((a, p) => a + Number(p.amount), 0));
-      const max = Math.max(...vals, 1);
-      months.forEach(([yy, mm], i) => {
-        const c = el('div', i === 5 ? 'cur' : ''); const bar = el('i'); bar.style.height = Math.round(vals[i] / max * 100) + 'px';
-        c.append(el('em', '', vals[i] ? money(vals[i], chartCur) : ''), bar, el('span', '', iso(`${mm + 1}/${String(yy).slice(2)}`)));
-        ch.append(c);
-      });
-    }
-
-    // last payments
-    const lp = $('lastPays'); lp.textContent = '';
-    if (!pays.length) lp.append(el('div', 'empty', payErr || 'لا دفعات بعد'));
-    for (const p of pays.slice(0, 5)) {
-      const d = el('div', 'lp'), tx = el('div', 'tx');
-      tx.append(el('b', '', `${p.business || p.email} · ${PLAN[p.plan_kind] || '—'}${p.months ? ' ' + monthsTxt(p.months) : ''}`), el('small', '', iso(String(p.paid_at).slice(0, 10))));
-      d.append(tx, el('span', 'num', money(p.amount, p.currency)));
-      const r = rowOf(p.email); if (r) { d.style.cursor = 'pointer'; d.addEventListener('click', () => openDrawer(r, 'pays')); }
-      lp.append(d);
-    }
-
-    // cloud meters
-    const hc = $('homeCloud'); hc.textContent = '';
-    if (useErr) { hc.append(el('div', 'empty', useErr)); return; }
-    for (const [name, used, cp, capTxt] of globalBars().list) hc.append(meter(name, `${sizeTxt(used)} من ${iso(capTxt)}`, used / cp));
-    const big = usage.map((u) => ({ u, t: Number(u.db_bytes) + Number(u.file_bytes) })).filter((x) => x.t > 0).sort((a, b) => b.t - a.t)[0];
-    if (big) hc.append(el('p', 'hint', `الأكبر: ${nameOf(rowOf(big.u.em), big.u.em)} · ${sizeTxt(big.t).replace(/[⁦⁩]/g, '')}`));
   }
+  $('q').addEventListener('input', drawGroups);
+
+  // ---- the form: activate / extend one account ----
+  function fillForm(r) {
+    const email = (r && r.email) || '';
+    $('fEmail').value = email;
+    $('fPlan').value = String(r && r.plan_kind && PLAN[r.plan_kind] ? r.plan_kind : 6);
+    $('fMonths').value = '12';
+    $('fEmp').value = String((r && r.max_employees) || 0);
+    $('fUsers').value = String(staffOf(email)?.seats || 0);
+    $('fCountry').value = r ? codeOf(r.country) : '';
+    $('fAmount').value = '';
+    $('fMsg').className = 'msg'; resetCancel(); suggest();
+  }
+  function selectAccount(r) {
+    sel = r.email || '';
+    fillForm(r); drawForm(); drawGroups();
+    if (window.innerWidth <= 860) $('fTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function newAccount() { sel = ''; fillForm(null); drawForm(); drawGroups(); $('fEmail').focus(); }
+  $('fNew').addEventListener('click', newAccount);
+  // typing / picking a known email fills in what we know about him
+  $('fEmail').addEventListener('change', () => { const r = rowOf($('fEmail').value.trim()); if (r && low(r.email) !== low(sel)) selectAccount(r); });
+
+  function drawForm() {
+    const r = sel ? rowOf(sel) : null;
+    $('fTitle').textContent = r ? nameOf(r) : 'تفعيل اشتراك';
+    const tag = $('fTag'); tag.textContent = ''; if (r) tag.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state));
+    $('fNew').classList.toggle('hide', !r);
+    $('fEmailBox').classList.toggle('hide', !!r);
+    const kv = $('dKv'); kv.textContent = ''; kv.classList.toggle('hide', !r);
+    if (r) {
+      const us = staffOf(r.email), e = empOf(r.email);
+      const add = (k, v, cls) => { const d = el('div'); d.append(el('span', '', k), el('b', cls || '', v)); d.title = v; kv.append(d); };
+      add('الباقة', PLAN[r.plan_kind] || PLAN[0]);
+      add('ينتهي', r.ends ? `${iso(r.ends)} · ${left(r)}` : '—', soon(r) ? 'soon' : '');
+      add('مجموع المدفوع', paidOf(r) || '—');
+      add('الموظفون', `${e == null ? '—' : e} · الحد ${empTxt(r.max_employees)}`);
+      add('المستخدمون', us ? `${(us.users || []).length} من ${us.seats || 0}` : '0');
+      add('البريد', r.email, 'mail');
+    }
+    $('fGo').textContent = r && r.state === 'active' ? 'تمديد' : 'تفعيل';
+    $('fCancel').classList.toggle('hide', !r || !live(r));
+    for (const id of ['fSaveCountry', 'fSaveUsers', 'fMore']) $(id).classList.toggle('hide', !r);
+  }
+  $('fMore').addEventListener('click', () => { const r = sel ? rowOf(sel) : null; if (r) openDrawer(r, 'space'); });
+
+  // ---- the cloud: the server's two spaces, each with how full it is ----
+  function drawCloud() {
+    const c = $('cloud'); c.textContent = '';
+    if (useErr) { c.append(el('div', 'empty', useErr)); return; }
+    const g = globalBars();
+    for (const [name, used, cp, capTxt] of [['البيانات', g.db, SERVER_DB, SERVER_DB_TXT], ['الصور', g.files, SERVER_FILES, SERVER_FILES_TXT]]) c.append(meter(name, `${sizeTxt(used)} من ${iso(capTxt)} · ${iso(Math.round((cp ? used / cp : 0) * 1000) / 10 + '%')}`, cp ? used / cp : 0));
+    const meas = storeRows.map((x) => x.measured_at).filter(Boolean).sort().slice(-1)[0];
+    $('measure').title = meas ? `حجم السجلات يُقاس كل ساعة · آخر قياس ${new Date(meas).toLocaleString('en-GB', { hour12: false }).slice(0, 17)}` : 'حجم السجلات يُقاس كل ساعة';
+  }
+  $('measure').addEventListener('click', async () => {
+    $('measure').disabled = true;
+    try { await rpc('amimar_admin_measure'); await load(); toast('تم قياس البيانات الآن ✓', true); } catch (e) { toast(e.message, false); } finally { $('measure').disabled = false; }
+  });
   function meter(name, txt, pct) {
     const d = el('div', 'meter'), t = el('div', 't'); t.append(el('b', '', name), el('span', '', txt));
-    const b = el('div', 'bar8' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')), i = el('i'); i.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; b.append(i);
+    const b = el('div', 'bar8' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')), i = el('i'); i.style.width = Math.max(1, Math.min(100, pct * 100)).toFixed(1) + '%'; b.append(i);
     d.append(t, b); return d;
   }
 
-  // ---- subscribers ----
-  let stF = '';
-  const ST_F = [['', 'الكل', () => true], ['active', 'فعّال', (r) => r.state === 'active'], ['trial', 'تجربة', (r) => r.state === 'trial'],
-    ['off', 'منتهٍ أو ملغى', (r) => r.state === 'expired' || r.state === 'canceled'], ['soon', 'ينتهي قريباً', soon]];
-  function fillFilters() {
-    const cf = $('cf'), keepC = cf.value; cf.length = 1;
-    [...new Set(rows.map((r) => r.country || 'غير معروف'))].sort().forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
-    cf.value = [...cf.options].some((o) => o.value === keepC) ? keepC : '';
-    const pf = $('pf'), keepP = pf.value; pf.length = 1;
-    [...new Set(rows.map((r) => Number(r.plan_kind) || 0))].sort().forEach((k) => { const o = document.createElement('option'); o.value = String(k); o.textContent = PLAN[k] || PLAN[0]; pf.appendChild(o); });
-    pf.value = [...pf.options].some((o) => o.value === keepP) ? keepP : '';
+  // ---- profits: one figure, from a date the admin chooses by clearing (no payment is deleted) ----
+  function drawProfit() {
+    if (payErr) { $('profitSince').textContent = 'الأرباح'; $('profit').textContent = '—'; $('profitReset').classList.add('hide'); return; }
+    const from = profitSince ? String(profitSince).slice(0, 10) : '';
+    const ps = from ? pays.filter((p) => String(p.paid_at).slice(0, 10) >= from) : pays;
+    $('profitSince').textContent = from ? `الأرباح منذ ${iso(from.split('-').reverse().join('.'))} · ${ps.length} دفعة` : `كل الأرباح · ${ps.length} دفعة`;
+    $('profit').textContent = sumTxt(ps) || '0';
+    $('profitReset').classList.toggle('hide', !profitOk);
   }
-  function filtered() {
-    const q = $('q').value.trim().toLowerCase(), cv = $('cf').value, pv = $('pf').value;
-    const stFn = (ST_F.find((s) => s[0] === stF) || ST_F[0])[2];
-    return rows.filter((r) => stFn(r) && (!cv || (r.country || 'غير معروف') === cv) && (!pv || String(Number(r.plan_kind) || 0) === pv)
-      && (!q || [r.email, r.business, r.country].some((v) => low(v).includes(q))));
-  }
-  // three lists: on the free trial · active · ended (a trial or a subscription that ran out, or was cancelled)
-  const GROUPS = [
-    ['trial', 'في التجربة المجانية', (r) => r.state === 'trial', 't-trial'],
-    ['active', 'المفعّلون', (r) => r.state === 'active', 't-active'],
-    ['off', 'انتهى (التجربة أو الاشتراك)', (r) => r.state !== 'trial' && r.state !== 'active', 't-expired'],
-  ];
-  function drawSubs() {
-    const box = $('list'); box.textContent = '';
-    const shown = filtered();
-    $('count').textContent = rows.length && shown.length !== rows.length ? `يظهر ${shown.length} من ${rows.length}` : '';
-    if (!rows.length) { box.append(el('div', 'empty', 'لا يوجد مشتركون بعد')); return; }
-    for (const [, title, inG, tag] of GROUPS) {
-      // the ones ending soonest first (the trials and subscriptions about to run out; the most recently ended)
-      const list = shown.filter(inG).sort((a, b) => String(a.ends || '9').localeCompare(String(b.ends || '9')) * (inG({ state: 'expired' }) ? -1 : 1));
-      const g = el('div', 'grp-subs');
-      const h = el('div', 'gh'); h.append(el('h3', '', title), el('span', 'tag ' + tag, String(list.length)));
-      g.append(h);
-      if (!list.length) { g.append(el('div', 'empty', 'لا أحد')); box.append(g); continue; }
-      const tb = el('div', 'tbl');
-      const hd = el('div', 'th');
-      for (const [t, c] of [['المشترك', ''], ['البلد', 'c-country'], ['الباقة', ''], ['الحالة', ''], ['ينتهي', ''], ['المستخدمون', ''], ['المساحة', 'c-space'], ['المدفوع', '']]) hd.append(el('div', 'td ' + c, t));
-      tb.append(hd);
-      for (const r of list) tb.append(subRow(r));
-      g.append(tb);
-      box.append(g);
-    }
-  }
-  function subRow(r) {
-    const k = el('button', 'tr' + (dr && low(dr.email) === low(r.email) ? ' sel' : '')); k.type = 'button';
-    const nm = el('div', 'td nm'); nm.append(el('b', r.business ? '' : 'mail', r.business || r.email || '—')); if (r.business) nm.append(el('small', 'mail', r.email));
-    const td = (cls, lb, text, tcls) => { const d = el('div', 'td ' + cls); if (lb) d.append(el('span', 'lb', lb)); d.append(el('span', tcls || '', text)); d.title = text; return d; };
-    const end = el('div', 'td end' + (soon(r) ? ' soon' : ''));
-    if (r.ends) { end.append(el('span', '', iso(r.ends))); end.append(el('small', soon(r) ? 'soon' : '', left(r))); } else end.append(el('span', 'none', '—'));
-    const us = staffOf(r.email), un = us ? (us.users || []).length : 0, seats = us ? us.seats || 0 : 0;
-    const ut = td('c-users', 'المستخدمون', un || seats ? `${un} / ${seats}` : '—', un > seats ? 'soon' : (un || seats ? '' : 'none'));
-    const u = usageOf(r.email), tot = u ? Number(u.db_bytes) + Number(u.file_bytes) : 0;
-    const st = el('div', 'td c-st'); st.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state));
-    const p = paidOf(r);
-    k.append(nm, td('c-country', '', r.country || '—', r.country ? '' : 'none'), td('c-plan', '', PLAN[r.plan_kind] || PLAN[0]), st, end, ut,
-      td('c-space', '', tot ? sizeTxt(tot) : '—', tot ? '' : 'none'), td('paid', '', p || '—', p ? '' : 'none'));
-    k.addEventListener('click', () => openDrawer(r, 'sub'));
-    return k;
-  }
-  $('cf').addEventListener('change', drawSubs);
-  $('pf').addEventListener('change', drawSubs);
-  $('q').addEventListener('input', drawSubs);
-
-  // ---- payments and earnings ----
-  function drawEarnings() {
-    const sum = $('earnSum'), list = $('payList');
-    sum.textContent = ''; list.textContent = '';
-    if (payErr) { sum.append(el('div', 'empty', payErr)); list.classList.add('hide'); return; }
-    const now = new Date(), y = now.getFullYear(), m = now.getMonth();
-    const periods = [
-      ['هذا الشهر', (d) => d.getFullYear() === y && d.getMonth() === m, true],
-      ['الشهر الماضي', (d) => { const lm = new Date(y, m - 1, 1); return d.getFullYear() === lm.getFullYear() && d.getMonth() === lm.getMonth(); }],
-      ['هذه السنة', (d) => d.getFullYear() === y],
-      ['الكل', () => true],
-    ];
-    const curs = [...new Set(pays.map((p) => p.currency))];
-    if (!curs.length) sum.append(el('div', 'empty', 'لم تُسجَّل أي دفعة بعد. اكتب المبلغ عند تفعيل اشتراك المشترك.'));
-    else {
-      const t = el('table', 'earn');
-      const hr = t.insertRow(); hr.append(el('th', '', 'الفترة'));
-      curs.forEach((c) => hr.append(el('th', '', CURNAME[c] || c)));
-      hr.append(el('th', '', 'الدفعات'));
-      for (const [name, inP, hl] of periods) {
-        const tr = t.insertRow(); if (hl) tr.className = 'hl';
-        const ps = pays.filter((p) => inP(new Date(p.paid_at)));
-        tr.insertCell().textContent = name;
-        curs.forEach((c) => { const td = tr.insertCell(); td.className = 'num'; td.textContent = money(ps.filter((p) => p.currency === c).reduce((a, p) => a + Number(p.amount), 0), c); });
-        const tdn = tr.insertCell(); tdn.className = 'num'; tdn.textContent = ps.length;
-      }
-      sum.append(t);
-    }
-    list.classList.toggle('hide', !pays.length);
-    for (const p of pays.slice(0, 100)) list.append(payRow(p));
-  }
-
-  // ---- space ----
-  function drawSpace() {
-    const sum = $('spaceSum'), list = $('spaceList');
-    sum.textContent = ''; list.textContent = ''; list.classList.add('hide');
-    if (useErr) { sum.append(el('div', 'empty', useErr)); return; }
-    const bars = el('div', 'bars');
-    for (const [name, used, cap, capTxt] of globalBars().list) {
-      const b = el('div', 'bar'); b.append(el('div', '', name), el('b', '', sizeTxt(used)), el('span', '', `من ${iso(capTxt)} في الخطة المجانية`));
-      const i = el('i'); const f = el('span'); f.style.width = Math.min(100, used / cap * 100).toFixed(1) + '%'; if (used / cap > 0.8) f.style.background = 'var(--red)'; i.append(f); b.append(i); bars.append(b);
-    }
-    sum.append(bars);
-    if (storeRows.length) {
-      const meas = storeRows.map((x) => x.measured_at).filter(Boolean).sort().slice(-1)[0];
-      const mrow = el('div', 'mrow');
-      const mb = btn('b-line sm', 'إعادة قياس البيانات');
-      mb.addEventListener('click', async () => { mb.disabled = true; try { await rpc('amimar_admin_measure'); await load(); toast('تم قياس البيانات الآن ✓', true); } catch (e) { toast(e.message, false); } finally { mb.disabled = false; } });
-      mrow.append(el('p', 'hint', meas ? `حجم السجلات يُقاس كل ساعة · آخر قياس ${iso(new Date(meas).toLocaleString('en-GB', { hour12: false }).slice(0, 17))}` : 'حجم السجلات يُقاس كل ساعة'), mb);
-      sum.append(mrow);
-    }
-    const items = usage.map((u) => ({ u, r: rowOf(u.em), total: Number(u.db_bytes) + Number(u.file_bytes) }))
-      .filter((x) => x.total > 0).sort((a, b) => b.total - a.total);
-    if (!items.length) return;
-    list.classList.remove('hide');
-    for (const { u, r, total } of items.slice(0, 50)) {
-      const info = endInfo(u, r);
-      const d = el('div', 'spc');
-      const who = r && r.business ? cell('who', '', r.business, u.em, '', 'mail') : cell('who', '', u.em || '—', '', 'mail');
-      const sz = cell('', '', sizeTxt(total), `بيانات ${sizeTxt(Number(u.db_bytes))} · صور ونسخ ${sizeTxt(Number(u.file_bytes))}`, 'sz');
-      const sq = storeOf(u.em);
-      if (sq) {
-        for (const kind of ['data', 'photos']) {
-          const pct = quotaPct(sq, kind), custom = sq[kind + '_custom'];
-          sz.append(el('small', custom ? 'cu' : '', `${KINDQ[kind]} ${sizeTxt(Number(sq[kind + '_used']))} من ${mbTxt(Number(sq[kind + '_limit_mb']))}${custom ? ' · خاصة' : ''}`));
-          const qb = el('i', 'qbar' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')); const f = el('span'); f.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; qb.append(f); sz.append(qb);
-        }
-      }
-      const rowsC = cell('', '', `${Number(u.db_rows).toLocaleString('en-US')} سطر`, `${Number(u.file_count)} ملف`);
-      const st = el('div', 'c st');
-      st.append(el('span', 'tag t-' + info.state, STATE[info.state] || info.state));
-      if (info.ended && u.ended_at) st.append(el('small', info.days >= 150 ? 'soon' : '', agoTxt(info.days)));
-      if (info.warned) st.append(el('small', info.sinceWarn >= 30 ? 'soon' : '', info.sinceWarn <= 0 ? 'نُبّه اليوم' : `نُبّه منذ ${info.sinceWarn} يوماً`));
-      d.classList.toggle('old', info.ended && (info.sinceWarn >= 30 || (!info.warned && info.days >= 180)));
-      const acts = el('div', 'acts');
-      acts.append(btn('b-line sm', 'إدارة', () => openDrawer(r || { email: u.em }, 'space')));
-      if (info.ended && !isSelf(u.em)) {
-        if (info.days >= 150 && u.em) acts.append(warnLink(u, r, info));
-        acts.append(wipeButton(u, info));
-      }
-      d.append(who, sz, rowsC, st, acts);
-      list.append(d);
-    }
-  }
-
-  // ---- staff accounts ----
-  function drawUsers() {
-    const box = $('usersList'), sum = $('usersSum'); box.textContent = ''; sum.textContent = '';
-    if (staffErr) { box.append(el('div', 'empty', staffErr)); return; }
-    const total = staffRows.reduce((a, x) => a + (x.users || []).length, 0), seats = staffRows.reduce((a, x) => a + (x.seats || 0), 0);
-    const bars = el('div', 'bars');
-    for (const [name, v, sub] of [['حسابات الدخول', total, `من ${seats} مدفوع`], ['مشتركون لديهم مستخدمون', staffRows.length, `من ${rows.length} حساب`]]) {
-      const b = el('div', 'bar'); b.append(el('div', '', name), el('b', '', String(v)), el('span', '', sub)); bars.append(b);
-    }
-    sum.append(bars);
-    if (!staffRows.length) { box.append(el('div', 'empty', 'لا يوجد مشترك لديه مستخدمون بعد')); return; }
-    for (const x of staffRows) {
-      const r = rowOf(x.email);
-      const b = el('button', 'ub'); b.type = 'button';
-      const h = el('div', 'uh'), nm = el('div');
-      nm.append(el('b', '', nameOf(r, x.email))); if (r && r.business) nm.append(el('small', '', ' ' + x.email));
-      const users = x.users || [];
-      h.append(nm, el('span', 'chip' + (users.length > x.seats ? ' u-bad' : ' u-ok'), `${users.length} من ${x.seats}`));
-      b.append(h);
-      if (users.length) b.append(userList(users)); else b.append(el('p', 'hint', 'لم يضف أي مستخدم بعد'));
-      b.addEventListener('click', () => openDrawer(r || { email: x.email }, 'users'));
-      box.append(b);
-    }
-  }
+  let armedP = null;
+  $('profitReset').addEventListener('click', async () => {
+    const b = $('profitReset');
+    if (!armedP) { b.classList.add('sure'); b.textContent = 'اضغط مرة أخرى للتأكيد'; armedP = setTimeout(() => { armedP = null; b.classList.remove('sure'); b.textContent = 'مسح وبدء من اليوم'; }, 5000); return; }
+    clearTimeout(armedP); armedP = null; b.classList.remove('sure'); b.textContent = 'مسح وبدء من اليوم';
+    const d = new Date(), today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    try { await rpc('amimar_admin_set_profit_since', { p_date: today }); await load(); toast('بدأ حساب الأرباح من اليوم ✓', true); }
+    catch (e) { toast(e.message, false); }
+  });
 
   // =====================================================================
-  // one subscriber's panel
+  // one subscriber's details: space, users, payments
   // =====================================================================
-  let dr = null; // { email, tab } — email '' means a new activation by email
+  let dr = null; // { email, tab }
   let lastFocus = null;
   function openDrawer(r, tab) {
+    if (!r || !r.email) return;
+    if (tab === 'sub') { selectAccount(r); return; }
     lastFocus = document.activeElement;
-    const email = (r && r.email) || '';
-    dr = { email, tab: tab || 'sub' };
-    $('fEmail').value = email;
-    const real = rowOf(email);
-    $('fPlan').value = String(real && real.plan_kind && PLAN[real.plan_kind] ? real.plan_kind : 6);
-    $('fMonths').value = '12';
-    $('fEmp').value = String((real && real.max_employees) || 0);
-    $('fUsers').value = String(staffOf(email)?.seats || 0);
-    $('fCountry').value = real ? codeOf(real.country) : '';
-    $('fAmount').value = '';
-    $('fMsg').className = 'msg'; resetCancel(); suggest();
+    dr = { email: r.email, tab: tab || 'space' };
     $('scrim').classList.remove('hide'); $('drawer').classList.remove('hide'); document.body.classList.add('lock');
-    drawDrawer(); drawSubs();
+    drawDrawer();
     $('drawer').querySelector('.db').scrollTop = 0;
-    (email ? $('dClose') : $('fEmail')).focus();
+    $('dClose').focus();
   }
   function closeDrawer() {
     if (!dr) return;
     dr = null;
     $('scrim').classList.add('hide'); $('drawer').classList.add('hide'); document.body.classList.remove('lock');
-    if (rows.length) drawSubs();
     if (lastFocus && document.contains(lastFocus)) try { lastFocus.focus(); } catch {}
   }
   $('dClose').addEventListener('click', closeDrawer);
   $('scrim').addEventListener('click', closeDrawer);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dr) closeDrawer(); });
   $('dTabs').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { if (!dr) return; dr.tab = b.dataset.t; drawDrawer(); }));
-  $('newSub').addEventListener('click', () => openDrawer(null, 'sub'));
-  // typing a known email in a new activation fills in what we know about him
-  $('fEmail').addEventListener('change', () => { if (dr && !dr.email) { const r = rowOf($('fEmail').value.trim()); if (r) openDrawer(r, 'sub'); } });
 
   function drawDrawer() {
     if (!dr) return;
-    const r = dr.email ? rowOf(dr.email) : null, isNew = !dr.email;
-    $('dAv').textContent = isNew ? '＋' : initial(r || { email: dr.email });
-    $('dName').textContent = isNew ? 'تفعيل اشتراك' : nameOf(r, dr.email);
-    $('dMail').textContent = isNew ? '' : (r && r.business ? dr.email : '');
+    const r = rowOf(dr.email);
+    $('dAv').textContent = initial(r || { email: dr.email });
+    $('dName').textContent = nameOf(r, dr.email);
+    $('dMail').textContent = r && r.business ? dr.email : '';
     const tag = $('dTag'); tag.textContent = ''; if (r) tag.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state));
-    if (isNew) dr.tab = 'sub';
-    const us = staffOf(dr.email), ps = isNew ? [] : paysOf(dr.email);
+    const us = staffOf(dr.email), ps = paysOf(dr.email);
     $('dUsersN').textContent = us ? String((us.users || []).length) : '';
     $('dPaysN').textContent = ps.length ? String(ps.length) : '';
-    $('dTabs').classList.toggle('hide', isNew);
     $('dTabs').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.t === dr.tab));
-    for (const t of ['sub', 'users', 'space', 'pays']) $('t-' + t).classList.toggle('hide', t !== dr.tab);
-
-    // subscription
-    $('fEmailBox').classList.toggle('hide', !isNew);
-    const kv = $('dKv'); kv.textContent = ''; kv.classList.toggle('hide', !r);
-    if (r) {
-      const add = (k, v, cls) => { kv.append(el('span', '', k), el('b', cls || '', v)); };
-      add('الباقة', PLAN[r.plan_kind] || PLAN[0]);
-      add('ينتهي', r.ends ? `${iso(r.ends)} · ${left(r)}` : '—', soon(r) ? 'soon' : '');
-      add('البلد', r.country || 'غير معروف');
-      add('عدد الموظفين', empTxt(r.max_employees));
-      add('المستخدمون', us ? `${(us.users || []).length} من ${us.seats || 0}` : '0');
-      if (r.joined) add('سجّل في', iso(String(r.joined).slice(0, 10)));
-      add('مجموع المدفوع', paidOf(r) || '—');
-    }
-    $('fHead').textContent = isNew ? 'الاشتراك' : r && r.state === 'active' ? 'تمديد أو تعديل الاشتراك' : 'تفعيل الاشتراك';
-    $('fGo').textContent = r && r.state === 'active' ? 'تمديد' : 'تفعيل';
-    $('fCancel').classList.toggle('hide', !r || !live(r));
-    $('fSaveCountry').classList.toggle('hide', isNew);
-    $('fSaveUsers').classList.toggle('hide', isNew);
+    for (const t of ['users', 'space', 'pays']) $('t-' + t).classList.toggle('hide', t !== dr.tab);
 
     // users
     const tu = $('t-users'); tu.textContent = '';
@@ -1164,7 +965,7 @@ small.cu{color:var(--green)!important;font-weight:700}
         if (users.length > seats) tu.append(el('p', 'hint', 'أضاف أكثر من العدد المدفوع، فالحسابات الزائدة موقوفة حتى ترفع العدد.'));
         if (users.length) tu.append(userList(users)); else tu.append(el('div', 'empty', 'لم يضف أي مستخدم بعد'));
         tu.append(el('p', 'hint', 'يضيف المشترك المستخدمين بنفسه من البرنامج. أنت تحدّد العدد المدفوع فقط:'));
-        tu.append(btn('b-line', 'تغيير العدد المدفوع', () => { dr.tab = 'sub'; drawDrawer(); $('fUsers').focus(); $('fUsers').select(); }));
+        tu.append(btn('b-line', 'تغيير العدد المدفوع', () => { const rr = rowOf(dr.email); closeDrawer(); if (rr) selectAccount(rr); $('fUsers').focus(); $('fUsers').select(); }));
       }
     }
 
@@ -1274,7 +1075,7 @@ small.cu{color:var(--green)!important;font-weight:700}
           $('fAmount').value = '';
         }
         const msg = `تم التفعيل: ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}${note}`;
-        if (dr && !dr.email) dr.email = email; // a new activation becomes this subscriber's panel
+        sel = email; // a new activation becomes the account in the form
         await load();
         show($('fMsg'), msg, !note);
       }
