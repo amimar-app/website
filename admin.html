@@ -97,6 +97,9 @@ label{display:block;font-weight:800;font-size:12.5px;color:var(--muted);margin:1
 .att b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .att small{display:block;color:var(--muted);font-size:12.5px}
 .att .go{flex:none;font-size:12.5px;font-weight:800;color:var(--green);border:1px solid var(--line);border-radius:8px;padding:5px 10px;background:var(--bg);text-decoration:none;white-space:nowrap}
+.act{padding:10px 0;border-top:1px solid var(--line);cursor:pointer}.act:first-child{border-top:0;padding-top:0}.act:hover{background:var(--bg)}
+.act .ah{display:flex;align-items:center;gap:10px;margin-bottom:6px}.act .tx{flex:1;min-width:0}.act b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.act small{display:block;color:var(--muted);font-size:12.5px}
+.act .meter{margin:0 0 6px}
 .ok-all{display:flex;align-items:center;gap:8px;color:var(--green);font-weight:800;font-size:14px;padding:6px 0}
 .curs{display:flex;gap:6px;margin:-4px 0 6px}
 .curs button{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;background:var(--card);color:var(--muted)}
@@ -288,7 +291,7 @@ small.cu{color:var(--green)!important;font-weight:700}
       <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
       <div><b>Amimar</b><small>لوحة الإدارة</small></div>
     </div>
-    <button class="nav" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span><span class="ct al" id="nHome"></span></button>
+    <button class="nav" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span></button>
     <button class="nav" data-v="subs"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg><span>المشتركون</span><span class="ct" id="nSubs"></span></button>
     <div class="grp">المال</div>
     <button class="nav" data-v="pays"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v.01M18 15v.01"/></svg><span class="full">الدفعات والأرباح</span><span class="short">الدفعات</span></button>
@@ -312,7 +315,7 @@ small.cu{color:var(--green)!important;font-weight:700}
     <section class="view" id="v-home">
       <div class="kpis" id="kpis"></div>
       <div class="cols">
-        <div class="card"><h3>تحتاج انتباهك <span class="tag t-expired" id="attN"></span></h3><div id="attList"></div></div>
+        <div class="card"><h3>الفعّالون واستهلاكهم <span class="chip" id="actN"></span></h3><div id="actList"></div></div>
         <div class="card"><h3>الدخل آخر 6 أشهر <button class="lnk" data-go="pays">كل الدفعات ←</button></h3><div class="curs" id="curs"></div><div class="chart" id="chart"></div></div>
       </div>
       <div class="cols">
@@ -795,36 +798,6 @@ small.cu{color:var(--green)!important;font-weight:700}
   }
 
   // ---- home ----
-  function attention() {
-    const out = [];
-    for (const r of rows) {
-      if (isSelf(r.email) || !soon(r)) continue;
-      const trial = r.state === 'trial';
-      out.push({ red: r.days_left <= 2, name: nameOf(r), sub: `${trial ? 'تجربته' : 'اشتراكه'} ${r.days_left <= 0 ? 'ينتهي اليوم' : `ينتهي بعد ${r.days_left === 1 ? 'يوم' : r.days_left === 2 ? 'يومين' : r.days_left + ' أيام'}`}${trial ? ' · لم يشترك بعد' : ''}`,
-        act: trial ? 'تفعيل' : 'تمديد', fn: () => openDrawer(r, 'sub') });
-    }
-    for (const x of staffRows) {
-      const users = x.users || []; if (users.length <= (x.seats || 0)) continue;
-      const r = rowOf(x.email);
-      out.push({ red: true, name: nameOf(r, x.email), sub: `أضاف ${users.length} مستخدمين والمدفوع ${x.seats || 0}`, act: 'المستخدمون', fn: () => openDrawer(r || { email: x.email }, 'users') });
-    }
-    for (const u of usage) {
-      if (!u.em || isSelf(u.em)) continue;
-      const r = rowOf(u.em), info = endInfo(u, r), total = Number(u.db_bytes) + Number(u.file_bytes);
-      if (!info.ended || !total) continue;
-      if (info.warned && info.sinceWarn >= 30) out.push({ red: true, name: nameOf(r, u.em), sub: `مرّ شهر على التنبيه · بياناته ${sizeTxt(total)} · يمكن حذفها`, act: 'المساحة', fn: () => openDrawer(r || { email: u.em }, 'space') });
-      else if (!info.warned && info.days >= 150) out.push({ red: false, name: nameOf(r, u.em), sub: `${agoTxt(info.days)} · بياناته ${sizeTxt(total)} · وقت التنبيه`, link: warnLink(u, r, info, 'go') });
-    }
-    for (const sq of storeRows) {
-      if (isSelf(sq.email)) continue;
-      const full = ['data', 'photos'].filter((k) => quotaPct(sq, k) >= 0.8);
-      if (!full.length) continue;
-      const r = rowOf(sq.email);
-      out.push({ red: full.some((k) => quotaPct(sq, k) >= 0.95), name: nameOf(r, sq.email), sub: `مساحة ${full.map((k) => KINDQ[k]).join(' و')} قاربت الامتلاء`, act: 'المساحة', fn: () => openDrawer(r || { email: sq.email }, 'space') });
-    }
-    return out.sort((a, b) => Number(b.red) - Number(a.red));
-  }
-
   let chartCur = '';
   function drawHome() {
     // numbers at the top
@@ -834,25 +807,34 @@ small.cu{color:var(--green)!important;font-weight:700}
     const now = new Date(), y = now.getFullYear(), m = now.getMonth(), lm = new Date(y, m - 1, 1);
     const inMonth = (p, yy, mm) => { const d = new Date(p.paid_at); return d.getFullYear() === yy && d.getMonth() === mm; };
     const thisM = sumTxt(pays.filter((p) => inMonth(p, y, m))), lastM = sumTxt(pays.filter((p) => inMonth(p, lm.getFullYear(), lm.getMonth())));
-    const g = globalBars(), cap = 1536 * 1048576;
+    const g = globalBars();
     kpi('مشتركون فعّالون', String(n('active')), `من أصل ${rows.length} حساب`, 'var(--green)');
     kpi('في التجربة', String(n('trial')), trialsSoon ? `${trialsSoon} تنتهي خلال 7 أيام` : 'لا تجربة تنتهي قريباً', 'var(--gold)');
     kpi('دخل هذا الشهر', thisM || '0', `الشهر الماضي: ${lastM ? '⁦' + lastM + '⁩' : '0'}`, 'var(--green)', thisM.length > 12);
-    kpi('مساحة السحابة', sizeTxt(g.db + g.files), `من ${iso('1.5 GB')} في الخطة المجانية · ${iso(Math.round((g.db + g.files) / cap * 100) + '%')}`);
+    kpi('مساحة السحابة', sizeTxt(g.db + g.files), `بيانات ${sizeTxt(g.db)} · صور ${sizeTxt(g.files)}`);
 
-    // what needs a decision
-    const list = $('attList'); list.textContent = '';
-    const att = attention();
-    $('attN').textContent = att.length || ''; $('attN').classList.toggle('hide', !att.length);
-    $('nHome').textContent = att.length || '';
-    if (!att.length) list.append(el('div', 'ok-all', '✓ لا شيء يحتاج انتباهك الآن'));
-    for (const a of att.slice(0, 8)) {
-      const d = el('div', 'att'), dot = el('i', 'dot'); dot.style.background = a.red ? 'var(--red)' : 'var(--gold)';
-      const tx = el('div', 'tx'); tx.append(el('b', '', a.name), el('small', '', a.sub));
-      d.append(dot, tx, a.link || (() => { const b = el('button', 'go', a.act); b.type = 'button'; b.addEventListener('click', a.fn); return b; })());
+    // every active subscriber and what he uses (data and photos against his own limit), the biggest first
+    const list = $('actList'); list.textContent = '';
+    const act = rows.filter((r) => r.state === 'active').map((r) => {
+      const sq = storeOf(r.email), u = usageOf(r.email);
+      const used = sq ? Number(sq.data_used) + Number(sq.photos_used) : u ? Number(u.db_bytes) + Number(u.file_bytes) : 0;
+      return { r, sq, used };
+    }).sort((a, b) => b.used - a.used);
+    $('actN').textContent = String(act.length);
+    if (!act.length) list.append(el('div', 'empty', 'لا يوجد مشترك فعّال بعد'));
+    for (const { r, sq, used } of act) {
+      const d = el('div', 'act');
+      const head = el('div', 'ah'), tx = el('div', 'tx');
+      tx.append(el('b', '', nameOf(r)), el('small', '', `${PLAN[r.plan_kind] || PLAN[0]} · ${left(r)}`));
+      head.append(tx, el('span', 'num', sizeTxt(used)));
+      d.append(head);
+      if (sq) for (const kind of ['data', 'photos']) {
+        const pct = quotaPct(sq, kind);
+        d.append(meter(KINDQ[kind], `${sizeTxt(Number(sq[kind + '_used']))} من ${mbTxt(Number(sq[kind + '_limit_mb']))}`, pct));
+      }
+      d.addEventListener('click', () => openDrawer(r, 'space'));
       list.append(d);
     }
-    if (att.length > 8) list.append(el('p', 'hint', `و${att.length - 8} غيرها`));
 
     // income chart, one currency at a time
     const curs = [...new Set(pays.map((p) => p.currency))].sort((a, b) => paysCount(b) - paysCount(a));
