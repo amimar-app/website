@@ -148,6 +148,8 @@ button:disabled{opacity:.55;cursor:default}
 .qed input{width:110px;min-height:36px}
 .qed .pre{min-height:32px;padding:0 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);font:700 13px Tajawal,sans-serif;cursor:pointer;color:var(--ink)}
 .qed .hint{margin:0;flex-basis:100%}
+.qline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex-basis:100%}
+.qline b{min-width:110px}
 .bars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:4px}
 .bar{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px}
 .bar b{font-size:17px;direction:ltr;display:inline-block}
@@ -567,8 +569,9 @@ button:disabled{opacity:.55;cursor:default}
   let usage = [], useErr = '', storeRows = [], openQ = '';
   const storeOf = (email) => storeRows.find((x) => (x.email || '').toLowerCase() === (email || '').toLowerCase()) || null;
   const mbTxt = (mb) => '\u2066' + (mb >= 1024 ? `${(mb / 1024).toFixed(mb % 1024 ? 1 : 0)} GB` : `${mb} MB`) + '\u2069';
-  async function setStorage(email, mb) {
-    try { await rpc('amimar_admin_set_storage', { p_email: email, p_mb: mb }); openQ = ''; show($('sMsg'), mb == null ? `رجعت مساحة ${email} للافتراضي` : `صارت مساحة ${email}: ${mbTxt(mb)}`, true); await load(); }
+  const KINDQ = { photos: 'الصور', data: 'البيانات' };
+  async function setStorage(email, kind, mb) {
+    try { await rpc('amimar_admin_set_storage', { p_email: email, p_kind: kind, p_mb: mb }); openQ = ''; show($('sMsg'), mb == null ? `رجعت مساحة ${KINDQ[kind]} لـ ${email} للافتراضي` : `صارت مساحة ${KINDQ[kind]} لـ ${email}: ${mbTxt(mb)}`, true); await load(); }
     catch (e) { show($('sMsg'), /SQL/.test(e.message) ? 'شغّل ملف SQL v26 في Supabase أولاً' : /bad storage/.test(e.message) ? 'المساحة من 10 MB إلى 100 GB' : e.message, false); }
   }
   const sizeTxt = (b) => '\u2066' + (b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : b >= 1024 ? `${Math.round(b / 1024)} KB` : b > 0 ? `${b} B` : '0') + '\u2069';
@@ -624,6 +627,13 @@ button:disabled{opacity:.55;cursor:default}
       const i = el('i'); const f = el('span'); f.style.width = Math.min(100, used / cap * 100).toFixed(1) + '%'; if (used / cap > 0.8) f.style.background = 'var(--red)'; i.append(f); b.append(i); bars.append(b);
     }
     sum.append(bars);
+    const meas = storeRows.map((x) => x.measured_at).filter(Boolean).sort().slice(-1)[0];
+    if (storeRows.length) {
+      const mrow = el('div', 'tools'); const mb = el('button', 'b-line', 'إعادة قياس البيانات'); mb.type = 'button';
+      mb.addEventListener('click', async () => { mb.disabled = true; try { await rpc('amimar_admin_measure'); await load(); show($('sMsg'), 'تم قياس البيانات الآن ✓', true); } catch (e) { show($('sMsg'), e.message, false); } finally { mb.disabled = false; } });
+      mrow.append(el('span', 'hint', meas ? `حجم السجلات يُقاس كل ساعة · آخر قياس ${iso(new Date(meas).toLocaleString('en-GB', { hour12: false }).slice(0, 17))}` : 'حجم السجلات يُقاس كل ساعة'), mb);
+      sum.append(mrow);
+    }
     const byEmail = new Map(rows.map((r) => [String(r.email || '').toLowerCase(), r]));
     const items = usage.map((u) => ({ u, r: byEmail.get(String(u.em || '').toLowerCase()), total: Number(u.db_bytes) + Number(u.file_bytes) }))
       .filter((x) => x.total > 0).sort((a, b) => b.total - a.total);
@@ -637,11 +647,13 @@ button:disabled{opacity:.55;cursor:default}
       const sz = cell('', '', sizeTxt(total), `بيانات ${sizeTxt(Number(u.db_bytes))} · صور ونسخ ${sizeTxt(Number(u.file_bytes))}`, 'sz');
       const sq = storeOf(u.em);
       if (sq) {
-        // the files limit: photos and backups (the database rows are not counted in it)
-        const used = Number(sq.used_bytes), cap = Number(sq.limit_mb) * 1048576, pct = cap ? used / cap : 0;
+        // two limits: the data (records + backups) and the photos
         sz.classList.add('q');
-        sz.append(el('small', sq.custom ? 'cu' : '', `الصور والنسخ ${sizeTxt(used)} من ${mbTxt(Number(sq.limit_mb))}${sq.custom ? ' · مساحة خاصة' : ''}`));
-        const qb = el('i', 'qbar' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')); const f = el('span'); f.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; qb.append(f); sz.append(qb);
+        for (const [kind, used, mb, custom] of [['data', sq.data_used, sq.data_limit_mb, sq.data_custom], ['photos', sq.photos_used, sq.photos_limit_mb, sq.photos_custom]]) {
+          const u2 = Number(used), cap = Number(mb) * 1048576, pct = cap ? u2 / cap : 0;
+          sz.append(el('small', custom ? 'cu' : '', `${KINDQ[kind]} ${sizeTxt(u2)} من ${mbTxt(Number(mb))}${custom ? ' · خاصة' : ''}`));
+          const qb = el('i', 'qbar' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')); const f = el('span'); f.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; qb.append(f); sz.append(qb);
+        }
       }
       const rowsC = cell('', '', `${Number(u.db_rows).toLocaleString('en-US')} سطر`, `${Number(u.file_count)} ملف`);
       const st = el('div', 'c st');
@@ -679,14 +691,18 @@ button:disabled{opacity:.55;cursor:default}
       } else { const acts = el('div', 'acts'); acts.append(qbtn); d.append(acts); }
       if (openQ && openQ === u.em && sq) {
         const ed = el('div', 'qed');
-        const inp = el('input'); inp.type = 'number'; inp.min = '10'; inp.max = '102400'; inp.step = '1'; inp.value = String(sq.limit_mb); inp.setAttribute('inputmode', 'numeric');
-        ed.append(el('b', '', 'المساحة (MB):'), inp);
-        for (const mb of [500, 1024, 2048, 5120, 10240]) { const pbt = el('button', 'pre', mbTxt(mb)); pbt.type = 'button'; pbt.addEventListener('click', () => { inp.value = String(mb); }); ed.append(pbt); }
-        const save = el('button', 'b-green', 'حفظ'); save.type = 'button';
-        save.addEventListener('click', () => { const n = Number(inp.value); if (!Number.isInteger(n) || n < 10 || n > 102400) { show($('sMsg'), 'المساحة رقم صحيح من 10 إلى 102400 MB', false); return; } setStorage(u.em, n); });
-        ed.append(save);
-        if (sq.custom) { const back = el('button', 'b-line', 'الافتراضي'); back.type = 'button'; back.addEventListener('click', () => setStorage(u.em, null)); ed.append(back); }
-        ed.append(el('p', 'hint', 'الافتراضي: 100 MB للتجربة، و2 GB للمشترك. المساحة للصور والنسخ الاحتياطية؛ عند امتلائها يتوقف رفع الصور والنسخ الجديدة فقط، ولا يُحذف شيء.'));
+        for (const [kind, mb, custom] of [['data', sq.data_limit_mb, sq.data_custom], ['photos', sq.photos_limit_mb, sq.photos_custom]]) {
+          const line = el('div', 'qline');
+          const inp = el('input'); inp.type = 'number'; inp.min = '10'; inp.max = '102400'; inp.step = '1'; inp.value = String(mb); inp.setAttribute('inputmode', 'numeric');
+          line.append(el('b', '', `${KINDQ[kind]} (MB):`), inp);
+          for (const v of [500, 1024, 2048, 5120, 10240]) { const pbt = el('button', 'pre', mbTxt(v)); pbt.type = 'button'; pbt.addEventListener('click', () => { inp.value = String(v); }); line.append(pbt); }
+          const save = el('button', 'b-green', 'حفظ'); save.type = 'button';
+          save.addEventListener('click', () => { const n = Number(inp.value); if (!Number.isInteger(n) || n < 10 || n > 102400) { show($('sMsg'), 'المساحة رقم صحيح من 10 إلى 102400 MB', false); return; } setStorage(u.em, kind, n); });
+          line.append(save);
+          if (custom) { const back = el('button', 'b-line', 'الافتراضي'); back.type = 'button'; back.addEventListener('click', () => setStorage(u.em, kind, null)); line.append(back); }
+          ed.append(line);
+        }
+        ed.append(el('p', 'hint', 'الافتراضي: 100 MB للتجربة و1 GB للمشترك، لكل واحدة. البيانات = السجلات والنسخ الاحتياطية، والصور = ملفات الصور. عند امتلاء البيانات يتوقف إضافة سجلات ونسخ جديدة (التعديل والقراءة مسموحان)، وعند امتلاء الصور يتوقف رفع صور جديدة. لا يُحذف شيء.'));
         d.append(ed);
       }
       list.appendChild(d);
