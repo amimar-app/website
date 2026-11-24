@@ -59,30 +59,36 @@ label{display:block;font-weight:800;font-size:12.5px;color:var(--muted);margin:1
 .gate input{min-height:48px;font-size:16px}
 .gate .btns{display:flex;gap:10px;margin-top:16px}.gate .btn{min-height:46px;font-size:15px}
 
-/* shell */
-.app{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}
-.side{background:var(--side);color:#DCE6DF;padding:18px 12px;display:flex;flex-direction:column;gap:3px;position:sticky;top:0;height:100vh;overflow-y:auto}
-.brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px;border-bottom:1px solid #ffffff14;margin-bottom:8px}
-.brand b{font-size:17px;color:#fff;font-weight:900}.brand small{display:block;font-size:12px;color:#9DAAA1}
-.nav{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-weight:700;color:#C9D4CD;background:none;border:0;width:100%;text-align:start;font-size:14.5px}
-.nav svg{flex:none;width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+/* shell: one page, a bar at the top that jumps to each section */
+.app{min-height:100vh}
+.topbar{position:sticky;top:0;z-index:15;background:var(--side);color:#DCE6DF;box-shadow:0 2px 12px #0002}
+.topbar .in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:8px 20px}
+.brand{display:flex;align-items:center;gap:9px;flex:none}
+.brand b{font-size:16px;color:#fff;font-weight:900}.brand small{display:block;font-size:11.5px;color:#9DAAA1}
+.navs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.navs::-webkit-scrollbar{display:none}
+.nav{flex:none;display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;font-weight:700;color:#C9D4CD;background:none;border:0;font-size:14px;white-space:nowrap}
+.nav svg{flex:none;width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 .nav:hover{background:#ffffff0d}
 .nav.on{background:#ffffff17;color:#fff}.nav.on svg{color:#5BD39C;opacity:1}
-.nav .ct{margin-inline-start:auto;font-size:11.5px;background:#ffffff1a;border-radius:99px;padding:0 8px;min-width:22px;text-align:center}
-.nav .ct.al{background:#C2412D;color:#fff}
+.nav .ct{font-size:11px;background:#ffffff1a;border-radius:99px;padding:0 7px}
 .nav .ct:empty{display:none}
-.grp{font-size:11.5px;color:#7F8C84;padding:14px 12px 4px;font-weight:800}
-.me{margin-top:auto;border-top:1px solid #ffffff14;padding:12px 8px 0;font-size:12px;color:#9DAAA1}
-.me b{display:block;color:#fff;font-size:12.5px;direction:ltr;text-align:right;overflow-wrap:anywhere}
-.me button{margin-top:10px;width:100%;background:#ffffff12;border:1px solid #ffffff1f;color:#DCE6DF;border-radius:9px;min-height:36px}
-.main{padding:22px 26px 40px;min-width:0}
+.me{flex:none;display:flex;align-items:center;gap:10px;font-size:12px;color:#9DAAA1}
+.me b{color:#fff;font-size:12.5px;direction:ltr}
+.me button{background:#ffffff12;border:1px solid #ffffff1f;color:#DCE6DF;border-radius:9px;min-height:34px;padding:0 12px}
+.main{max-width:1240px;margin:0 auto;padding:22px 20px 60px;min-width:0}
 .top{display:flex;align-items:center;flex-wrap:wrap;gap:10px 12px;margin-bottom:16px}
 .top h1{margin:0;font-size:22px;font-weight:900}.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
 .top .sp{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap}
+.view{scroll-margin-top:72px;margin-bottom:26px}
+.shead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding-top:6px;border-top:2px solid var(--line)}
+.shead h2{margin:10px 0 0;font-size:19px;font-weight:900}
+.shead p{margin:0;color:var(--muted);font-size:13px}
+#v-home .shead{border-top:0;padding-top:0}
 .only-m{display:none!important}
 
 /* home */
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:14px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .kpi span{font-size:12.5px;color:var(--muted);font-weight:700}
 .kpi b{display:block;font-size:25px;font-weight:900;margin-top:2px;direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -183,7 +189,7 @@ small.cu{color:var(--green)!important;font-weight:700}
 .prices td:first-child,.prices th:first-child{width:36px;color:var(--muted)}
 .pnotes{margin:12px 0 0;padding-inline-start:20px;font-size:14px;color:var(--muted)}
 .pnotes li{margin:5px 0}.pnotes b{color:var(--ink)}
-.pricecard{max-width:720px}
+.pricecard{}
 
 /* subscriber panel */
 .scrim{position:fixed;inset:0;background:#0007;z-index:20}
@@ -220,7 +226,7 @@ small.cu{color:var(--green)!important;font-weight:700}
 .toast.ok{display:block;background:var(--green);color:#fff}.toast.err{display:block;background:var(--red);color:#fff}
 
 @media(max-width:1180px){.th,.tr{grid-template-columns:minmax(0,2.3fr) minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1.5fr) minmax(0,.8fr) minmax(0,1fr)}.c-country,.c-space{display:none}}
-@media(max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:minmax(0,1fr)}.app{grid-template-columns:200px minmax(0,1fr)}}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis .kpi:nth-child(3){grid-column:1/-1}.cols{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:900px){
   .th{display:none}.tbl{background:none;border:0;border-radius:0;display:flex;flex-direction:column;gap:8px}
   .tr{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;background:var(--card);border:1px solid var(--line)!important;border-radius:12px;padding:11px 13px}
@@ -233,22 +239,16 @@ small.cu{color:var(--green)!important;font-weight:700}
   .spc{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}.spc .who{grid-column:1/-1}.spc .acts{grid-column:2/3;grid-row:2/5;align-self:center}
 }
 @media(max-width:760px){
-  .app{grid-template-columns:minmax(0,1fr)}
-  .side{position:fixed;inset:auto 0 0 0;top:auto;height:auto;flex-direction:row;padding:5px 4px calc(5px + env(safe-area-inset-bottom));z-index:15;gap:0;overflow:visible}
-  .brand,.grp,.me{display:none}
-  .nav{flex:1;flex-direction:column;gap:2px;font-size:10.5px;padding:6px 2px;text-align:center;position:relative;border-radius:8px;white-space:nowrap}
-  .nav .ct{position:absolute;top:1px;inset-inline-end:calc(50% - 22px);margin:0;font-size:10px;padding:0 5px;min-width:0}
-  .nav .full{display:none}
-  .main{padding:14px 12px 90px}
+  .topbar .in{padding:6px 10px;gap:8px}
+  .brand div,.me b{display:none}
+  .main{padding:14px 12px 60px}
   .top h1{font-size:19px}.top .sp{margin-inline-start:0;width:100%}.top .sp .btn{flex:1}
-  .only-m{display:inline-flex!important;align-items:center;justify-content:center}
   .kpi{padding:12px}.kpi b{font-size:21px}.kpi b.sm{font-size:16px}
   .filters select{flex:1 1 140px}
   .bars{grid-template-columns:minmax(0,1fr)}
-  .toast{bottom:84px}
   .f3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.f3>div:first-child{grid-column:1/-1}
 }
-@media(min-width:761px){.nav .short{display:none}}
+
 </style>
 </head>
 <body>
@@ -286,45 +286,46 @@ small.cu{color:var(--green)!important;font-weight:700}
 </div>
 
 <div id="app" class="app hide">
-  <aside class="side">
+  <header class="topbar"><div class="in">
     <div class="brand">
-      <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
+      <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
       <div><b>Amimar</b><small>لوحة الإدارة</small></div>
     </div>
-    <button class="nav" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span></button>
-    <button class="nav" data-v="subs"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg><span>المشتركون</span><span class="ct" id="nSubs"></span></button>
-    <div class="grp">المال</div>
-    <button class="nav" data-v="pays"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v.01M18 15v.01"/></svg><span class="full">الدفعات والأرباح</span><span class="short">الدفعات</span></button>
-    <button class="nav" data-v="prices"><svg viewBox="0 0 24 24"><path d="M3 12.5V4a1 1 0 0 1 1-1h8.5L21 11.5 12.5 20z"/><circle cx="8" cy="8" r="1.4"/></svg><span>الأسعار</span></button>
-    <div class="grp">النظام</div>
-    <button class="nav" data-v="space"><svg viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6A3.8 3.8 0 0 1 17.5 18.5z"/></svg><span>المساحة</span></button>
-    <button class="nav" data-v="staff"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l2.5 2.5M15 8l2 2"/></svg><span class="full">حسابات الموظفين</span><span class="short">الموظفون</span></button>
-    <div class="me"><b id="who"></b>مدير · التحقق بخطوتين ✓<button id="out">تسجيل الخروج</button></div>
-  </aside>
+    <nav class="navs">
+      <button class="nav" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>الملخص</button>
+      <button class="nav" data-v="subs"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg>المشتركون<span class="ct" id="nSubs"></span></button>
+      <button class="nav" data-v="pays"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v.01M18 15v.01"/></svg>الدفعات</button>
+      <button class="nav" data-v="space"><svg viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6A3.8 3.8 0 0 1 17.5 18.5z"/></svg>المساحة</button>
+      <button class="nav" data-v="staff"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l2.5 2.5M15 8l2 2"/></svg>الموظفون</button>
+      <button class="nav" data-v="prices"><svg viewBox="0 0 24 24"><path d="M3 12.5V4a1 1 0 0 1 1-1h8.5L21 11.5 12.5 20z"/><circle cx="8" cy="8" r="1.4"/></svg>الأسعار</button>
+    </nav>
+    <div class="me"><b id="who"></b><button id="out">خروج</button></div>
+  </div></header>
 
   <main class="main">
     <div class="top">
-      <div><h1 id="vTitle"></h1><p id="vSub"></p></div>
+      <div><h1>لوحة الإدارة</h1><p id="vSub"></p></div>
       <div class="sp">
         <button class="btn b-line" id="reload">↻ تحديث</button>
         <button class="btn b-green" id="newSub">＋ تفعيل اشتراك</button>
-        <button class="btn b-line only-m" id="out2">خروج</button>
       </div>
     </div>
 
     <section class="view" id="v-home">
+      <div class="shead"><h2>الملخص</h2><p id="sub-home"></p></div>
       <div class="kpis" id="kpis"></div>
       <div class="cols">
         <div class="card"><h3>الفعّالون واستهلاكهم <span class="chip" id="actN"></span></h3><div id="actList"></div></div>
-        <div class="card"><h3>الدخل آخر 6 أشهر <button class="lnk" data-go="pays">كل الدفعات ←</button></h3><div class="curs" id="curs"></div><div class="chart" id="chart"></div></div>
+        <div class="card"><h3>الدخل آخر 6 أشهر <button class="lnk" data-go="pays">كل الدفعات ↓</button></h3><div class="curs" id="curs"></div><div class="chart" id="chart"></div></div>
       </div>
       <div class="cols">
         <div class="card"><h3>آخر الدفعات</h3><div id="lastPays"></div></div>
-        <div class="card"><h3>السحابة <button class="lnk" data-go="space">التفاصيل ←</button></h3><div id="homeCloud"></div></div>
+        <div class="card"><h3>السحابة <button class="lnk" data-go="space">التفاصيل ↓</button></h3><div id="homeCloud"></div></div>
       </div>
     </section>
 
-    <section class="view hide" id="v-subs">
+    <section class="view" id="v-subs">
+      <div class="shead"><h2>المشتركون</h2><p id="sub-subs"></p></div>
       <div class="filters">
         <input id="q" type="search" placeholder="ابحث بالبريد أو اسم العمل أو البلد">
         <select id="cf" aria-label="البلد"><option value="">كل البلدان</option></select>
@@ -335,12 +336,31 @@ small.cu{color:var(--green)!important;font-weight:700}
       <div class="tbl" id="list"></div>
     </section>
 
-    <section class="view hide" id="v-pays">
+    <section class="view" id="v-pays">
+      <div class="shead"><h2>الدفعات والأرباح</h2><p id="sub-pays"></p></div>
       <div class="card"><h3>الأرباح</h3><div id="earnSum"></div></div>
       <div class="card"><h3>الدفعات</h3><div class="pays" id="payList"></div></div>
     </section>
 
-    <section class="view hide" id="v-prices">
+    <section class="view" id="v-space">
+      <div class="shead"><h2>المساحة في السحابة</h2><p id="sub-space"></p></div>
+      <div class="card">
+        <div id="spaceSum"></div>
+        <p class="hint">من انتهى اشتراكه تبقى بياناته في السحابة حتى يجدّد. بعد 5 أشهر يظهر زر «إرسال تنبيه» يفتح رسالة جاهزة له، وبعد شهر من التنبيه يمكنك حذف بياناته لتوفير المساحة؛ يبقى حسابه وسجلّ اشتراكه ودفعاته، وتبقى بياناته على حاسوبه وتُرفع من جديد إن جدّد. لتغيير مساحة مشترك اضغط «إدارة».</p>
+        <div class="pays" id="spaceList"></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-staff">
+      <div class="shead"><h2>حسابات الموظفين</h2><p id="sub-staff"></p></div>
+      <div class="card">
+        <div id="usersSum"></div>
+        <p class="hint">لكل مشترك: عدد المستخدمين المدفوعين، ونوع كل حساب، وآخر دخول. «خارج العدد» يعني أن المشترك أضاف أكثر من العدد المدفوع (بعد تخفيضه)، فهذا الحساب موقوف حتى ترفع العدد. اضغط على المشترك لتغيير العدد.</p>
+        <div id="usersList"></div>
+      </div>
+    </section>
+    <section class="view" id="v-prices">
+      <div class="shead"><h2>الأسعار</h2><p id="sub-prices"></p></div>
       <div class="card pricecard">
         <table class="earn prices">
           <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
@@ -360,21 +380,6 @@ small.cu{color:var(--green)!important;font-weight:700}
       </div>
     </section>
 
-    <section class="view hide" id="v-space">
-      <div class="card">
-        <div id="spaceSum"></div>
-        <p class="hint">من انتهى اشتراكه تبقى بياناته في السحابة حتى يجدّد. بعد 5 أشهر يظهر زر «إرسال تنبيه» يفتح رسالة جاهزة له، وبعد شهر من التنبيه يمكنك حذف بياناته لتوفير المساحة؛ يبقى حسابه وسجلّ اشتراكه ودفعاته، وتبقى بياناته على حاسوبه وتُرفع من جديد إن جدّد. لتغيير مساحة مشترك اضغط «إدارة».</p>
-        <div class="pays" id="spaceList"></div>
-      </div>
-    </section>
-
-    <section class="view hide" id="v-staff">
-      <div class="card">
-        <div id="usersSum"></div>
-        <p class="hint">لكل مشترك: عدد المستخدمين المدفوعين، ونوع كل حساب، وآخر دخول. «خارج العدد» يعني أن المشترك أضاف أكثر من العدد المدفوع (بعد تخفيضه)، فهذا الحساب موقوف حتى ترفع العدد. اضغط على المشترك لتغيير العدد.</p>
-        <div id="usersList"></div>
-      </div>
-    </section>
   </main>
 </div>
 
@@ -728,9 +733,11 @@ small.cu{color:var(--green)!important;font-weight:700}
     });
     return del;
   }
+  // the server's limits (Supabase plan): the free plan now; change these two after upgrading
+  const SERVER_DB = 500 * 1048576, SERVER_DB_TXT = '500 MB', SERVER_FILES = 1024 * 1048576, SERVER_FILES_TXT = '1 GB';
   function globalBars() {
     const db = usage.reduce((a, u) => a + Number(u.db_bytes), 0), files = usage.reduce((a, u) => a + Number(u.file_bytes), 0);
-    return { db, files, list: [['البيانات', db, 500 * 1048576, '500 MB'], ['الصور والنسخ الاحتياطية', files, 1024 * 1048576, '1 GB']] };
+    return { db, files, list: [['البيانات', db, SERVER_DB, SERVER_DB_TXT], ['الصور والنسخ الاحتياطية', files, SERVER_FILES, SERVER_FILES_TXT]] };
   }
 
   // ---- payments ----
@@ -768,26 +775,30 @@ small.cu{color:var(--green)!important;font-weight:700}
   function go(v, quiet) {
     if (!VIEWS[v]) v = 'home';
     view = v;
-    for (const k of Object.keys(VIEWS)) $('v-' + k).classList.toggle('hide', k !== v);
     document.querySelectorAll('.nav').forEach((n) => n.classList.toggle('on', n.dataset.v === v));
-    $('vTitle').textContent = VIEWS[v];
     if (location.hash.slice(1) !== v) history.replaceState(null, '', '#' + v);
-    subtitle();
-    if (!quiet) window.scrollTo(0, 0);
+    if (!quiet || v !== 'home') $('v-' + v).scrollIntoView({ behavior: quiet ? 'auto' : 'smooth', block: 'start' });
   }
   document.querySelectorAll('.nav').forEach((n) => n.addEventListener('click', () => go(n.dataset.v)));
   document.querySelectorAll('[data-go]').forEach((n) => n.addEventListener('click', () => go(n.dataset.go)));
   window.addEventListener('hashchange', () => { if (!$('app').classList.contains('hide')) go(viewFromHash()); });
+  // the section on screen is lit in the bar
+  if ('IntersectionObserver' in window) {
+    const seen = new IntersectionObserver((es) => {
+      for (const e of es) if (e.isIntersecting) { const v = e.target.id.slice(2); view = v; document.querySelectorAll('.nav').forEach((n) => n.classList.toggle('on', n.dataset.v === v)); }
+    }, { rootMargin: '-80px 0px -65% 0px' });
+    for (const k of Object.keys(VIEWS)) seen.observe($('v-' + k));
+  }
 
   const n = (s) => rows.filter((r) => r.state === s).length;
   function subtitle() {
-    const p = $('vSub');
-    if (view === 'home') { const d = new Date(); p.textContent = `${iso(d.toLocaleDateString('en-GB').replace(/\//g, '.'))}${loadedAt ? ' · آخر تحديث ' + iso(loadedAt.toTimeString().slice(0, 5)) : ''}`; }
-    else if (view === 'subs') p.textContent = `${rows.length} حساب · ${n('active')} فعّال · ${n('trial')} تجربة · ${n('expired') + n('canceled')} منتهٍ أو ملغى`;
-    else if (view === 'pays') p.textContent = pays.length ? `${pays.length} دفعة مسجّلة` : '';
-    else if (view === 'prices') p.textContent = 'أسعار الباقات كما تظهر للمشتركين';
-    else if (view === 'space') { const g = globalBars(); p.textContent = `المجموع ${sizeTxt(g.db + g.files)} · يُعرض الأكبر أولاً`; }
-    else if (view === 'staff') { const t = staffRows.reduce((a, x) => a + (x.users || []).length, 0); p.textContent = `${t} حساب دخول لدى ${staffRows.length} مشترك`; }
+    const d = new Date();
+    $('vSub').textContent = `${iso(d.toLocaleDateString('en-GB').replace(/\//g, '.'))}${loadedAt ? ' · آخر تحديث ' + iso(loadedAt.toTimeString().slice(0, 5)) : ''}`;
+    $('sub-subs').textContent = `${rows.length} حساب · ${n('active')} فعّال · ${n('trial')} تجربة · ${n('expired') + n('canceled')} منتهٍ أو ملغى`;
+    $('sub-pays').textContent = pays.length ? `${pays.length} دفعة مسجّلة` : '';
+    $('sub-prices').textContent = 'أسعار الباقات كما تظهر للمشتركين';
+    const g = globalBars(); $('sub-space').textContent = `المجموع ${sizeTxt(g.db + g.files)} · الأكبر أولاً`;
+    const t = staffRows.reduce((a, x) => a + (x.users || []).length, 0); $('sub-staff').textContent = `${t} حساب دخول لدى ${staffRows.length} مشترك`;
   }
 
   function renderAll() {
@@ -811,7 +822,17 @@ small.cu{color:var(--green)!important;font-weight:700}
     kpi('مشتركون فعّالون', String(n('active')), `من أصل ${rows.length} حساب`, 'var(--green)');
     kpi('في التجربة', String(n('trial')), trialsSoon ? `${trialsSoon} تنتهي خلال 7 أيام` : 'لا تجربة تنتهي قريباً', 'var(--gold)');
     kpi('دخل هذا الشهر', thisM || '0', `الشهر الماضي: ${lastM ? '⁦' + lastM + '⁩' : '0'}`, 'var(--green)', thisM.length > 12);
-    kpi('مساحة السحابة', sizeTxt(g.db + g.files), `بيانات ${sizeTxt(g.db)} · صور ${sizeTxt(g.files)}`);
+    // the server's two spaces, each with how full it is
+    for (const [label, used, cp, capTxt] of [['مساحة البيانات', g.db, SERVER_DB, SERVER_DB_TXT], ['مساحة الصور', g.files, SERVER_FILES, SERVER_FILES_TXT]]) {
+      const pct = cp ? used / cp : 0;
+      const d = el('div', 'kpi');
+      d.append(el('span', '', label));
+      const b = el('b', '', sizeTxt(used)); d.append(b);
+      const bar = el('div', 'bar8' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')), fi = el('i'); fi.style.width = Math.max(1, Math.min(100, pct * 100)).toFixed(1) + '%'; bar.append(fi);
+      bar.style.margin = '6px 0 4px';
+      d.append(bar, el('small', '', `${iso(Math.round(pct * 1000) / 10 + '%')} من ${iso(capTxt)}`));
+      k.append(d);
+    }
 
     // every active subscriber and what he uses (data and photos against his own limit), the biggest first
     const list = $('actList'); list.textContent = '';
@@ -1285,7 +1306,6 @@ small.cu{color:var(--green)!important;font-weight:700}
 
   $('reload').addEventListener('click', async () => { await load(); toast('تم التحديث', true); });
   $('out').addEventListener('click', signOut);
-  $('out2').addEventListener('click', signOut);
 
   { const sel = $('fCountry'); const o0 = document.createElement('option'); o0.value = ''; o0.textContent = '— بدون تغيير —'; sel.appendChild(o0);
     for (const [c, nm] of COUNTRIES) { const o = document.createElement('option'); o.value = c; o.textContent = nm; sel.appendChild(o); } }
