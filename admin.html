@@ -120,6 +120,21 @@ button:disabled{opacity:.55;cursor:default}
 .pcard .earn{font-size:14px}.pcard .earn th,.pcard .earn td{padding:8px 4px}
 .pcard .pnotes{font-size:13px;padding-inline-start:16px}
 @media(max-width:900px){.two{grid-template-columns:minmax(0,1fr)}.pcard{position:static;order:2}}
+.hint{font-size:13.5px;color:var(--muted);margin:10px 0 12px;line-height:1.7}
+.spc{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.7fr) minmax(0,0.9fr) minmax(0,1.2fr) auto;gap:12px;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:9px 14px;font-size:14.5px}
+.spc:first-child{border-top:0}
+.spc .c small{white-space:normal}
+.bar>span{display:block;color:var(--muted)}
+.spc .sz{font-weight:800;direction:ltr;text-align:right;white-space:nowrap}
+.spc.old{background:var(--redsoft)}
+.spc button{min-height:34px;padding:0 12px;font-size:13.5px;white-space:nowrap}
+.spc .nobtn{min-width:92px}
+.bars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:4px}
+.bar{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px}
+.bar b{font-size:17px;direction:ltr;display:inline-block}
+.bar i{display:block;height:7px;border-radius:9px;background:var(--line);margin-top:8px;overflow:hidden}
+.bar i span{display:block;height:100%;background:var(--green)}
+@media(max-width:820px){.spc{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}.spc .who{grid-column:1/-1}.spc button,.spc .nobtn{grid-column:2/3;grid-row:2/5;align-self:center}}
 </style>
 </head>
 <body>
@@ -230,6 +245,14 @@ button:disabled{opacity:.55;cursor:default}
     </section>
 
     <section class="card">
+      <h2>المساحة في السحابة</h2>
+      <div id="spaceSum"></div>
+      <p class="hint">من انتهى اشتراكه تبقى بياناته في السحابة حتى يجدّد. إن لم يجدّد خلال 6 أشهر يمكنك حذفها لتوفير المساحة؛ يبقى حسابه وسجلّ اشتراكه ودفعاته، وتبقى بياناته على حاسوبه وتُرفع من جديد إن جدّد.</p>
+      <div class="pays" id="spaceList"></div>
+      <div class="msg" id="sMsg"></div>
+    </section>
+
+    <section class="card">
       <h2>المشتركون</h2>
       <div class="tools">
         <input id="q" type="search" placeholder="ابحث بالبريد أو اسم العمل أو البلد">
@@ -308,6 +331,8 @@ button:disabled{opacity:.55;cursor:default}
     if (!r.ok) {
       const m = (j && (j.message || j.hint)) || '';
       if (/not allowed/.test(m)) throw new Error('هذا الحساب لا يملك صلاحية الإدارة');
+      if (/still subscribed/.test(m)) throw new Error('اشتراكه ما زال سارياً، فلا تُحذف بياناته');
+      if (/own account/.test(m)) throw new Error('لا يمكن حذف بيانات حسابك أنت');
       if (/Could not find|does not exist/.test(m)) throw new Error('شغّل ملفات SQL حتى v19 في Supabase أولاً');
       throw new Error(m || 'تعذّر الاتصال بالخادم');
     }
@@ -379,6 +404,9 @@ button:disabled{opacity:.55;cursor:default}
     try { pays = await rpc('amimar_admin_payments') || []; payErr = ''; }
     catch (e) { pays = []; payErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v20 في Supabase لتفعيل قسم الأرباح' : e.message; }
     drawEarnings();
+    try { usage = await rpc('amimar_admin_usage') || []; useErr = ''; }
+    catch (e) { usage = []; useErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v23 في Supabase لتفعيل قسم المساحة' : e.message; }
+    drawSpace();
     const n = (s) => rows.filter((r) => r.state === s).length;
     $('sAll').textContent = rows.length; $('sActive').textContent = n('active'); $('sTrial').textContent = n('trial'); $('sOff').textContent = n('expired') + n('canceled');
     const cf = $('cf'), keepC = cf.value; cf.length = 1;
@@ -424,6 +452,72 @@ button:disabled{opacity:.55;cursor:default}
       const p = paidOf(r);
       k.append(el('div', 'av', initial(r)), nm, ch, el('span', 'tag t-' + r.state, STATE[r.state] || r.state), el('div', p ? 'paid' : 'none', p || '—'));
       k.addEventListener('click', () => pick(r)); box.appendChild(k);
+    }
+  }
+
+  // ---- cloud space per subscriber, and freeing an ended subscription's space ----
+  let usage = [], useErr = '';
+  const sizeTxt = (b) => '\u2066' + (b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : b >= 1024 ? `${Math.round(b / 1024)} KB` : b > 0 ? `${b} B` : '0') + '\u2069';
+  const agoTxt = (d) => d <= 0 ? 'انتهى اليوم' : d === 1 ? 'انتهى منذ يوم' : d === 2 ? 'انتهى منذ يومين' : d <= 10 ? `انتهى منذ ${d} أيام` : `انتهى منذ ${d} يوماً`;
+  async function storageFetch(path, init) {
+    const r = await fetch(`${URL_}/storage/v1/${path}`, { ...init, headers: { apikey: KEY, Authorization: `Bearer ${session.access}`, 'Content-Type': 'application/json' } });
+    const j = await r.json().catch(() => null);
+    if (!r.ok) throw new Error((j && (j.message || j.error)) || 'تعذّر حذف الملفات');
+    return j;
+  }
+  async function removeFiles(uid) {
+    for (const bucket of ['models', 'backups']) {
+      for (let round = 0; round < 50; round++) {
+        const list = await storageFetch(`object/list/${bucket}`, { method: 'POST', body: JSON.stringify({ prefix: uid, limit: 100, offset: 0 }) });
+        const names = (list || []).filter((f) => f && f.name && f.id).map((f) => `${uid}/${f.name}`);
+        if (!names.length) break;
+        await storageFetch(`object/${bucket}`, { method: 'DELETE', body: JSON.stringify({ prefixes: names }) });
+      }
+    }
+  }
+  function drawSpace() {
+    const sum = $('spaceSum'), list = $('spaceList');
+    sum.textContent = ''; list.textContent = ''; list.classList.add('hide');
+    if (useErr) { sum.appendChild(el('div', 'empty', useErr)); return; }
+    const db = usage.reduce((a, u) => a + Number(u.db_bytes), 0), files = usage.reduce((a, u) => a + Number(u.file_bytes), 0);
+    const bars = el('div', 'bars');
+    for (const [name, used, cap, capTxt] of [['البيانات', db, 500 * 1048576, '500 MB'], ['الصور والنسخ الاحتياطية', files, 1024 * 1048576, '1 GB']]) {
+      const b = el('div', 'bar'); b.append(el('div', '', name), el('b', '', sizeTxt(used)), el('span', '', `من ${capTxt} في الخطة المجانية`));
+      const i = el('i'); const f = el('span'); f.style.width = Math.min(100, used / cap * 100).toFixed(1) + '%'; if (used / cap > 0.8) f.style.background = 'var(--red)'; i.append(f); b.append(i); bars.append(b);
+    }
+    sum.append(bars);
+    const byEmail = new Map(rows.map((r) => [String(r.email || '').toLowerCase(), r]));
+    const items = usage.map((u) => ({ u, r: byEmail.get(String(u.em || '').toLowerCase()), total: Number(u.db_bytes) + Number(u.file_bytes) }))
+      .filter((x) => x.total > 0).sort((a, b) => b.total - a.total);
+    if (!items.length) return;
+    list.classList.remove('hide');
+    for (const { u, r, total } of items.slice(0, 50)) {
+      const state = r ? r.state : 'expired', ended = state !== 'active' && state !== 'trial';
+      const days = u.ended_at ? Math.floor((Date.now() - new Date(u.ended_at).getTime()) / 86400000) : 0;
+      const d = el('div', 'spc' + (ended && days >= 180 ? ' old' : ''));
+      const who = r && r.business ? cell('who', '', r.business, u.em, '', 'mail') : cell('who', '', u.em || '—', '', 'mail');
+      const sz = cell('', '', sizeTxt(total), `بيانات ${sizeTxt(Number(u.db_bytes))} · صور ونسخ ${sizeTxt(Number(u.file_bytes))}`, 'sz');
+      const rowsC = cell('', '', `${Number(u.db_rows).toLocaleString('en-US')} سطر`, `${Number(u.file_count)} ملف`);
+      const st = el('div', 'c st');
+      st.append(el('span', 'tag t-' + state, STATE[state] || state));
+      if (ended && u.ended_at) st.append(el('small', days >= 180 ? 'soon' : '', agoTxt(days)));
+      d.append(who, sz, rowsC, st);
+      if (ended && u.em !== session.email) {
+        const del = el('button', 'b-red', 'حذف بياناته'); del.type = 'button';
+        let armed = null;
+        del.addEventListener('click', async () => {
+          if (!armed) { del.classList.add('sure'); del.textContent = 'تأكيد الحذف'; armed = setTimeout(() => { armed = null; del.classList.remove('sure'); del.textContent = 'حذف بياناته'; }, 5000); return; }
+          clearTimeout(armed); del.disabled = true; del.textContent = 'جارٍ الحذف…';
+          try {
+            await removeFiles(u.id);
+            const n = await rpc('amimar_admin_wipe_data', { p_email: u.em });
+            show($('sMsg'), `حُذفت بيانات ${u.em} من السحابة (${Number(n || 0)} سطراً مع ملفاته) ✓`, true);
+            await load();
+          } catch (e) { show($('sMsg'), e.message, false); del.disabled = false; del.textContent = 'حذف بياناته'; }
+        });
+        d.append(del);
+      } else d.append(el('span', 'nobtn'));
+      list.appendChild(d);
     }
   }
 
