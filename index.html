@@ -158,6 +158,18 @@ p{margin:0}
 .meter i{display:block;height:100%;background:var(--green);border-radius:inherit}
 /* features */
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:30px}
+.ftabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.ftabs button{font:inherit;font-weight:800;font-size:15px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:99px;padding:9px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background .2s,color .2s,border-color .2s}
+.ftabs button span{font-size:12.5px;font-weight:800;color:var(--muted);background:var(--bg);border-radius:99px;padding:0 8px}
+.ftabs button[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.ftabs button[aria-selected="true"] span{background:#ffffff2e;color:#fff}
+.ftabs button:focus-visible{outline:3px solid var(--soft);outline-offset:2px}
+.grid.fgrid{margin-top:18px}
+.feat[hidden]{display:none}
+.feat.in{animation:fin .35s ease both}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.feat.in{animation:none}}
+@media(max-width:640px){.ftabs{display:grid;grid-template-columns:1fr 1fr}.ftabs button{justify-content:space-between;padding:10px 14px;font-size:14px;text-align:start}}
 .feat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:8px}
 .feat svg{width:40px;height:40px}
 .feat p{color:var(--muted);font-size:15px}
@@ -243,6 +255,9 @@ footer{border-top:1px solid var(--line)}
 .theme .sun{display:none}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .theme .sun{display:block}:root:not([data-theme=light]) .theme .moon{display:none}}
 :root[data-theme=dark] .theme .sun{display:block}:root[data-theme=dark] .theme .moon{display:none}
+
+
+
 
 
 
@@ -380,6 +395,7 @@ footer{border-top:1px solid var(--line)}
       <h2>كل ما يحتاجه عملك في مكان واحد</h2>
       <p class="lead">بديلاً عن الدفاتر وجداول إكسل والبرامج المتفرقة.</p>
     </div>
+    <div class="ftabs" role="tablist" id="ftabs"></div>
     <div class="grid" id="feats"></div>
   </div>
 </section>
@@ -462,6 +478,7 @@ footer{border-top:1px solid var(--line)}
       <details><summary>ماذا لو انقطع الإنترنت في المتجر؟</summary><p>يواصل برنامج الحاسوب العمل دون إنترنت، ثم يزامن كل شيء مع الهاتف فور عودة الاتصال.</p></details>
       <details><summary>هل يعمل البرنامج مع جهاز البصمة؟</summary><p>نعم. يقرأ البصمات من الجهاز، ويحسب الحضور والتأخير والعمل الإضافي واستراحات الغداء، ثم الرواتب تلقائياً.</p></details>
       <details><summary>هل يمكنني العمل بالدولار بدلاً من الليرة؟</summary><p>نعم. تختار عملة العمل من الإعدادات، وتبقى العملات الأخرى متاحة للفواتير والسندات بأسعار صرفها.</p></details>
+      <details><summary>هل يمكن لموظفيّ استخدام البرنامج؟</summary><p>نعم. تضيف لكل موظف اسم مستخدم وكلمة مرور، وتحدّد الأقسام التي يراها أو يعدّلها، ويمكن لأي موظف أن يرى راتبه ودوامه من هاتفه فقط. كل حساب إضافي بـ 20$ في السنة.</p></details>
       <details><summary>ماذا لو نسيت كلمة المرور؟</summary><p>اضغط «نسيت كلمة المرور» في شاشة الدخول، فيصلك رمز على بريدك الإلكتروني لتختار كلمة مرور جديدة. ويمكنك أيضاً الدخول بحساب Google أو Apple.</p></details>
     </div>
   </div>
@@ -513,25 +530,36 @@ footer{border-top:1px solid var(--line)}
 
   const icon = (d) => `<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="var(--soft)"/><path d="${d}" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   const feats = [
-    ['نقطة البيع', 'بيع سريع بالرمز الشريطي، بسعر التجزئة أو الجملة، مع حساب الباقي وإيصال بعرض 80 مم.', 'M10 14h20v14H10zM14 14v-4h12v4M15 20h10M15 24h6', 'جديد'],
-    ['الفواتير والمرتجعات', 'فواتير بيع ومرتجعات وسندات قبض ودفع، مع معاينة قبل المشاركة وبثلاث لغات.', 'M13 9h14v22l-3.5-2-3.5 2-3.5-2-3.5 2zM17 15h6M17 20h6'],
-    ['المخزون والجرد', 'أصناف بالرمز الشريطي، وجرد بكاميرا الهاتف، وتنبيه قبل نفاد أي صنف.', 'M10 15l10-5 10 5v11l-10 5-10-5zM10 15l10 5 10-5M20 20v11'],
-    ['البصمة والدوام', 'ربط بجهاز البصمة: الحضور والتأخير والعمل الإضافي والعطل والاستراحات، محسوبة تلقائياً.', 'M14 26c0-6 2.5-10 6-10s6 4 6 10M17 28c0-5 1-8 3-8s3 3 3 8M11 20c1-6 4.5-9 9-9s8 3 9 9'],
-    ['الرواتب', 'رواتب يومية أو أسبوعية أو شهرية، مع العمل الإضافي والخصومات والسلف، وكشف لكل موظف.', 'M9 14h22v14H9zM20 21m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M13 18v6M27 18v6'],
-    ['الديون والحسابات', 'حساب لكل عميل ومورّد، وكشف حساب، ودفعات جزئية، وقيود محاسبية كاملة.', 'M10 28V12M10 28h20M15 24v-5M20 24v-9M25 24v-7'],
-    ['المهام والتذكيرات', 'مهام بمواعيد تصلك تذكيراتها بنغمة Amimar، مع ملخص كل صباح.', 'M20 10a7 7 0 0 1 7 7v5l2 4H11l2-4v-5a7 7 0 0 1 7-7zM17 29a3 3 0 0 0 6 0'],
-    ['لوحة المؤشرات', 'المبيعات والتحصيل والأرباح وأفضل العملاء والأصناف، شهراً بشهر.', 'M11 29V19M17 29V13M23 29v-8M29 29V16'],
-    ['الشيكات والأقساط', 'شيكات واردة وصادرة بمواعيد استحقاقها، وتقسيط دين العميل على دفعات مع تذكير عبر واتساب.', 'M9 13h22v14H9zM13 19h8M13 23h5M26 22l2 2 3-4', 'جديد'],
-    ['المستخدمون والصلاحيات', 'أضف موظفيك بأسماء وكلمات مرور، وحدّد لكل واحد الأقسام التي يراها أو يعدّلها.', 'M15 18a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 30c0-5 3-8 7-8s7 3 7 8M26 16a3 3 0 1 0 0-6M28 22c2 1 4 4 4 8', 'جديد'],
-    ['بوابة الموظف', 'يرى كل موظف من هاتفه راتبه وأيام دوامه وسُلفه وما بقي له، ولا شيء غيره.', 'M14 9h12v22H14zM18 27h4M20 15a2.5 2.5 0 1 0 0 5a2.5 2.5 0 0 0 0-5zM16.5 24c.5-2 2-3 3.5-3s3 1 3.5 3', 'جديد'],
-    ['تعدد العملات', 'بِع واشترِ بأي عملة وبسعر صرف تحدّده، وتُحسب الأرصدة والأرباح بعملة برنامجك.', 'M20 10a10 10 0 1 0 0 20a10 10 0 0 0 0-20zM23 16c-1-1-2-1.5-3-1.5c-2 0-3 1-3 2.5c0 3 6 2 6 5c0 1.5-1.2 2.5-3 2.5c-1.2 0-2.3-.5-3-1.5M20 12.5v2M20 25v2.5'],
-    ['واتساب', 'أرسل الفواتير وكشوف الحساب وتذكيرات الدفع لعملائك عبر واتساب بضغطة.', 'M20 10a10 10 0 0 0-8.7 15l-1.3 5 5.2-1.3A10 10 0 1 0 20 10zM16 17c0 4 3 7 7 7l1.5-1.5-2-1.5-1 1c-1.5-.5-2.5-1.5-3-3l1-1-1.5-2z'],
-    ['المساعد الذكي', 'اسأل عن مبيعاتك وأرباحك وديونك بكلماتك، فيجيبك من أرقامك أنت.', 'M20 9l2.5 6.5L29 18l-6.5 2.5L20 27l-2.5-6.5L11 18l6.5-2.5zM28 26l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z'],
-    ['الاستيراد من Excel', 'انقل عملاءك ومنتجاتك وموظفيك من ملف Excel دفعة واحدة، بقالب جاهز.', 'M12 9h12l5 5v17H12zM24 9v5h5M16 19l6 7M22 19l-6 7'],
-    ['النسخ الاحتياطي والأمان', 'نسخة احتياطية يومية في السحابة، وقفل التطبيق بالبصمة، وبيانات كل حساب منفصلة تماماً.', 'M20 9l9 4v6c0 6-4 10-9 12c-5-2-9-6-9-12v-6zM16 20l3 3 5-6'],
+    ['نقطة البيع', 'بيع سريع بالرمز الشريطي، بسعر التجزئة أو الجملة، مع حساب الباقي وإيصال بعرض 80 مم.', 'M10 14h20v14H10zM14 14v-4h12v4M15 20h10M15 24h6', 'جديد', 's'],
+    ['الفواتير والمرتجعات', 'فواتير بيع ومرتجعات وسندات قبض ودفع، مع معاينة قبل المشاركة وبثلاث لغات.', 'M13 9h14v22l-3.5-2-3.5 2-3.5-2-3.5 2zM17 15h6M17 20h6', '', 's'],
+    ['المخزون والجرد', 'أصناف بالرمز الشريطي، وجرد بكاميرا الهاتف، وتنبيه قبل نفاد أي صنف.', 'M10 15l10-5 10 5v11l-10 5-10-5zM10 15l10 5 10-5M20 20v11', '', 's'],
+    ['واتساب', 'أرسل الفواتير وكشوف الحساب وتذكيرات الدفع لعملائك عبر واتساب بضغطة.', 'M20 10a10 10 0 0 0-8.7 15l-1.3 5 5.2-1.3A10 10 0 1 0 20 10zM16 17c0 4 3 7 7 7l1.5-1.5-2-1.5-1 1c-1.5-.5-2.5-1.5-3-3l1-1-1.5-2z', '', 's'],
+    ['الديون والحسابات', 'حساب لكل عميل ومورّد، وكشف حساب، ودفعات جزئية، وقيود محاسبية كاملة.', 'M10 28V12M10 28h20M15 24v-5M20 24v-9M25 24v-7', '', 'f'],
+    ['لوحة المؤشرات', 'المبيعات والتحصيل والأرباح وأفضل العملاء والأصناف، شهراً بشهر.', 'M11 29V19M17 29V13M23 29v-8M29 29V16', '', 'f'],
+    ['الشيكات والأقساط', 'شيكات واردة وصادرة بمواعيد استحقاقها، وتقسيط دين العميل على دفعات مع تذكير عبر واتساب.', 'M9 13h22v14H9zM13 19h8M13 23h5M26 22l2 2 3-4', 'جديد', 'f'],
+    ['تعدد العملات', 'بِع واشترِ بأي عملة وبسعر صرف تحدّده، وتُحسب الأرصدة والأرباح بعملة برنامجك.', 'M20 10a10 10 0 1 0 0 20a10 10 0 0 0 0-20zM23 16c-1-1-2-1.5-3-1.5c-2 0-3 1-3 2.5c0 3 6 2 6 5c0 1.5-1.2 2.5-3 2.5c-1.2 0-2.3-.5-3-1.5M20 12.5v2M20 25v2.5', '', 'f'],
+    ['البصمة والدوام', 'ربط بجهاز البصمة: الحضور والتأخير والعمل الإضافي والعطل والاستراحات، محسوبة تلقائياً.', 'M14 26c0-6 2.5-10 6-10s6 4 6 10M17 28c0-5 1-8 3-8s3 3 3 8M11 20c1-6 4.5-9 9-9s8 3 9 9', '', 'h'],
+    ['الرواتب', 'رواتب يومية أو أسبوعية أو شهرية، مع العمل الإضافي والخصومات والسلف، وكشف لكل موظف.', 'M9 14h22v14H9zM20 21m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0M13 18v6M27 18v6', '', 'h'],
+    ['المستخدمون والصلاحيات', 'أضف موظفيك بأسماء وكلمات مرور، وحدّد لكل واحد الأقسام التي يراها أو يعدّلها.', 'M15 18a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 30c0-5 3-8 7-8s7 3 7 8M26 16a3 3 0 1 0 0-6M28 22c2 1 4 4 4 8', 'قريباً', 'h'],
+    ['بوابة الموظف', 'يرى كل موظف من هاتفه راتبه وأيام دوامه وسُلفه وما بقي له، ولا شيء غيره.', 'M14 9h12v22H14zM18 27h4M20 15a2.5 2.5 0 1 0 0 5a2.5 2.5 0 0 0 0-5zM16.5 24c.5-2 2-3 3.5-3s3 1 3.5 3', 'قريباً', 'h'],
+    ['المهام والتذكيرات', 'مهام بمواعيد تصلك تذكيراتها بنغمة Amimar، مع ملخص كل صباح.', 'M20 10a7 7 0 0 1 7 7v5l2 4H11l2-4v-5a7 7 0 0 1 7-7zM17 29a3 3 0 0 0 6 0', '', 't'],
+    ['المساعد الذكي', 'اسأل عن مبيعاتك وأرباحك وديونك بكلماتك، فيجيبك من أرقامك أنت.', 'M20 9l2.5 6.5L29 18l-6.5 2.5L20 27l-2.5-6.5L11 18l6.5-2.5zM28 26l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z', '', 't'],
+    ['الاستيراد من Excel', 'انقل عملاءك ومنتجاتك وموظفيك من ملف Excel دفعة واحدة، بقالب جاهز.', 'M12 9h12l5 5v17H12zM24 9v5h5M16 19l6 7M22 19l-6 7', '', 't'],
+    ['النسخ الاحتياطي والأمان', 'نسخة احتياطية يومية في السحابة، وقفل التطبيق بالبصمة، وبيانات كل حساب منفصلة تماماً.', 'M20 9l9 4v6c0 6-4 10-9 12c-5-2-9-6-9-12v-6zM16 20l3 3 5-6', '', 't'],
   ];
-  document.getElementById('feats').innerHTML = feats.map(([t, d, p, tag]) =>
-    `<article class="feat">${icon(p)}<h3>${t}</h3><p>${d}</p>${tag ? `<span class="tag">${tag}</span>` : ''}</article>`).join('');
+  // the features in four groups, shown one group at a time (all stay in the page for search engines)
+  const cats = [['s', 'المبيعات والمخزون'], ['f', 'المالية والحسابات'], ['h', 'الموظفون والرواتب'], ['t', 'الأدوات والأمان']];
+  const fgrid = document.getElementById('feats'), ftabs = document.getElementById('ftabs');
+  fgrid.classList.add('fgrid');
+  fgrid.innerHTML = feats.map(([t, d, p, tag, c]) =>
+    `<article class="feat" data-cat="${c}">${icon(p)}<h3>${t}</h3><p>${d}</p>${tag ? `<span class="tag">${tag}</span>` : ''}</article>`).join('');
+  ftabs.innerHTML = cats.map(([c, n]) => `<button type="button" role="tab" data-cat="${c}" aria-selected="false">${n}<span>${feats.filter((f) => f[4] === c).length}</span></button>`).join('');
+  const showCat = (c) => {
+    ftabs.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.cat === c)));
+    fgrid.querySelectorAll('.feat').forEach((f) => { const on = f.dataset.cat === c; f.hidden = !on; f.classList.toggle('in', on); });
+  };
+  ftabs.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) showCat(b.dataset.cat); });
+  showCat('s');
 
   const shots = [['home', 'الصفحة الرئيسية'], ['cashier', 'نقطة البيع'], ['invoices', 'الفواتير'], ['stock', 'المخزون'], ['profits', 'الأرباح'], ['payroll', 'الرواتب'], ['assistant', 'المساعد الذكي']];
   const gal = document.getElementById('gallery');
