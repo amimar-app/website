@@ -814,7 +814,10 @@ small.cu{color:var(--green)!important;font-weight:700}
     for (const [name, n, color] of [['الكل', rows.length, 'var(--ink)'], ...GROUPS.map(([, gname, inG, c]) => [gname, rows.filter(inG).length, c])]) {
       const d = el('div', 'cn'); const b = el('b', '', String(n)); b.style.color = color; d.append(el('span', '', name), b); cn.append(d);
     }
-    const box = $('groups'); box.textContent = '';
+    const box = $('groups');
+    // drawn again (a click, a save, a refresh): the open list keeps where it was scrolled to
+    const was = box.querySelector('.open'), keepG = box.dataset.open || '', keepTop = was ? was.scrollTop : 0;
+    box.textContent = '';
     const searching = $('q').value.trim().length > 0;
     const lists = GROUPS.map(([key, , inG, , dir]) => [key, rows.filter(inG).filter(matches)
       .sort((a, b) => String(a.ends || '9').localeCompare(String(b.ends || '9')) * dir)]);
@@ -848,6 +851,10 @@ small.cu{color:var(--green)!important;font-weight:700}
       box.append(o);
     }
     drawCloudUsers(box, searching);
+    box.dataset.open = openG;
+    const now = box.querySelector('.open');
+    if (now && keepG === openG) now.scrollTop = keepTop;
+    const op = now && now.querySelector('.cu.opened'); if (op) op.scrollIntoView({ block: 'nearest' }); // the person opened stays in view
   }
   $('q').addEventListener('input', drawGroups);
 
