@@ -300,6 +300,7 @@ small.cu{color:var(--green)!important;font-weight:700}
 .actgrid{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px;align-items:start}
 .actform label{margin-top:8px}
 .kvs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.kvs>div.wide{grid-column:1/-1}
 .kvs>div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 9px;min-width:0}
 .kvs span{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
 .kvs b{display:block;font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -427,6 +428,7 @@ small.cu{color:var(--green)!important;font-weight:700}
         <button class="btn b-line" id="fSaveUsers">حفظ عدد المستخدمين</button>
         <button class="btn b-red" id="fCancel">إلغاء الاشتراك</button>
         <button class="btn b-line" id="fMore">المساحة والتفاصيل</button>
+        <button class="btn b-line" id="fFree" title="يسمح له بفتح الحساب على كمبيوتر وموبايل جديدين">تحرير الأجهزة</button>
       </div>
       <div class="msg" id="fMsg"></div>
           </div>
@@ -613,7 +615,7 @@ small.cu{color:var(--green)!important;font-weight:700}
   $('mfaBack').addEventListener('click', signOut);
 
   // ---- data ----
-  let loading = false, counts = [], profitSince = null, profitOk = false;
+  let loading = false, counts = [], profitSince = null, profitOk = false, devices = [], devOk = false;
   async function load() {
     if (loading) return; loading = true; $('reload').disabled = true;
     try {
@@ -626,6 +628,7 @@ small.cu{color:var(--green)!important;font-weight:700}
       try { storeRows = await rpc('amimar_admin_storage') || []; }
       catch (e) { storeRows = []; }
       try { counts = await rpc('amimar_admin_counts') || []; } catch (e) { counts = []; }
+      try { devices = await rpc('amimar_admin_devices') || []; devOk = true; } catch (e) { devices = []; devOk = false; }
       try { profitSince = await rpc('amimar_admin_profit_since'); profitOk = true; } catch (e) { profitSince = null; profitOk = false; }
       try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
       catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
@@ -940,19 +943,35 @@ small.cu{color:var(--green)!important;font-weight:700}
     const kv = $('dKv'); kv.textContent = ''; kv.classList.toggle('hide', !r);
     if (r) {
       const us = staffOf(r.email), e = empOf(r.email);
-      const add = (k, v, cls) => { const d = el('div'); d.append(el('span', '', k), el('b', cls || '', v)); d.title = v; kv.append(d); };
+      const add = (k, v, cls, wide) => { const d = el('div', wide ? 'wide' : ''); d.append(el('span', '', k), el('b', cls || '', v)); d.title = v; kv.append(d); };
       add('الباقة', PLAN[r.plan_kind] || PLAN[0]);
       add('ينتهي', r.ends ? `${iso(r.ends)} · ${left(r)}` : '—', soon(r) ? 'soon' : '');
       add('مجموع المدفوع', paidOf(r) || '—');
       add('الموظفون', `${e == null ? '—' : e} · الحد ${empTxt(r.max_employees)}`);
       add('المستخدمون', us ? `${(us.users || []).length} من ${us.seats || 0}` : '0');
       add('البريد', r.email, 'mail');
+      if (devOk) {
+        const mine = devices.filter((d) => low(d.email) === low(r.email));
+        const one = (k, name) => { const d = mine.find((x) => x.kind === k); return `${name}: ${d ? (d.label || '✓') : '—'}`; };
+        add('الأجهزة المفتوحة', `${one('desktop', 'كمبيوتر')} · ${one('phone', 'موبايل')}`, '', true);
+      }
     }
     $('fGo').textContent = r && r.state === 'active' ? 'تمديد' : 'تفعيل';
     $('fCancel').classList.toggle('hide', !r || !live(r));
     for (const id of ['fSaveCountry', 'fSaveUsers', 'fMore']) $(id).classList.toggle('hide', !r);
+    $('fFree').classList.toggle('hide', !r || !devOk || !devices.some((d) => low(d.email) === low(r.email)));
   }
   $('fMore').addEventListener('click', () => { const r = sel ? rowOf(sel) : null; if (r) openDrawer(r, 'space'); });
+  // a subscriber whose phone or computer is lost / replaced: free his places (the next device he opens takes them)
+  let armedF = null;
+  $('fFree').addEventListener('click', async () => {
+    const b = $('fFree'), email = sel;
+    if (!email) return;
+    if (!armedF) { b.classList.add('sure'); b.textContent = 'اضغط مرة أخرى للتأكيد'; armedF = setTimeout(() => { armedF = null; b.classList.remove('sure'); b.textContent = 'تحرير الأجهزة'; }, 5000); return; }
+    clearTimeout(armedF); armedF = null; b.classList.remove('sure'); b.textContent = 'تحرير الأجهزة';
+    try { const n = await rpc('amimar_admin_free_devices', { p_email: email }); await load(); toast(`تحرّرت أجهزة ${email} (${Number(n || 0)}) — أول جهاز يفتحه يصبح المعتمد`, true); }
+    catch (e) { toast(e.message, false); }
+  });
 
   // ---- the cloud: the server's two spaces, each with how full it is ----
   function drawCloud() {
