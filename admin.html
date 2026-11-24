@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://wgbkeyjxlvnlvnktaceu.supabase.co; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
-<title>Amimar · إدارة الاشتراكات</title>
+<title>Amimar · لوحة الإدارة</title>
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,158 +15,247 @@
 :root{color-scheme:light dark;
 --bg:light-dark(#F2ECE2,#0E1512);--card:light-dark(#FCFAF5,#17211C);--ink:light-dark(#17211C,#EAF0EB);--muted:light-dark(#5F6A62,#9DAAA1);
 --line:light-dark(#E2D9C9,#26322C);--green:light-dark(#1E8A5E,#2FA673);--soft:light-dark(#E3F1E9,#15301F);
---gold:light-dark(#B5853A,#D3A85A);--red:light-dark(#C2412D,#E0664F);--redsoft:light-dark(#F8E3DE,#3A1D17);--goldsoft:light-dark(#F5EBD7,#2E2614)}
+--gold:light-dark(#B5853A,#D3A85A);--red:light-dark(#C2412D,#E0664F);--redsoft:light-dark(#F8E3DE,#3A1D17);--goldsoft:light-dark(#F5EBD7,#2E2614);
+--head:light-dark(#F7F2E9,#1B2621);--side:light-dark(#17211C,#0A100D);--sel:light-dark(#EEF6F1,#1A2E23)}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.6 Tajawal,"Segoe UI",Tahoma,sans-serif}
-.wrap{max-width:1120px;margin-inline:auto;padding:16px}
-header{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:6px 0 16px}
-header h1{margin:0;font-size:22px;font-weight:900}
-header h1 b{color:var(--green)}
-header .who{margin-inline-start:auto;font-size:14px;color:var(--muted);text-align:end;direction:ltr;overflow-wrap:anywhere}
-@media(max-width:640px){header h1{font-size:19px}header .who{flex-basis:100%;text-align:right}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
-h2{margin:0 0 12px;font-size:19px;font-weight:900}
-label{display:block;font-weight:800;font-size:14px;margin:12px 0 6px}
-input,select{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:0 14px;font:600 16px Tajawal,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 15px/1.55 Tajawal,"Segoe UI",Tahoma,sans-serif}
+body.lock{overflow:hidden}
+.hide{display:none!important}
+button{font:800 14px Tajawal,sans-serif;cursor:pointer;color:inherit}
+button:disabled{opacity:.55;cursor:default}
+input,select{width:100%;min-height:42px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:0 12px;font:600 15px Tajawal,sans-serif}
 input:focus,select:focus{outline:none;border-color:var(--green)}
 input[type=email],input[type=password]{direction:ltr;text-align:right}
-.row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-button{min-height:48px;padding:0 20px;border-radius:12px;border:1.5px solid transparent;font:800 16px Tajawal,sans-serif;cursor:pointer}
-button:disabled{opacity:.55;cursor:default}
+label{display:block;font-weight:800;font-size:12.5px;color:var(--muted);margin:10px 0 4px}
+.btn{min-height:40px;padding:0 16px;border-radius:10px;border:1.5px solid transparent;white-space:nowrap}
 .b-green{background:var(--green);color:#fff}
-.b-line{background:transparent;border-color:var(--line);color:var(--ink)}
-.b-red{background:transparent;border-color:var(--red);color:var(--red)}
+.b-line{background:var(--card);border-color:var(--line);color:var(--ink)}
+.b-red{background:var(--card);border-color:var(--red);color:var(--red)}
 .b-red.sure{background:var(--red);color:#fff}
-.msg{margin-top:12px;padding:10px 14px;border-radius:12px;font-weight:700;display:none}
+.btn.sm{min-height:32px;padding:0 10px;font-size:12.5px;border-radius:8px}
+.msg{margin-top:10px;padding:9px 12px;border-radius:10px;font-weight:700;display:none;font-size:14px}
 .msg.ok{display:block;background:var(--soft);color:var(--green)}
 .msg.err{display:block;background:var(--redsoft);color:var(--red)}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
-.stat b{display:block;font-size:26px;font-weight:900}
-.stat span{font-size:13.5px;color:var(--muted)}
-.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.tools input{flex:1 1 220px}
-.tools select{flex:0 0 150px}
-.list{display:flex;flex-direction:column;gap:8px}
-.count{font-size:13.5px;color:var(--muted);margin:-4px 0 10px}
-/* subscribers: a table on wide screens, cards on phones */
-.subs{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.sh,.sub{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.4fr) minmax(0,1.3fr) minmax(0,1fr) 96px;gap:12px;align-items:center;padding:10px 14px}
-.sh{background:var(--soft);font-size:13px;font-weight:800;color:var(--muted)}
-.sub{background:var(--card);border:0;border-radius:0;min-height:0;border-top:1px solid var(--line);cursor:pointer;text-align:start;width:100%;font:inherit;color:inherit;font-size:14.5px;line-height:1.45}
-.sub:first-of-type{border-top:0}
-.sub:hover,.sub:focus-visible{background:var(--bg);outline:none}
-.sub:focus-visible{box-shadow:inset 3px 0 0 var(--green)}
-.c{display:flex;flex-direction:column;min-width:0}
-.c b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.c small{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 12px;line-height:1.7}
+.empty{color:var(--muted);text-align:center;padding:16px;font-size:14px}
 .mail{direction:ltr;text-align:right;unicode-bidi:plaintext}
-.c b.mail{font-weight:700;font-size:14px}
-.c .lb{display:none}
-.c.st{align-items:flex-start;gap:3px}
-.paid{font-weight:800;color:var(--green);direction:ltr;text-align:right}
-.none{color:var(--muted)}
-.soon{color:var(--red)!important;font-weight:700}
-@media(max-width:820px){
-  .sh{display:none}
-  .subs{border:0;border-radius:0;gap:8px;overflow:visible}
-  .sub{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;border:1px solid var(--line)!important;border-radius:14px;padding:12px 14px}
-  .sub .who{grid-column:1/2}
-  .sub .st{grid-column:2/3;grid-row:1;align-items:flex-end;text-align:end}
-  .sub .who{grid-column:1/2;grid-row:1}
-  .c .lb{display:block;font-size:12px;color:var(--muted);font-weight:700}
-}
-.tag{font-size:13px;font-weight:800;border-radius:99px;padding:2px 10px;white-space:nowrap}
+.num{font-weight:800;direction:ltr;text-align:right;white-space:nowrap}
+.soon{color:var(--red)!important;font-weight:800}
+.tag{display:inline-block;font-size:12px;font-weight:800;border-radius:99px;padding:2px 10px;white-space:nowrap}
 .t-active{background:var(--soft);color:var(--green)}
 .t-trial{background:var(--goldsoft);color:var(--gold)}
 .t-expired,.t-canceled{background:var(--redsoft);color:var(--red)}
-.empty{color:var(--muted);text-align:center;padding:18px}
-.earn{width:100%;border-collapse:collapse;font-size:15px}
-.earn th,.earn td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:start}
-.earn th{font-size:13.5px;color:var(--muted);font-weight:800}
-.earn td.num{font-weight:900;direction:ltr;text-align:right;white-space:nowrap}
+.chip{display:inline-block;font-size:12px;font-weight:700;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:1px 9px;white-space:nowrap}
+.chip.u-ok{color:var(--green);border-color:var(--green)}.chip.u-bad{color:var(--red);border-color:var(--red)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.card h3{margin:0 0 12px;font-size:15.5px;font-weight:900;display:flex;align-items:center;gap:8px}
+.card h3 .lnk{margin-inline-start:auto;font-size:12.5px;color:var(--green);font-weight:800;background:none;border:0;padding:0}
+
+/* sign in */
+.gate{max-width:460px;margin:40px auto;padding:16px}
+.gate .logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.gate .logo b{font-size:20px;font-weight:900}
+.gate h2{margin:0 0 8px;font-size:19px;font-weight:900}
+.gate input{min-height:48px;font-size:16px}
+.gate .btns{display:flex;gap:10px;margin-top:16px}.gate .btn{min-height:46px;font-size:15px}
+
+/* shell */
+.app{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}
+.side{background:var(--side);color:#DCE6DF;padding:18px 12px;display:flex;flex-direction:column;gap:3px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px;border-bottom:1px solid #ffffff14;margin-bottom:8px}
+.brand b{font-size:17px;color:#fff;font-weight:900}.brand small{display:block;font-size:12px;color:#9DAAA1}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-weight:700;color:#C9D4CD;background:none;border:0;width:100%;text-align:start;font-size:14.5px}
+.nav svg{flex:none;width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.nav:hover{background:#ffffff0d}
+.nav.on{background:#ffffff17;color:#fff}.nav.on svg{color:#5BD39C;opacity:1}
+.nav .ct{margin-inline-start:auto;font-size:11.5px;background:#ffffff1a;border-radius:99px;padding:0 8px;min-width:22px;text-align:center}
+.nav .ct.al{background:#C2412D;color:#fff}
+.nav .ct:empty{display:none}
+.grp{font-size:11.5px;color:#7F8C84;padding:14px 12px 4px;font-weight:800}
+.me{margin-top:auto;border-top:1px solid #ffffff14;padding:12px 8px 0;font-size:12px;color:#9DAAA1}
+.me b{display:block;color:#fff;font-size:12.5px;direction:ltr;text-align:right;overflow-wrap:anywhere}
+.me button{margin-top:10px;width:100%;background:#ffffff12;border:1px solid #ffffff1f;color:#DCE6DF;border-radius:9px;min-height:36px}
+.main{padding:22px 26px 40px;min-width:0}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:10px 12px;margin-bottom:16px}
+.top h1{margin:0;font-size:22px;font-weight:900}.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.top .sp{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap}
+.only-m{display:none!important}
+
+/* home */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi span{font-size:12.5px;color:var(--muted);font-weight:700}
+.kpi b{display:block;font-size:25px;font-weight:900;margin-top:2px;direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kpi b.sm{font-size:19px;line-height:1.75}
+.kpi small{display:block;font-size:12px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}
+.cols>.card{margin-bottom:14px}
+.att{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.att:first-child{border-top:0;padding-top:0}
+.att .dot{width:9px;height:9px;border-radius:99px;flex:none}
+.att .tx{flex:1;min-width:0}
+.att b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.att small{display:block;color:var(--muted);font-size:12.5px}
+.att .go{flex:none;font-size:12.5px;font-weight:800;color:var(--green);border:1px solid var(--line);border-radius:8px;padding:5px 10px;background:var(--bg);text-decoration:none;white-space:nowrap}
+.ok-all{display:flex;align-items:center;gap:8px;color:var(--green);font-weight:800;font-size:14px;padding:6px 0}
+.curs{display:flex;gap:6px;margin:-4px 0 6px}
+.curs button{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;background:var(--card);color:var(--muted)}
+.curs button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.chart{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:4px}
+.chart>div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;font-size:11.5px;color:var(--muted);height:100%}
+.chart i{display:block;width:100%;max-width:46px;background:var(--soft);border-radius:7px 7px 3px 3px;border-top:3px solid var(--green);min-height:3px}
+.chart em{font-style:normal;font-weight:800;color:var(--ink);font-size:11px;direction:ltr;white-space:nowrap}
+.chart .cur i{background:var(--green)}
+.lp{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
+.lp:first-child{border-top:0;padding-top:0}
+.lp .tx{flex:1;min-width:0}.lp b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lp small{color:var(--muted);font-size:12px}
+.lp .num{color:var(--green)}
+.meter{margin:2px 0 14px}.meter .t{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:800;margin-bottom:5px}.meter .t span{color:var(--muted);font-weight:600}
+.bar8{height:8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);overflow:hidden}.bar8 i{display:block;height:100%;background:var(--green);border-radius:99px}
+.bar8.warnq i{background:var(--gold)}.bar8.full i{background:var(--red)}
+
+/* subscribers table */
+.filters{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.filters input{flex:1 1 240px;width:auto}.filters select{flex:0 0 160px;width:auto}
+.stf{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.stf button{font-size:13px;border:1px solid var(--line);border-radius:99px;padding:5px 12px;background:var(--card)}
+.stf button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.stf em{font-style:normal;opacity:.65;margin-inline-start:5px}
+.tbl{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.th,.tr{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr) minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1.4fr) minmax(0,.8fr) minmax(0,.9fr) minmax(0,1fr);gap:10px;align-items:center;padding:10px 14px}
+.th{background:var(--head);font-size:12px;color:var(--muted);font-weight:800;border-bottom:1px solid var(--line)}
+.tr{width:100%;background:none;border:0;border-top:1px solid var(--line);text-align:start;font:500 13.5px/1.45 Tajawal,sans-serif}
+.tr:first-of-type{border-top:0}
+.tr:hover,.tr:focus-visible{background:var(--bg);outline:none}
+.tr.sel{background:var(--sel)}
+.td{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td .lb{display:none}
+.td.nm b{display:block;font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis}
+.td.nm small{display:block;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.td.nm b.mail{font-size:13.5px}
+.td.end small{display:block;font-size:12px;color:var(--muted)}
+.td.paid{color:var(--green);font-weight:800;direction:ltr;text-align:right}
+.none{color:var(--muted)}
+.count{font-size:13px;color:var(--muted);margin:0 0 8px}
+
+/* payments, space, staff lists (kept from the old page) */
+.earn{width:100%;border-collapse:collapse;font-size:14.5px}
+.earn th,.earn td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:start}
+.earn th{font-size:12.5px;color:var(--muted);font-weight:800}
+.earn td.num{font-weight:900}
 .earn tr.hl td{color:var(--green)}
-.pays{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.pay{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:9px 14px;font-size:14.5px}
+.pays{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pay{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:9px 14px;font-size:14px}
 .pay:first-child{border-top:0}
 .pay .amt{font-weight:900;direction:ltr;text-align:right;white-space:nowrap;color:var(--green)}
-.pay button{min-height:34px;padding:0 12px;font-size:13.5px}
-@media(max-width:820px){.pay{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}.pay .pl,.pay .dt{grid-column:1/2}.pay .amt{grid-column:2/3;grid-row:1}.pay button{grid-column:2/3;grid-row:2/4;align-self:end}}
-.hide{display:none!important}
-.hint{font-size:13.5px;color:var(--muted);margin-top:6px}
-.row-pay{grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr)}
-@media(max-width:640px){.row,.row-pay{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
-.subs{display:flex;flex-direction:column;gap:6px;border:0;border-radius:0;overflow:visible}
-.ln{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-inline-start:5px solid var(--sc);border-radius:12px;padding:10px 12px;cursor:pointer;text-align:start;font:inherit;color:inherit;min-height:0;width:100%}
-.ln:hover{background:var(--bg)}
-.av{flex:0 0 38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:900;background:var(--sb);color:var(--sc)}
-.ln .nm{flex:1 1 200px;min-width:0}
-.ln .nm b{display:block;font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ln .nm small{display:block;font-size:12.5px;color:var(--muted);direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.chips{display:flex;flex-wrap:wrap;gap:6px;flex:2 1 300px}
-.chip{font-size:12.5px;font-weight:700;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:2px 10px;white-space:nowrap}
-.chip.soonc{color:var(--red);border-color:var(--red)}
-.ln .paid{flex:0 0 90px;text-align:left;font-size:15px}
-@media(max-width:820px){.ln{flex-wrap:wrap}.ln .paid{flex:0 0 auto}}
-.ln .nm b.mail{font-size:14px;font-weight:700}
-.prices td:first-child,.prices th:first-child{width:36px;color:var(--muted)}
-.pnotes{margin:12px 0 0;padding-inline-start:20px;font-size:14.5px;color:var(--muted)}
-.pnotes li{margin:4px 0}.pnotes b{color:var(--ink)}
-.two{display:grid;grid-template-columns:330px minmax(0,1fr);gap:14px;align-items:start}
-.span2{grid-column:span 2}@media(max-width:640px){.span2{grid-column:auto}}
-.sugg{min-height:42px;display:flex;align-items:center;font-weight:800;font-size:15px;color:var(--green)}
-.ub{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--card)}
-.ub .uh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.ub .uh b{font-size:15px}.ub .uh small{color:var(--muted);direction:ltr}
-.ub ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
-.ub li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:14px;border-top:1px dashed var(--line);padding-top:4px}
-.ub li .who{font-weight:700;min-width:120px}.ub li .usr{color:var(--muted);direction:ltr}
-.chip.u-ok{color:var(--green);border-color:var(--green)}.chip.u-bad{color:var(--red);border-color:var(--red)}
-.two .card{margin-bottom:0}.two{margin-bottom:14px}
-.pcard{position:sticky;top:12px}
-.pcard .earn{font-size:14px}.pcard .earn th,.pcard .earn td{padding:8px 4px}
-.pcard .pnotes{font-size:13px;padding-inline-start:16px}
-@media(max-width:900px){.two{grid-template-columns:minmax(0,1fr)}.pcard{position:static;order:2}}
-.hint{font-size:13.5px;color:var(--muted);margin:10px 0 12px;line-height:1.7}
-.spc{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.7fr) minmax(0,0.9fr) minmax(0,1.2fr) auto;gap:12px;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:9px 14px;font-size:14.5px}
+.c{display:flex;flex-direction:column;min-width:0}
+.c b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c small{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c.st{align-items:flex-start;gap:3px}
+.spc{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.7fr) minmax(0,.9fr) minmax(0,1.2fr) auto;gap:12px;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:9px 14px;font-size:14px}
 .spc:first-child{border-top:0}
 .spc .c small{white-space:normal}
-.bar>span{display:block;color:var(--muted)}
 .spc .sz{font-weight:800;direction:ltr;text-align:right;white-space:nowrap}
 .spc.old{background:var(--redsoft)}
-.spc .acts{display:flex;flex-direction:column;gap:6px;align-items:stretch}
-.spc .warn{display:flex;align-items:center;justify-content:center;min-height:34px;padding:0 12px;border-radius:12px;border:1.5px solid var(--green);color:var(--green);font:800 13.5px Tajawal,sans-serif;text-decoration:none;white-space:nowrap}
-.spc button{min-height:34px;padding:0 12px;font-size:13.5px;white-space:nowrap}
-.spc .nobtn{min-width:92px}
+.acts{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.warn{display:flex;align-items:center;justify-content:center;min-height:32px;padding:0 10px;border-radius:8px;border:1.5px solid var(--green);color:var(--green);font:800 12.5px Tajawal,sans-serif;text-decoration:none;white-space:nowrap}
 .qbar{display:block;height:7px;border-radius:99px;background:var(--bg);border:1px solid var(--line);overflow:hidden;margin-top:5px;max-width:220px}
 .qbar span{display:block;height:100%;background:var(--green);border-radius:99px}
 .qbar.warnq span{background:var(--gold)}.qbar.full span{background:var(--red)}
-.spc .q small.cu{color:var(--green);font-weight:700}
-.qed{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:10px 12px}
-.qed input{width:110px;min-height:36px}
-.qed .pre{min-height:32px;padding:0 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);font:700 13px Tajawal,sans-serif;cursor:pointer;color:var(--ink)}
-.qed .hint{margin:0;flex-basis:100%}
-.qline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex-basis:100%}
-.qline b{min-width:110px}
-.bars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:4px}
-.bar{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px}
+small.cu{color:var(--green)!important;font-weight:700}
+.bars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:8px}
+.bar{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px}
 .bar b{font-size:17px;direction:ltr;display:inline-block}
+.bar>span{display:block;color:var(--muted)}
 .bar i{display:block;height:7px;border-radius:9px;background:var(--line);margin-top:8px;overflow:hidden}
 .bar i span{display:block;height:100%;background:var(--green)}
-@media(max-width:820px){.spc{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}.spc .who{grid-column:1/-1}.spc .acts,.spc .nobtn{grid-column:2/3;grid-row:2/5;align-self:center}}
+.mrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 6px}.mrow .hint{margin:0;flex:1}
+.ub{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--card);cursor:pointer;display:block;width:100%;text-align:start;font:inherit;color:inherit}
+.ub:hover{background:var(--bg)}
+.uh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.uh b{font-size:15px}.uh small{color:var(--muted);direction:ltr}
+.ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.ul li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13.5px;border-top:1px dashed var(--line);padding-top:5px}
+.ul li .who{font-weight:800;min-width:110px}.ul li .usr{color:var(--muted);direction:ltr}
+.prices td:first-child,.prices th:first-child{width:36px;color:var(--muted)}
+.pnotes{margin:12px 0 0;padding-inline-start:20px;font-size:14px;color:var(--muted)}
+.pnotes li{margin:5px 0}.pnotes b{color:var(--ink)}
+.pricecard{max-width:720px}
+
+/* subscriber panel */
+.scrim{position:fixed;inset:0;background:#0007;z-index:20}
+.drawer{position:fixed;top:0;bottom:0;inset-inline-end:0;width:min(470px,100vw);background:var(--card);z-index:21;display:flex;flex-direction:column;box-shadow:0 0 40px #0004;border-inline-start:1px solid var(--line)}
+.dh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center}
+.av{flex:none;width:42px;height:42px;border-radius:12px;background:var(--soft);color:var(--green);display:grid;place-items:center;font-weight:900;font-size:18px}
+.dh .tx{flex:1;min-width:0}
+.dh b{display:block;font-size:16px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dh small{display:block;color:var(--muted);font-size:12.5px;direction:ltr;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dh .x{flex:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;background:none;border:0;padding:11px 4px;font-size:13.5px;color:var(--muted)}
+.tabs button.on{color:var(--green);box-shadow:inset 0 -2.5px var(--green)}
+.tabs button em{font-style:normal;font-size:11px;background:var(--bg);border-radius:99px;padding:0 6px;margin-inline-start:4px}
+.db{padding:16px;overflow-y:auto;flex:1}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 14px;font-size:13.5px;margin-bottom:6px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kv span{color:var(--muted)}.kv b{text-align:end;font-weight:800}
+.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+.f3{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:0 10px}
+.sum{background:var(--soft);border-radius:10px;padding:10px 12px;font-weight:800;color:var(--green);margin:12px 0 4px;font-size:13.5px}
+.sum span{display:block;font-size:12px;color:var(--muted);font-weight:700}
+.dacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.dsec{font-size:13px;font-weight:900;margin:16px 0 6px}
+.qline{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--bg)}
+.qline .t{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;font-weight:800}
+.qline .t span{color:var(--muted);font-weight:600}
+.qline .ed{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.qline .ed input{width:100px;min-height:34px}
+.pre{min-height:30px;padding:0 9px;border-radius:99px;border:1px solid var(--line);background:var(--card);font:700 12px Tajawal,sans-serif}
+.dpay{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+.dpay:first-child{border-top:0}.dpay .tx{flex:1;min-width:0}.dpay small{display:block;color:var(--muted);font-size:12px}
+.dpay .num{color:var(--green)}
+.toast{position:fixed;bottom:20px;inset-inline-start:50%;transform:translateX(50%);z-index:30;max-width:min(560px,92vw);padding:10px 16px;border-radius:12px;font-weight:800;font-size:14px;box-shadow:0 6px 24px #0003;display:none}
+.toast.ok{display:block;background:var(--green);color:#fff}.toast.err{display:block;background:var(--red);color:#fff}
+
+@media(max-width:1180px){.th,.tr{grid-template-columns:minmax(0,2.3fr) minmax(0,1.3fr) minmax(0,.9fr) minmax(0,1.5fr) minmax(0,.8fr) minmax(0,1fr)}.c-country,.c-space{display:none}}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.cols{grid-template-columns:minmax(0,1fr)}.app{grid-template-columns:200px minmax(0,1fr)}}
+@media(max-width:900px){
+  .th{display:none}.tbl{background:none;border:0;border-radius:0;display:flex;flex-direction:column;gap:8px}
+  .tr{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;background:var(--card);border:1px solid var(--line)!important;border-radius:12px;padding:11px 13px}
+  .tr .c-country,.tr .c-space{display:none}
+  .tr .nm{grid-column:1/2;grid-row:1}.tr .c-st{grid-column:2/3;grid-row:1;justify-self:end}
+  .tr .c-plan,.tr .end{grid-column:1/-1}.tr .end small{display:inline;margin-inline-start:6px}
+  .tr .c-users,.tr .paid{grid-row:4}.tr .paid{justify-self:end}
+  .td .lb{display:inline;color:var(--muted);font-size:12px;margin-inline-end:4px;font-weight:700}
+  .pay{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}.pay .pl,.pay .dt{grid-column:1/2}.pay .amt{grid-column:2/3;grid-row:1}.pay button{grid-column:2/3;grid-row:2/4;align-self:end}
+  .spc{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px}.spc .who{grid-column:1/-1}.spc .acts{grid-column:2/3;grid-row:2/5;align-self:center}
+}
+@media(max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;inset:auto 0 0 0;top:auto;height:auto;flex-direction:row;padding:5px 4px calc(5px + env(safe-area-inset-bottom));z-index:15;gap:0;overflow:visible}
+  .brand,.grp,.me{display:none}
+  .nav{flex:1;flex-direction:column;gap:2px;font-size:10.5px;padding:6px 2px;text-align:center;position:relative;border-radius:8px;white-space:nowrap}
+  .nav .ct{position:absolute;top:1px;inset-inline-end:calc(50% - 22px);margin:0;font-size:10px;padding:0 5px;min-width:0}
+  .nav .full{display:none}
+  .main{padding:14px 12px 90px}
+  .top h1{font-size:19px}.top .sp{margin-inline-start:0;width:100%}.top .sp .btn{flex:1}
+  .only-m{display:inline-flex!important;align-items:center;justify-content:center}
+  .kpi{padding:12px}.kpi b{font-size:21px}.kpi b.sm{font-size:16px}
+  .filters select{flex:1 1 140px}
+  .bars{grid-template-columns:minmax(0,1fr)}
+  .toast{bottom:84px}
+  .f3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.f3>div:first-child{grid-column:1/-1}
+}
+@media(min-width:761px){.nav .short{display:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
-    <h1>A<b>mimar</b> · إدارة الاشتراكات</h1>
-    <div class="who" id="who"></div>
-  </header>
 
-  <!-- sign in -->
+<!-- sign in -->
+<div class="gate" id="gate">
+  <div class="logo">
+    <svg width="38" height="38" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
+    <b>Amimar · لوحة الإدارة</b>
+  </div>
   <section class="card" id="loginBox">
     <h2>تسجيل الدخول</h2>
     <p class="hint">بحساب Amimar الخاص بالإدارة، ثم برمز من تطبيق المصادقة. لا تعمل هذه الصفحة إلا للحسابات المصرّح لها.</p>
@@ -174,7 +263,7 @@ button:disabled{opacity:.55;cursor:default}
     <input id="lEmail" type="email" autocomplete="username">
     <label for="lPass">كلمة المرور</label>
     <input id="lPass" type="password" autocomplete="current-password">
-    <div class="btns"><button class="b-green" id="lGo">دخول</button></div>
+    <div class="btns"><button class="btn b-green" id="lGo">دخول</button></div>
     <div class="msg" id="lMsg"></div>
   </section>
 
@@ -188,43 +277,130 @@ button:disabled{opacity:.55;cursor:default}
     </div>
     <label for="mfaCode">الرمز المكوّن من 6 أرقام من تطبيق المصادقة</label>
     <input id="mfaCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" style="direction:ltr;text-align:center;letter-spacing:6px;font-size:22px">
-    <div class="btns"><button class="b-green" id="mfaGo">تحقّق</button><button class="b-line" id="mfaBack">رجوع</button></div>
+    <div class="btns"><button class="btn b-green" id="mfaGo">تحقّق</button><button class="btn b-line" id="mfaBack">رجوع</button></div>
     <div class="msg" id="mfaMsg"></div>
   </section>
+</div>
 
-  <div id="app" class="hide">
-    <div class="stats">
-      <div class="stat"><b id="sAll">0</b><span>كل الحسابات</span></div>
-      <div class="stat"><b id="sActive" style="color:var(--green)">0</b><span>فعّال</span></div>
-      <div class="stat"><b id="sTrial" style="color:var(--gold)">0</b><span>تجربة</span></div>
-      <div class="stat"><b id="sOff" style="color:var(--red)">0</b><span>منتهٍ أو ملغى</span></div>
+<div id="app" class="app hide">
+  <aside class="side">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#1E8A5E"/><rect x="9" y="10" width="15" height="28" rx="2" fill="#F2ECE2"/><rect x="24" y="17" width="14" height="21" rx="2" fill="#B9E3CC"/></svg>
+      <div><b>Amimar</b><small>لوحة الإدارة</small></div>
+    </div>
+    <button class="nav" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span><span class="ct al" id="nHome"></span></button>
+    <button class="nav" data-v="subs"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c2 .7 3.2 2.4 3.5 5.2"/></svg><span>المشتركون</span><span class="ct" id="nSubs"></span></button>
+    <div class="grp">المال</div>
+    <button class="nav" data-v="pays"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v.01M18 15v.01"/></svg><span class="full">الدفعات والأرباح</span><span class="short">الدفعات</span></button>
+    <button class="nav" data-v="prices"><svg viewBox="0 0 24 24"><path d="M3 12.5V4a1 1 0 0 1 1-1h8.5L21 11.5 12.5 20z"/><circle cx="8" cy="8" r="1.4"/></svg><span>الأسعار</span></button>
+    <div class="grp">النظام</div>
+    <button class="nav" data-v="space"><svg viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6A3.8 3.8 0 0 1 17.5 18.5z"/></svg><span>المساحة</span></button>
+    <button class="nav" data-v="staff"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l2.5 2.5M15 8l2 2"/></svg><span class="full">حسابات الموظفين</span><span class="short">الموظفون</span></button>
+    <div class="me"><b id="who"></b>مدير · التحقق بخطوتين ✓<button id="out">تسجيل الخروج</button></div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div><h1 id="vTitle"></h1><p id="vSub"></p></div>
+      <div class="sp">
+        <button class="btn b-line" id="reload">↻ تحديث</button>
+        <button class="btn b-green" id="newSub">＋ تفعيل اشتراك</button>
+        <button class="btn b-line only-m" id="out2">خروج</button>
+      </div>
     </div>
 
-    <div class="two">
-    <section class="card pcard">
-      <h2>الأسعار</h2>
-      <table class="earn prices">
-        <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
-        <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
-        <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
-        <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
-        <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
-        <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
-        <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
-        <tr><td>+</td><td>مستخدم إضافي</td><td class="num">—</td><td class="num">$ 20</td></tr>
-      </table>
-      <ul class="pnotes">
-        <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
-        <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
-        <li><b>المستخدمون:</b> كل حساب دخول لموظف (بوابة الموظف أو مستخدم بصلاحيات) بـ 20$ في السنة، وهو منفصل عن عدد الموظفين في الباقة. تحدّد عددهم في «عدد المستخدمين».</li>
-      </ul>
+    <section class="view" id="v-home">
+      <div class="kpis" id="kpis"></div>
+      <div class="cols">
+        <div class="card"><h3>تحتاج انتباهك <span class="tag t-expired" id="attN"></span></h3><div id="attList"></div></div>
+        <div class="card"><h3>الدخل آخر 6 أشهر <button class="lnk" data-go="pays">كل الدفعات ←</button></h3><div class="curs" id="curs"></div><div class="chart" id="chart"></div></div>
+      </div>
+      <div class="cols">
+        <div class="card"><h3>آخر الدفعات</h3><div id="lastPays"></div></div>
+        <div class="card"><h3>السحابة <button class="lnk" data-go="space">التفاصيل ←</button></h3><div id="homeCloud"></div></div>
+      </div>
     </section>
-    <section class="card fcard">
-      <h2>تفعيل أو تمديد اشتراك</h2>
-      <label for="fEmail">بريد المشترك</label>
-      <input id="fEmail" type="email" list="emails" placeholder="name@example.com" autocomplete="off">
-      <datalist id="emails"></datalist>
-      <div class="row">
+
+    <section class="view hide" id="v-subs">
+      <div class="filters">
+        <input id="q" type="search" placeholder="ابحث بالبريد أو اسم العمل أو البلد">
+        <select id="cf" aria-label="البلد"><option value="">كل البلدان</option></select>
+        <select id="pf" aria-label="الباقة"><option value="">كل الباقات</option></select>
+      </div>
+      <div class="stf" id="stf"></div>
+      <div class="count" id="count"></div>
+      <div class="tbl" id="list"></div>
+    </section>
+
+    <section class="view hide" id="v-pays">
+      <div class="card"><h3>الأرباح</h3><div id="earnSum"></div></div>
+      <div class="card"><h3>الدفعات</h3><div class="pays" id="payList"></div></div>
+    </section>
+
+    <section class="view hide" id="v-prices">
+      <div class="card pricecard">
+        <table class="earn prices">
+          <tr><th>#</th><th>الباقة</th><th>شهري</th><th>سنوي</th></tr>
+          <tr><td>1</td><td>الحضور والانصراف فقط</td><td class="num">$ 5</td><td class="num">$ 50</td></tr>
+          <tr><td>2</td><td>الرواتب فقط</td><td class="num">$ 7</td><td class="num">$ 70</td></tr>
+          <tr><td>3</td><td>إدارة الموظفين الكاملة</td><td class="num">$ 9</td><td class="num">$ 90</td></tr>
+          <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
+          <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
+          <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
+          <tr><td>+</td><td>مستخدم إضافي</td><td class="num">—</td><td class="num">$ 20</td></tr>
+        </table>
+        <ul class="pnotes">
+          <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
+          <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
+          <li><b>المستخدمون:</b> كل حساب دخول لموظف (بوابة الموظف أو مستخدم بصلاحيات) بـ 20$ في السنة، وهو منفصل عن عدد الموظفين في الباقة. تحدّد عددهم في «عدد المستخدمين» عند تفعيل اشتراك المشترك.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="view hide" id="v-space">
+      <div class="card">
+        <div id="spaceSum"></div>
+        <p class="hint">من انتهى اشتراكه تبقى بياناته في السحابة حتى يجدّد. بعد 5 أشهر يظهر زر «إرسال تنبيه» يفتح رسالة جاهزة له، وبعد شهر من التنبيه يمكنك حذف بياناته لتوفير المساحة؛ يبقى حسابه وسجلّ اشتراكه ودفعاته، وتبقى بياناته على حاسوبه وتُرفع من جديد إن جدّد. لتغيير مساحة مشترك اضغط «إدارة».</p>
+        <div class="pays" id="spaceList"></div>
+      </div>
+    </section>
+
+    <section class="view hide" id="v-staff">
+      <div class="card">
+        <div id="usersSum"></div>
+        <p class="hint">لكل مشترك: عدد المستخدمين المدفوعين، ونوع كل حساب، وآخر دخول. «خارج العدد» يعني أن المشترك أضاف أكثر من العدد المدفوع (بعد تخفيضه)، فهذا الحساب موقوف حتى ترفع العدد. اضغط على المشترك لتغيير العدد.</p>
+        <div id="usersList"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- one subscriber: everything about him in one panel -->
+<div class="scrim hide" id="scrim"></div>
+<aside class="drawer hide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dName">
+  <div class="dh">
+    <div class="av" id="dAv"></div>
+    <div class="tx"><b id="dName"></b><small id="dMail"></small></div>
+    <span id="dTag"></span>
+    <button class="x" id="dClose" aria-label="إغلاق">✕</button>
+  </div>
+  <div class="tabs" id="dTabs">
+    <button data-t="sub">الاشتراك</button>
+    <button data-t="users">المستخدمون<em id="dUsersN"></em></button>
+    <button data-t="space">المساحة</button>
+    <button data-t="pays">الدفعات<em id="dPaysN"></em></button>
+  </div>
+  <div class="db">
+    <div id="t-sub">
+      <div class="kv" id="dKv"></div>
+      <div id="fEmailBox">
+        <label for="fEmail">بريد المشترك</label>
+        <input id="fEmail" type="email" list="emails" placeholder="name@example.com" autocomplete="off">
+        <datalist id="emails"></datalist>
+        <p class="hint">يجب أن يكون المشترك قد سجّل في Amimar أولاً. اختر بريده من القائمة.</p>
+      </div>
+      <div class="dsec" id="fHead">تمديد أو تعديل الاشتراك</div>
+      <div class="f2">
         <div><label for="fPlan">الباقة</label>
           <select id="fPlan">
             <option value="6">المتكامل</option>
@@ -242,74 +418,32 @@ button:disabled{opacity:.55;cursor:default}
             <option value="12" selected>سنة</option>
             <option value="24">سنتان</option>
           </select></div>
-        <div><label for="fEmp">عدد الموظفين</label>
+        <div><label for="fEmp">عدد الموظفين (0 = بلا حدّ)</label>
           <input id="fEmp" type="number" min="0" step="1" value="0" inputmode="numeric"></div>
-      </div>
-      <div class="row">
         <div><label for="fUsers">عدد المستخدمين</label>
           <input id="fUsers" type="number" min="0" max="500" step="1" value="0" inputmode="numeric"></div>
-        <div class="span2"><label>المبلغ المقترح</label><div class="sugg" id="fSugg">—</div></div>
       </div>
-      <div class="row row-pay">
+      <div class="f3">
         <div><label for="fCountry">البلد</label><select id="fCountry"></select></div>
         <div><label for="fAmount">المبلغ المدفوع</label><input id="fAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"></div>
-        <div><label for="fCur">العملة</label><select id="fCur"><option value="TRY">ليرة تركية ₺</option><option value="USD">دولار $</option><option value="EUR">يورو €</option></select></div>
+        <div><label for="fCur">العملة</label><select id="fCur"><option value="TRY">ليرة ₺</option><option value="USD">دولار $</option><option value="EUR">يورو €</option></select></div>
       </div>
-      <p class="hint">عدد المستخدمين: حسابات الدخول لموظفي المشترك (0 = لا يوجد). يُحفظ مع التفعيل، أو وحده بزر «حفظ عدد المستخدمين». المبلغ المقترح: سعر الباقة للمدة + المستخدمون (ويُذكر عدد دفعات الموظفين الإضافيين إن وُجدت).
-      عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. يُملأ البلد تلقائياً من جهاز المشترك، ويمكنك تعديله هنا. إذا كتبت المبلغ المدفوع، يُسجَّل مع التفعيل في قسم الأرباح.</p>
-      <div class="btns">
-        <button class="b-green" id="fGo">تفعيل</button>
-        <button class="b-line" id="fSaveCountry">حفظ البلد فقط</button>
-        <button class="b-line" id="fSaveUsers">حفظ عدد المستخدمين</button>
-        <button class="b-red" id="fCancel">إلغاء الاشتراك</button>
+      <div class="sum"><span>المبلغ المقترح</span><div id="fSugg">—</div></div>
+      <p class="hint">إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. إذا كتبت المبلغ المدفوع، يُسجَّل مع التفعيل في الدفعات. عدد المستخدمين: حسابات الدخول لموظفي المشترك، كل حساب بـ 20$ في السنة.</p>
+      <div class="dacts">
+        <button class="btn b-green" id="fGo">تفعيل</button>
+        <button class="btn b-line" id="fSaveCountry">حفظ البلد فقط</button>
+        <button class="btn b-line" id="fSaveUsers">حفظ عدد المستخدمين</button>
+        <button class="btn b-red" id="fCancel">إلغاء الاشتراك</button>
       </div>
       <div class="msg" id="fMsg"></div>
-    </section>
     </div>
-
-    <section class="card">
-      <h2>الأرباح</h2>
-      <div id="earnSum"></div>
-      <h2 style="font-size:16px;margin-top:18px">الدفعات</h2>
-      <div class="pays" id="payList"></div>
-    </section>
-
-    <section class="card">
-      <h2>المساحة في السحابة</h2>
-      <div id="spaceSum"></div>
-      <p class="hint">من انتهى اشتراكه تبقى بياناته في السحابة حتى يجدّد. بعد 5 أشهر يظهر زر «إرسال تنبيه» يفتح رسالة جاهزة له، وبعد شهر من التنبيه يمكنك حذف بياناته لتوفير المساحة؛ يبقى حسابه وسجلّ اشتراكه ودفعاته، وتبقى بياناته على حاسوبه وتُرفع من جديد إن جدّد.</p>
-      <div class="pays" id="spaceList"></div>
-      <div class="msg" id="sMsg"></div>
-    </section>
-
-    <section class="card">
-      <h2>حسابات الموظفين</h2>
-      <div id="usersSum"></div>
-      <p class="hint">لكل مشترك: عدد المستخدمين المدفوعين، ومن أضافهم، ونوع كل حساب، وآخر دخول. «خارج العدد» يعني أن المشترك أضاف أكثر من العدد المدفوع (بعد تخفيضه)، فهذا الحساب موقوف حتى ترفع العدد.</p>
-      <div class="pays" id="usersList"></div>
-    </section>
-
-    <section class="card">
-      <h2>المشتركون</h2>
-      <div class="tools">
-        <input id="q" type="search" placeholder="ابحث بالبريد أو اسم العمل أو البلد">
-        <select id="cf"><option value="">كل البلدان</option></select>
-        <select id="st">
-          <option value="">كل الحالات</option>
-          <option value="active">فعّال</option>
-          <option value="trial">تجربة</option>
-          <option value="expired">منتهٍ</option>
-          <option value="canceled">ملغى</option>
-        </select>
-        <button class="b-line" id="reload">تحديث</button>
-      </div>
-      <div class="count" id="count"></div>
-      <div class="subs" id="list"></div>
-    </section>
-
-    <div class="btns" style="justify-content:center"><button class="b-line" id="out">تسجيل الخروج</button></div>
+    <div id="t-users" class="hide"></div>
+    <div id="t-space" class="hide"></div>
+    <div id="t-pays" class="hide"></div>
   </div>
-</div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 {
@@ -324,15 +458,19 @@ button:disabled{opacity:.55;cursor:default}
     ['CY','قبرص'],['RU','روسيا'],['AZ','أذربيجان'],['IR','إيران'],['US','الولايات المتحدة'],['CA','كندا'],
     ['BR','البرازيل'],['AU','أستراليا']]; // same list as the server (v16)
   const SYM = { TRY: '₺', USD: '$', EUR: '€' };
+  const CURNAME = { TRY: 'ليرة تركية', USD: 'دولار', EUR: 'يورو' };
   const money = (n, c) => `${SYM[c] || c} ${Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-  let pays = [], payErr = '';
   const codeOf = (name) => (COUNTRIES.find(([c, n]) => n === name || c === name) || [''])[0];
   const STATE = { active: 'فعّال', trial: 'تجربة', expired: 'منتهٍ', canceled: 'ملغى' };
   const $ = (id) => document.getElementById(id);
-  let session = null, rows = [];
+  const low = (s) => String(s || '').toLowerCase();
+  let session = null, rows = [], pays = [], payErr = '';
+  let usage = [], useErr = '', storeRows = [], staffRows = [], staffErr = '';
   try { session = JSON.parse(sessionStorage.getItem('amimar_admin') || 'null'); } catch { session = null; }
 
-  const show = (el, text, ok) => { el.textContent = text; el.className = 'msg ' + (ok ? 'ok' : 'err'); };
+  const show = (e, text, ok) => { e.textContent = text; e.className = 'msg ' + (ok ? 'ok' : 'err'); };
+  let toastT = null;
+  const toast = (text, ok) => { const t = $('toast'); t.textContent = text; t.className = 'toast ' + (ok ? 'ok' : 'err'); clearTimeout(toastT); toastT = setTimeout(() => { t.className = 'toast'; }, ok ? 3500 : 6000); };
   const keep = (s) => { session = s; try { s ? sessionStorage.setItem('amimar_admin', JSON.stringify(s)) : sessionStorage.removeItem('amimar_admin'); } catch {} };
 
   async function auth(body, grant) {
@@ -376,7 +514,11 @@ button:disabled{opacity:.55;cursor:default}
     return j;
   }
 
-  function signOut() { keep(null); mfaFactor = null; ['app', 'mfaBox'].forEach((id) => $(id).classList.add('hide')); $('loginBox').classList.remove('hide'); $('who').textContent = ''; }
+  function signOut() {
+    keep(null); mfaFactor = null; closeDrawer();
+    $('app').classList.add('hide'); $('mfaBox').classList.add('hide');
+    $('gate').classList.remove('hide'); $('loginBox').classList.remove('hide'); $('who').textContent = '';
+  }
 
   async function enter() {
     $('lMsg').className = 'msg';
@@ -386,7 +528,8 @@ button:disabled{opacity:.55;cursor:default}
       $('loginBox').classList.add('hide');
       $('who').textContent = session.email || '';
       if (aal() !== 'aal2') { await startMfa(); return; }
-      $('mfaBox').classList.add('hide'); $('app').classList.remove('hide');
+      $('mfaBox').classList.add('hide'); $('gate').classList.add('hide'); $('app').classList.remove('hide');
+      go(viewFromHash(), true);
       await load();
     } catch (e) { signOut(); show($('lMsg'), e.message, false); }
   }
@@ -434,33 +577,34 @@ button:disabled{opacity:.55;cursor:default}
   $('mfaCode').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('mfaGo').click(); });
   $('mfaBack').addEventListener('click', signOut);
 
+  // ---- data ----
+  let loading = false;
   async function load() {
-    $('list').innerHTML = '<div class="empty">جارٍ التحميل…</div>';
-    try { rows = await rpc('amimar_admin_list') || []; }
-    catch (e) { $('list').textContent = ''; show($('fMsg'), e.message, false); return; }
-    try { pays = await rpc('amimar_admin_payments') || []; payErr = ''; }
-    catch (e) { pays = []; payErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v20 في Supabase لتفعيل قسم الأرباح' : e.message; }
-    drawEarnings();
-    try { usage = await rpc('amimar_admin_usage') || []; useErr = ''; }
-    catch (e) { usage = []; useErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v23 في Supabase لتفعيل قسم المساحة' : e.message; }
-    try { storeRows = await rpc('amimar_admin_storage') || []; }
-    catch (e) { storeRows = []; }
-    drawSpace();
-    try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
-    catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
-    drawUsers();
-    const n = (s) => rows.filter((r) => r.state === s).length;
-    $('sAll').textContent = rows.length; $('sActive').textContent = n('active'); $('sTrial').textContent = n('trial'); $('sOff').textContent = n('expired') + n('canceled');
-    const cf = $('cf'), keepC = cf.value; cf.length = 1;
-    [...new Set(rows.map((r) => r.country || 'غير معروف'))].sort().forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
-    cf.value = [...cf.options].some((o) => o.value === keepC) ? keepC : '';
-    const dl = $('emails'); dl.textContent = '';
-    rows.forEach((r) => { const o = document.createElement('option'); o.value = r.email || ''; dl.appendChild(o); });
-    draw();
+    if (loading) return; loading = true; $('reload').disabled = true;
+    try {
+      try { rows = await rpc('amimar_admin_list') || []; }
+      catch (e) { toast(e.message, false); return; }
+      try { pays = await rpc('amimar_admin_payments') || []; payErr = ''; }
+      catch (e) { pays = []; payErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v20 في Supabase لتفعيل قسم الأرباح' : e.message; }
+      try { usage = await rpc('amimar_admin_usage') || []; useErr = ''; }
+      catch (e) { usage = []; useErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v23 في Supabase لتفعيل قسم المساحة' : e.message; }
+      try { storeRows = await rpc('amimar_admin_storage') || []; }
+      catch (e) { storeRows = []; }
+      try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
+      catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
+      pays = [...pays].sort((a, b) => String(b.paid_at).localeCompare(String(a.paid_at)));
+      loadedAt = new Date();
+      fillFilters();
+      const dl = $('emails'); dl.textContent = '';
+      rows.forEach((r) => { const o = document.createElement('option'); o.value = r.email || ''; dl.appendChild(o); });
+      renderAll();
+    } finally { loading = false; $('reload').disabled = false; }
   }
+  let loadedAt = null;
 
   // small helpers that build elements from text only (all values come from customers' accounts, never HTML)
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const btn = (cls, text, fn) => { const b = el('button', 'btn ' + cls, text); b.type = 'button'; if (fn) b.addEventListener('click', fn); return b; };
   const cell = (cls, label, main, sub, mainCls, subCls) => {
     const c = el('div', 'c ' + (cls || ''));
     if (label) c.append(el('span', 'lb', label));
@@ -468,114 +612,50 @@ button:disabled{opacity:.55;cursor:default}
     if (sub) { const s = el('small', subCls || '', sub); s.title = sub; c.append(s); }
     return c;
   };
+  const iso = (d) => '⁦' + d + '⁩'; // keeps dates left-to-right inside Arabic text
+  const validEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
   const daysTxt = (n) => n <= 0 ? 'ينتهي اليوم' : n === 1 ? 'متبقٍّ يوم واحد' : n === 2 ? 'متبقٍّ يومان' : n <= 10 ? `متبقٍّ ${n} أيام` : `متبقٍّ ${n} يوماً`;
-  const empTxt = (n) => !n ? 'موظفون بلا حدّ' : n === 1 ? 'موظف واحد' : n === 2 ? 'موظفان' : n <= 10 ? `حتى ${n} موظفين` : `حتى ${n} موظفاً`;
-
-
-  const initial = (r) => (String(r.business || r.email || '?').trim()[0] || '?').toUpperCase();
-  const paidOf = (r) => { const paid = {}; pays.filter((p) => (p.email || '').toLowerCase() === (r.email || '').toLowerCase()).forEach((p) => { paid[p.currency] = (paid[p.currency] || 0) + Number(p.amount); }); const e = Object.entries(paid); return e.length ? e.map(([c, v]) => money(v, c)).join(' + ') : ''; };
-  const pick = (r) => { $('fEmail').value = r.email || ''; $('fPlan').value = String(r.plan_kind && PLAN[r.plan_kind] ? r.plan_kind : 6); $('fEmp').value = String(r.max_employees || 0); $('fUsers').value = String(staffOf(r.email)?.seats || 0); suggest(); $('fCountry').value = codeOf(r.country); $('fMsg').className = 'msg'; resetCancel(); $('fEmail').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
-  const filtered = () => { const q = $('q').value.trim().toLowerCase(), st = $('st').value, cv = $('cf').value;
-    const shown = rows.filter((r) => (!st || r.state === st) && (!cv || (r.country || 'غير معروف') === cv) && (!q || [r.email, r.business, r.country].some((v) => String(v || '').toLowerCase().includes(q))));
-    $('count').textContent = rows.length ? (shown.length === rows.length ? `${rows.length} مشترك` : `يظهر ${shown.length} من ${rows.length}`) : ''; return shown; };
+  const empTxt = (n) => !n ? 'بلا حدّ' : n === 1 ? 'موظف واحد' : n === 2 ? 'موظفان' : n <= 10 ? `حتى ${n} موظفين` : `حتى ${n} موظفاً`;
+  const monthsTxt = (n) => !n ? '' : n === 12 ? 'سنة' : n === 24 ? 'سنتان' : n === 1 ? 'شهر' : n === 2 ? 'شهران' : n <= 10 ? `${n} أشهر` : `${n} شهراً`;
+  const initial = (r) => (String((r && (r.business || r.email)) || '?').trim()[0] || '?').toUpperCase();
+  const rowOf = (email) => rows.find((r) => low(r.email) === low(email)) || null;
+  const nameOf = (r, email) => (r && r.business) || (r && r.email) || email || '—';
+  const paysOf = (email) => pays.filter((p) => low(p.email) === low(email));
+  const sumTxt = (ps) => { const t = {}; ps.forEach((p) => { t[p.currency] = (t[p.currency] || 0) + Number(p.amount); }); const e = Object.entries(t); return e.length ? e.map(([c, v]) => money(v, c)).join(' + ') : ''; };
+  const paidOf = (r) => sumTxt(paysOf(r.email));
   const live = (r) => r.state === 'active' || r.state === 'trial';
+  const soon = (r) => live(r) && r.ends && r.days_left <= 7;
   const left = (r) => !r.ends ? '' : live(r) ? daysTxt(r.days_left) : 'انتهى';
-
-  function draw() {
-    const box = $('list'); box.textContent = ''; const shown = filtered();
-    if (!shown.length) { box.appendChild(el('div', 'empty', 'لا توجد نتائج')); return; }
-    const C = { active: ['var(--green)', 'var(--soft)'], trial: ['var(--gold)', 'var(--goldsoft)'], expired: ['var(--red)', 'var(--redsoft)'], canceled: ['var(--red)', 'var(--redsoft)'] };
-    for (const r of shown) {
-      const k = el('button', 'ln'); k.type = 'button'; const [sc, sb] = C[r.state] || C.expired; k.style.setProperty('--sc', sc); k.style.setProperty('--sb', sb);
-      const nm = el('div', 'nm'); nm.append(el('b', r.business ? '' : 'mail', r.business || r.email || '—')); if (r.business) nm.append(el('small', '', r.email));
-      const ch = el('div', 'chips');
-      ch.append(el('span', 'chip', r.country || 'البلد غير معروف'), el('span', 'chip', PLAN[r.plan_kind] || PLAN[0]));
-      if (r.ends) ch.append(el('span', 'chip' + (live(r) && r.days_left <= 7 ? ' soonc' : ''), `${left(r)} · ${iso(r.ends)}`));
-      const us = staffOf(r.email);
-      if (us && (us.seats > 0 || us.users.length)) ch.append(el('span', 'chip' + (us.users.length > us.seats ? ' soonc' : ''), `المستخدمون ${us.users.length} من ${us.seats}`));
-      const p = paidOf(r);
-      k.append(el('div', 'av', initial(r)), nm, ch, el('span', 'tag t-' + r.state, STATE[r.state] || r.state), el('div', p ? 'paid' : 'none', p || '—'));
-      k.addEventListener('click', () => pick(r)); box.appendChild(k);
-    }
-  }
+  const isSelf = (email) => session && low(email) === low(session.email);
 
   // ---- staff accounts per subscriber (amimar_mobile_v25.sql) ----
-  let staffRows = [], staffErr = '';
-  const staffOf = (email) => staffRows.find((x) => (x.email || '').toLowerCase() === (email || '').toLowerCase()) || null;
+  const staffOf = (email) => staffRows.find((x) => low(x.email) === low(email)) || null;
   const KIND = { portal: 'بوابة موظف', role: 'مستخدم بصلاحيات' };
   const BLOCK = { stopped: 'أوقفه صاحب الحساب', expired: 'اشتراك صاحب الحساب منتهٍ', seats: 'خارج العدد المدفوع' };
   const seenTxt = (t) => { if (!t) return 'لم يدخل بعد'; const d = Math.floor((Date.now() - Date.parse(t)) / 86400000); return d <= 0 ? 'دخل اليوم' : d === 1 ? 'دخل أمس' : `آخر دخول منذ ${d} يوماً`; };
-  function drawUsers() {
-    const box = $('usersList'), sum = $('usersSum'); box.textContent = ''; sum.textContent = '';
-    if (staffErr) { box.appendChild(el('div', 'empty', staffErr)); return; }
-    const total = staffRows.reduce((a, x) => a + (x.users || []).length, 0), seats = staffRows.reduce((a, x) => a + (x.seats || 0), 0);
-    sum.appendChild(el('p', 'hint', `${staffRows.length} مشترك لديه مستخدمون · ${total} حساب من ${seats} مدفوع`));
-    if (!staffRows.length) { box.appendChild(el('div', 'empty', 'لا يوجد مشترك لديه مستخدمون بعد')); return; }
-    for (const x of staffRows) {
-      const r = rows.find((y) => (y.email || '').toLowerCase() === (x.email || '').toLowerCase());
-      const b = el('div', 'ub'), h = el('div', 'uh'), nm = el('div');
-      nm.append(el('b', '', (r && r.business) || x.email || '—')); if (r && r.business) nm.append(el('small', '', ' ' + x.email));
-      const users = x.users || [];
-      h.append(nm, el('span', 'chip' + (users.length > x.seats ? ' u-bad' : ' u-ok'), `${users.length} من ${x.seats}`));
-      b.append(h);
-      if (users.length) {
-        const ul = el('ul');
-        for (const u of users) {
-          const li = el('li');
-          li.append(el('span', 'who', u.name || '—'), el('span', 'usr', u.username || ''), el('span', 'chip', KIND[u.kind] || u.kind),
-            el('span', 'chip ' + (u.block ? 'u-bad' : 'u-ok'), u.block ? (BLOCK[u.block] || u.block) : 'يعمل'), el('span', 'usr', seenTxt(u.last_seen_at)));
-          ul.appendChild(li);
-        }
-        b.append(ul);
-      } else b.append(el('p', 'hint', 'لم يضف أي مستخدم بعد'));
-      b.style.cursor = 'pointer';
-      b.addEventListener('click', () => { if (r) pick(r); else { $('fEmail').value = x.email || ''; $('fUsers').value = String(x.seats || 0); suggest(); } });
-      box.appendChild(b);
+  function userList(users) {
+    const ul = el('ul', 'ul');
+    for (const u of users) {
+      const li = el('li');
+      li.append(el('span', 'who', u.name || '—'), el('span', 'usr', u.username || ''), el('span', 'chip', KIND[u.kind] || u.kind),
+        el('span', 'chip ' + (u.block ? 'u-bad' : 'u-ok'), u.block ? (BLOCK[u.block] || u.block) : 'يعمل'), el('span', 'usr', seenTxt(u.last_seen_at)));
+      ul.appendChild(li);
     }
+    return ul;
   }
 
-  // suggested amount: the plan for the chosen months + users (20$ a year each); extra employees are named, not priced here
-  const PRICE = { 1: [5, 50], 2: [7, 70], 3: [9, 90], 4: [10, 100], 5: [15, 150], 6: [20, 200] };
-  const HAS_EMP = { 1: true, 2: true, 3: true, 5: true, 6: true };
-  function suggest() {
-    const k = Number($('fPlan').value), m = Number($('fMonths').value), emp = Number($('fEmp').value || 0), users = Number($('fUsers').value || 0);
-    const pr = PRICE[k]; if (!pr || !(m > 0)) { $('fSugg').textContent = '—'; return; }
-    const years = Math.floor(m / 12), rest = m % 12;
-    let plan = years * pr[1] + rest * pr[0];
-    const u = Math.max(0, Math.trunc(users)) * 20 * (m / 12);
-    const total = Math.round((plan + u) * 100) / 100;
-    const parts = [`الباقة ${plan}$`]; if (u) parts.push(`المستخدمون ${Math.round(u * 100) / 100}$`);
-    const extra = HAS_EMP[k] && emp > 10 ? ` + ${Math.ceil((emp - 10) / 10)} × 20$ للموظفين الإضافيين` : '';
-    $('fSugg').textContent = `\u2066$ ${total}\u2069 (${parts.join(' + ')})${extra}`;
-  }
-  ['fPlan', 'fMonths', 'fEmp', 'fUsers'].forEach((id) => { $(id).addEventListener('input', suggest); $(id).addEventListener('change', suggest); });
-
-  async function saveUsers(email) {
-    const n = Number($('fUsers').value || 0);
-    if (!Number.isInteger(n) || n < 0 || n > 500) throw new Error('عدد المستخدمين رقم صحيح من 0 إلى 500');
-    try { await rpc('amimar_admin_set_seats', { p_email: email, p_seats: n }); }
-    catch (e) { throw new Error(/SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase أولاً' : /no such subscriber/.test(e.message) ? 'لا يوجد حساب بهذا البريد' : e.message); }
-  }
-  $('fSaveUsers').addEventListener('click', async () => {
-    const email = $('fEmail').value.trim();
-    if (!validEmail(email)) { show($('fMsg'), 'اكتب بريد المشترك بشكل صحيح', false); return; }
-    $('fSaveUsers').disabled = true;
-    try { await saveUsers(email); show($('fMsg'), `حُفظ عدد المستخدمين: ${email} · ${$('fUsers').value}`, true); await load(); }
-    catch (e) { show($('fMsg'), e.message, false); }
-    finally { $('fSaveUsers').disabled = false; }
-  });
-
-  // ---- cloud space per subscriber, and freeing an ended subscription's space ----
-  let usage = [], useErr = '', storeRows = [], openQ = '';
-  const storeOf = (email) => storeRows.find((x) => (x.email || '').toLowerCase() === (email || '').toLowerCase()) || null;
-  const mbTxt = (mb) => '\u2066' + (mb >= 1024 ? `${(mb / 1024).toFixed(mb % 1024 ? 1 : 0)} GB` : `${mb} MB`) + '\u2069';
+  // ---- cloud space ----
+  const storeOf = (email) => storeRows.find((x) => low(x.email) === low(email)) || null;
+  const usageOf = (email) => usage.find((u) => low(u.em) === low(email)) || null;
+  const mbTxt = (mb) => '⁦' + (mb >= 1024 ? `${(mb / 1024).toFixed(mb % 1024 ? 1 : 0)} GB` : `${mb} MB`) + '⁩';
   const KINDQ = { photos: 'الصور', data: 'البيانات' };
-  async function setStorage(email, kind, mb) {
-    try { await rpc('amimar_admin_set_storage', { p_email: email, p_kind: kind, p_mb: mb }); openQ = ''; show($('sMsg'), mb == null ? `رجعت مساحة ${KINDQ[kind]} لـ ${email} للافتراضي` : `صارت مساحة ${KINDQ[kind]} لـ ${email}: ${mbTxt(mb)}`, true); await load(); }
-    catch (e) { show($('sMsg'), /SQL/.test(e.message) ? 'شغّل ملف SQL v26 في Supabase أولاً' : /bad storage/.test(e.message) ? 'المساحة من 10 MB إلى 100 GB' : e.message, false); }
-  }
-  const sizeTxt = (b) => '\u2066' + (b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : b >= 1024 ? `${Math.round(b / 1024)} KB` : b > 0 ? `${b} B` : '0') + '\u2069';
+  const sizeTxt = (b) => '⁦' + (b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : b >= 1024 ? `${Math.round(b / 1024)} KB` : b > 0 ? `${b} B` : '0') + '⁩';
   const agoTxt = (d) => d <= 0 ? 'انتهى اليوم' : d === 1 ? 'انتهى منذ يوم' : d === 2 ? 'انتهى منذ يومين' : d <= 10 ? `انتهى منذ ${d} أيام` : `انتهى منذ ${d} يوماً`;
+  const quotaPct = (sq, kind) => { const cap = Number(sq[kind + '_limit_mb']) * 1048576; return cap ? Number(sq[kind + '_used']) / cap : 0; };
+  async function setStorage(email, kind, mb) {
+    try { await rpc('amimar_admin_set_storage', { p_email: email, p_kind: kind, p_mb: mb }); toast(mb == null ? `رجعت مساحة ${KINDQ[kind]} لـ ${email} للافتراضي` : `صارت مساحة ${KINDQ[kind]} لـ ${email}: ${mbTxt(mb)}`, true); await load(); }
+    catch (e) { toast(/SQL/.test(e.message) ? 'شغّل ملف SQL v26 في Supabase أولاً' : /bad storage/.test(e.message) ? 'المساحة من 10 MB إلى 100 GB' : e.message, false); }
+  }
   async function storageFetch(path, init) {
     const r = await fetch(`${URL_}/storage/v1/${path}`, { ...init, headers: { apikey: KEY, Authorization: `Bearer ${session.access}`, 'Content-Type': 'application/json' } });
     const j = await r.json().catch(() => null);
@@ -616,104 +696,265 @@ button:disabled{opacity:.55;cursor:default}
     ].join('\n');
     return `mailto:${encodeURIComponent(u.em)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
-  function drawSpace() {
-    const sum = $('spaceSum'), list = $('spaceList');
-    sum.textContent = ''; list.textContent = ''; list.classList.add('hide');
-    if (useErr) { sum.appendChild(el('div', 'empty', useErr)); return; }
+  // where an ended subscription stands: days since it ended, and whether a warning was sent after that
+  function endInfo(u, r) {
+    const state = r ? r.state : 'expired', ended = state !== 'active' && state !== 'trial';
+    const days = u.ended_at ? Math.floor((Date.now() - new Date(u.ended_at).getTime()) / 86400000) : 0;
+    // a warning counts only if it was sent after this subscription ended (not left over from an earlier one)
+    const warned = ended && u.warned_at && (!u.ended_at || new Date(u.warned_at) >= new Date(u.ended_at)) ? new Date(u.warned_at) : null;
+    const sinceWarn = warned ? Math.floor((Date.now() - warned.getTime()) / 86400000) : -1;
+    return { state, ended, days, warned, sinceWarn };
+  }
+  function warnLink(u, r, info, cls) {
+    const w = el('a', cls || 'warn', info.warned ? 'إعادة التنبيه' : 'إرسال تنبيه'); w.href = warnMail(u, r, u.ended_at);
+    w.addEventListener('click', () => { setTimeout(async () => { try { await rpc('amimar_admin_mark_warned', { p_email: u.em }); await load(); } catch (e) { toast(e.message, false); } }, 400); });
+    return w;
+  }
+  function wipeButton(u, info) {
+    const del = btn('b-red sm', 'حذف بياناته');
+    let armed = null;
+    del.addEventListener('click', async () => {
+      if (!armed) { del.classList.add('sure'); del.textContent = (info.warned && info.sinceWarn < 30) || !info.warned ? 'لم يمضِ شهر على التنبيه، تأكيد؟' : 'تأكيد الحذف'; armed = setTimeout(() => { armed = null; del.classList.remove('sure'); del.textContent = 'حذف بياناته'; }, 5000); return; }
+      clearTimeout(armed); del.disabled = true; del.textContent = 'جارٍ الحذف…';
+      try {
+        await removeFiles(u.id);
+        const n = await rpc('amimar_admin_wipe_data', { p_email: u.em });
+        toast(`حُذفت بيانات ${u.em} من السحابة (${Number(n || 0)} سطراً مع ملفاته) ✓`, true);
+        await load();
+      } catch (e) { toast(e.message, false); del.disabled = false; del.textContent = 'حذف بياناته'; }
+    });
+    return del;
+  }
+  function globalBars() {
     const db = usage.reduce((a, u) => a + Number(u.db_bytes), 0), files = usage.reduce((a, u) => a + Number(u.file_bytes), 0);
-    const bars = el('div', 'bars');
-    for (const [name, used, cap, capTxt] of [['البيانات', db, 500 * 1048576, '500 MB'], ['الصور والنسخ الاحتياطية', files, 1024 * 1048576, '1 GB']]) {
-      const b = el('div', 'bar'); b.append(el('div', '', name), el('b', '', sizeTxt(used)), el('span', '', `من ${capTxt} في الخطة المجانية`));
-      const i = el('i'); const f = el('span'); f.style.width = Math.min(100, used / cap * 100).toFixed(1) + '%'; if (used / cap > 0.8) f.style.background = 'var(--red)'; i.append(f); b.append(i); bars.append(b);
-    }
-    sum.append(bars);
-    const meas = storeRows.map((x) => x.measured_at).filter(Boolean).sort().slice(-1)[0];
-    if (storeRows.length) {
-      const mrow = el('div', 'tools'); const mb = el('button', 'b-line', 'إعادة قياس البيانات'); mb.type = 'button';
-      mb.addEventListener('click', async () => { mb.disabled = true; try { await rpc('amimar_admin_measure'); await load(); show($('sMsg'), 'تم قياس البيانات الآن ✓', true); } catch (e) { show($('sMsg'), e.message, false); } finally { mb.disabled = false; } });
-      mrow.append(el('span', 'hint', meas ? `حجم السجلات يُقاس كل ساعة · آخر قياس ${iso(new Date(meas).toLocaleString('en-GB', { hour12: false }).slice(0, 17))}` : 'حجم السجلات يُقاس كل ساعة'), mb);
-      sum.append(mrow);
-    }
-    const byEmail = new Map(rows.map((r) => [String(r.email || '').toLowerCase(), r]));
-    const items = usage.map((u) => ({ u, r: byEmail.get(String(u.em || '').toLowerCase()), total: Number(u.db_bytes) + Number(u.file_bytes) }))
-      .filter((x) => x.total > 0).sort((a, b) => b.total - a.total);
-    if (!items.length) return;
-    list.classList.remove('hide');
-    for (const { u, r, total } of items.slice(0, 50)) {
-      const state = r ? r.state : 'expired', ended = state !== 'active' && state !== 'trial';
-      const days = u.ended_at ? Math.floor((Date.now() - new Date(u.ended_at).getTime()) / 86400000) : 0;
-      const d = el('div', 'spc');
-      const who = r && r.business ? cell('who', '', r.business, u.em, '', 'mail') : cell('who', '', u.em || '—', '', 'mail');
-      const sz = cell('', '', sizeTxt(total), `بيانات ${sizeTxt(Number(u.db_bytes))} · صور ونسخ ${sizeTxt(Number(u.file_bytes))}`, 'sz');
-      const sq = storeOf(u.em);
-      if (sq) {
-        // two limits: the data (records + backups) and the photos
-        sz.classList.add('q');
-        for (const [kind, used, mb, custom] of [['data', sq.data_used, sq.data_limit_mb, sq.data_custom], ['photos', sq.photos_used, sq.photos_limit_mb, sq.photos_custom]]) {
-          const u2 = Number(used), cap = Number(mb) * 1048576, pct = cap ? u2 / cap : 0;
-          sz.append(el('small', custom ? 'cu' : '', `${KINDQ[kind]} ${sizeTxt(u2)} من ${mbTxt(Number(mb))}${custom ? ' · خاصة' : ''}`));
-          const qb = el('i', 'qbar' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')); const f = el('span'); f.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; qb.append(f); sz.append(qb);
-        }
-      }
-      const rowsC = cell('', '', `${Number(u.db_rows).toLocaleString('en-US')} سطر`, `${Number(u.file_count)} ملف`);
-      const st = el('div', 'c st');
-      st.append(el('span', 'tag t-' + state, STATE[state] || state));
-      if (ended && u.ended_at) st.append(el('small', days >= 150 ? 'soon' : '', agoTxt(days)));
-      d.append(who, sz, rowsC, st);
-      // a warning counts only if it was sent after this subscription ended (not left over from an earlier one)
-      const warned = ended && u.warned_at && (!u.ended_at || new Date(u.warned_at) >= new Date(u.ended_at)) ? new Date(u.warned_at) : null;
-      const sinceWarn = warned ? Math.floor((Date.now() - warned.getTime()) / 86400000) : -1;
-      if (warned) st.append(el('small', sinceWarn >= 30 ? 'soon' : '', sinceWarn <= 0 ? 'نُبّه اليوم' : `نُبّه منذ ${sinceWarn} يوماً`));
-      d.classList.toggle('old', ended && (sinceWarn >= 30 || (!warned && days >= 180)));
-      const qbtn = el('button', 'b-line', 'المساحة'); qbtn.type = 'button';
-      qbtn.addEventListener('click', () => { openQ = openQ === u.em ? '' : u.em; drawSpace(); });
-      if (ended && u.em !== session.email) {
-        const acts = el('div', 'acts');
-        acts.append(qbtn);
-        if (days >= 150 && u.em) {
-          const w = el('a', 'warn', warned ? 'إعادة التنبيه' : 'إرسال تنبيه'); w.href = warnMail(u, r, u.ended_at);
-          w.addEventListener('click', () => { setTimeout(async () => { try { await rpc('amimar_admin_mark_warned', { p_email: u.em }); await load(); } catch (e) { show($('sMsg'), e.message, false); } }, 400); });
-          acts.append(w);
-        }
-        const del = el('button', 'b-red', 'حذف بياناته'); del.type = 'button';
-        let armed = null;
-        del.addEventListener('click', async () => {
-          if (!armed) { del.classList.add('sure'); del.textContent = (warned && sinceWarn < 30) || (!warned) ? 'لم يمضِ شهر على التنبيه، تأكيد؟' : 'تأكيد الحذف'; armed = setTimeout(() => { armed = null; del.classList.remove('sure'); del.textContent = 'حذف بياناته'; }, 5000); return; }
-          clearTimeout(armed); del.disabled = true; del.textContent = 'جارٍ الحذف…';
-          try {
-            await removeFiles(u.id);
-            const n = await rpc('amimar_admin_wipe_data', { p_email: u.em });
-            show($('sMsg'), `حُذفت بيانات ${u.em} من السحابة (${Number(n || 0)} سطراً مع ملفاته) ✓`, true);
-            await load();
-          } catch (e) { show($('sMsg'), e.message, false); del.disabled = false; del.textContent = 'حذف بياناته'; }
-        });
-        acts.append(del); d.append(acts);
-      } else { const acts = el('div', 'acts'); acts.append(qbtn); d.append(acts); }
-      if (openQ && openQ === u.em && sq) {
-        const ed = el('div', 'qed');
-        for (const [kind, mb, custom] of [['data', sq.data_limit_mb, sq.data_custom], ['photos', sq.photos_limit_mb, sq.photos_custom]]) {
-          const line = el('div', 'qline');
-          const inp = el('input'); inp.type = 'number'; inp.min = '10'; inp.max = '102400'; inp.step = '1'; inp.value = String(mb); inp.setAttribute('inputmode', 'numeric');
-          line.append(el('b', '', `${KINDQ[kind]} (MB):`), inp);
-          for (const v of [500, 1024, 2048, 5120, 10240]) { const pbt = el('button', 'pre', mbTxt(v)); pbt.type = 'button'; pbt.addEventListener('click', () => { inp.value = String(v); }); line.append(pbt); }
-          const save = el('button', 'b-green', 'حفظ'); save.type = 'button';
-          save.addEventListener('click', () => { const n = Number(inp.value); if (!Number.isInteger(n) || n < 10 || n > 102400) { show($('sMsg'), 'المساحة رقم صحيح من 10 إلى 102400 MB', false); return; } setStorage(u.em, kind, n); });
-          line.append(save);
-          if (custom) { const back = el('button', 'b-line', 'الافتراضي'); back.type = 'button'; back.addEventListener('click', () => setStorage(u.em, kind, null)); line.append(back); }
-          ed.append(line);
-        }
-        ed.append(el('p', 'hint', 'الافتراضي: 100 MB للتجربة و1 GB للمشترك، لكل واحدة. البيانات = السجلات والنسخ الاحتياطية، والصور = ملفات الصور. عند امتلاء البيانات يتوقف إضافة سجلات ونسخ جديدة (التعديل والقراءة مسموحان)، وعند امتلاء الصور يتوقف رفع صور جديدة. لا يُحذف شيء.'));
-        d.append(ed);
-      }
-      list.appendChild(d);
-    }
+    return { db, files, list: [['البيانات', db, 500 * 1048576, '500 MB'], ['الصور والنسخ الاحتياطية', files, 1024 * 1048576, '1 GB']] };
   }
 
-  const monthsTxt = (n) => !n ? '' : n === 1 ? 'شهر' : n === 2 ? 'شهران' : n <= 10 ? `${n} أشهر` : `${n} شهراً`;
+  // ---- payments ----
+  function payRow(p, compact) {
+    const del = btn('b-red sm', 'حذف');
+    let armedDel = null;
+    del.addEventListener('click', async (ev) => {
+      ev.stopPropagation();
+      if (!armedDel) { del.classList.add('sure'); del.textContent = 'تأكيد الحذف'; armedDel = setTimeout(() => { armedDel = null; del.classList.remove('sure'); del.textContent = 'حذف'; }, 5000); return; }
+      clearTimeout(armedDel); del.disabled = true;
+      try { await rpc('amimar_admin_delete_payment', { p_id: p.id }); toast('حُذفت الدفعة', true); await load(); } catch (e) { toast(e.message, false); del.disabled = false; }
+    });
+    const plan = [PLAN[p.plan_kind] || '—', monthsTxt(p.months), p.note].filter(Boolean).join(' · ');
+    if (compact) {
+      const d = el('div', 'dpay'), tx = el('div', 'tx');
+      tx.append(el('b', '', plan), el('small', '', iso(String(p.paid_at).slice(0, 10))));
+      d.append(tx, el('span', 'num', money(p.amount, p.currency)), del); return d;
+    }
+    const d = el('div', 'pay');
+    const who = p.business ? cell('', '', p.business, p.email, '', 'mail') : cell('', '', p.email, '', 'mail');
+    const pl = cell('pl', '', PLAN[p.plan_kind] || '—', [monthsTxt(p.months), p.note].filter(Boolean).join(' · '));
+    const dt = cell('dt', '', iso(String(p.paid_at).slice(0, 10)), '', 'mail');
+    d.append(who, pl, dt, el('div', 'amt', money(p.amount, p.currency)), del);
+    return d;
+  }
+
+  // =====================================================================
+  // views
+  // =====================================================================
+  const VIEWS = {
+    home: 'الرئيسية', subs: 'المشتركون', pays: 'الدفعات والأرباح', prices: 'الأسعار', space: 'المساحة في السحابة', staff: 'حسابات الموظفين',
+  };
+  let view = 'home';
+  const viewFromHash = () => { const h = location.hash.slice(1); return VIEWS[h] ? h : 'home'; };
+  function go(v, quiet) {
+    if (!VIEWS[v]) v = 'home';
+    view = v;
+    for (const k of Object.keys(VIEWS)) $('v-' + k).classList.toggle('hide', k !== v);
+    document.querySelectorAll('.nav').forEach((n) => n.classList.toggle('on', n.dataset.v === v));
+    $('vTitle').textContent = VIEWS[v];
+    if (location.hash.slice(1) !== v) history.replaceState(null, '', '#' + v);
+    subtitle();
+    if (!quiet) window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('.nav').forEach((n) => n.addEventListener('click', () => go(n.dataset.v)));
+  document.querySelectorAll('[data-go]').forEach((n) => n.addEventListener('click', () => go(n.dataset.go)));
+  window.addEventListener('hashchange', () => { if (!$('app').classList.contains('hide')) go(viewFromHash()); });
+
+  const n = (s) => rows.filter((r) => r.state === s).length;
+  function subtitle() {
+    const p = $('vSub');
+    if (view === 'home') { const d = new Date(); p.textContent = `${iso(d.toLocaleDateString('en-GB').replace(/\//g, '.'))}${loadedAt ? ' · آخر تحديث ' + iso(loadedAt.toTimeString().slice(0, 5)) : ''}`; }
+    else if (view === 'subs') p.textContent = `${rows.length} حساب · ${n('active')} فعّال · ${n('trial')} تجربة · ${n('expired') + n('canceled')} منتهٍ أو ملغى`;
+    else if (view === 'pays') p.textContent = pays.length ? `${pays.length} دفعة مسجّلة` : '';
+    else if (view === 'prices') p.textContent = 'أسعار الباقات كما تظهر للمشتركين';
+    else if (view === 'space') { const g = globalBars(); p.textContent = `المجموع ${sizeTxt(g.db + g.files)} · يُعرض الأكبر أولاً`; }
+    else if (view === 'staff') { const t = staffRows.reduce((a, x) => a + (x.users || []).length, 0); p.textContent = `${t} حساب دخول لدى ${staffRows.length} مشترك`; }
+  }
+
+  function renderAll() {
+    drawHome(); drawSubs(); drawEarnings(); drawSpace(); drawUsers();
+    $('nSubs').textContent = rows.length || '';
+    subtitle();
+    if (dr) drawDrawer();
+  }
+
+  // ---- home ----
+  function attention() {
+    const out = [];
+    for (const r of rows) {
+      if (isSelf(r.email) || !soon(r)) continue;
+      const trial = r.state === 'trial';
+      out.push({ red: r.days_left <= 2, name: nameOf(r), sub: `${trial ? 'تجربته' : 'اشتراكه'} ${r.days_left <= 0 ? 'ينتهي اليوم' : `ينتهي بعد ${r.days_left === 1 ? 'يوم' : r.days_left === 2 ? 'يومين' : r.days_left + ' أيام'}`}${trial ? ' · لم يشترك بعد' : ''}`,
+        act: trial ? 'تفعيل' : 'تمديد', fn: () => openDrawer(r, 'sub') });
+    }
+    for (const x of staffRows) {
+      const users = x.users || []; if (users.length <= (x.seats || 0)) continue;
+      const r = rowOf(x.email);
+      out.push({ red: true, name: nameOf(r, x.email), sub: `أضاف ${users.length} مستخدمين والمدفوع ${x.seats || 0}`, act: 'المستخدمون', fn: () => openDrawer(r || { email: x.email }, 'users') });
+    }
+    for (const u of usage) {
+      if (!u.em || isSelf(u.em)) continue;
+      const r = rowOf(u.em), info = endInfo(u, r), total = Number(u.db_bytes) + Number(u.file_bytes);
+      if (!info.ended || !total) continue;
+      if (info.warned && info.sinceWarn >= 30) out.push({ red: true, name: nameOf(r, u.em), sub: `مرّ شهر على التنبيه · بياناته ${sizeTxt(total)} · يمكن حذفها`, act: 'المساحة', fn: () => openDrawer(r || { email: u.em }, 'space') });
+      else if (!info.warned && info.days >= 150) out.push({ red: false, name: nameOf(r, u.em), sub: `${agoTxt(info.days)} · بياناته ${sizeTxt(total)} · وقت التنبيه`, link: warnLink(u, r, info, 'go') });
+    }
+    for (const sq of storeRows) {
+      if (isSelf(sq.email)) continue;
+      const full = ['data', 'photos'].filter((k) => quotaPct(sq, k) >= 0.8);
+      if (!full.length) continue;
+      const r = rowOf(sq.email);
+      out.push({ red: full.some((k) => quotaPct(sq, k) >= 0.95), name: nameOf(r, sq.email), sub: `مساحة ${full.map((k) => KINDQ[k]).join(' و')} قاربت الامتلاء`, act: 'المساحة', fn: () => openDrawer(r || { email: sq.email }, 'space') });
+    }
+    return out.sort((a, b) => Number(b.red) - Number(a.red));
+  }
+
+  let chartCur = '';
+  function drawHome() {
+    // numbers at the top
+    const k = $('kpis'); k.textContent = '';
+    const kpi = (label, value, sub, color, small) => { const d = el('div', 'kpi'); d.append(el('span', '', label)); const b = el('b', small ? 'sm' : '', value); if (color) b.style.color = color; b.title = value; d.append(b, el('small', '', sub)); k.append(d); };
+    const trialsSoon = rows.filter((r) => r.state === 'trial' && soon(r)).length;
+    const now = new Date(), y = now.getFullYear(), m = now.getMonth(), lm = new Date(y, m - 1, 1);
+    const inMonth = (p, yy, mm) => { const d = new Date(p.paid_at); return d.getFullYear() === yy && d.getMonth() === mm; };
+    const thisM = sumTxt(pays.filter((p) => inMonth(p, y, m))), lastM = sumTxt(pays.filter((p) => inMonth(p, lm.getFullYear(), lm.getMonth())));
+    const g = globalBars(), cap = 1536 * 1048576;
+    kpi('مشتركون فعّالون', String(n('active')), `من أصل ${rows.length} حساب`, 'var(--green)');
+    kpi('في التجربة', String(n('trial')), trialsSoon ? `${trialsSoon} تنتهي خلال 7 أيام` : 'لا تجربة تنتهي قريباً', 'var(--gold)');
+    kpi('دخل هذا الشهر', thisM || '0', `الشهر الماضي: ${lastM ? '⁦' + lastM + '⁩' : '0'}`, 'var(--green)', thisM.length > 12);
+    kpi('مساحة السحابة', sizeTxt(g.db + g.files), `من ${iso('1.5 GB')} في الخطة المجانية · ${iso(Math.round((g.db + g.files) / cap * 100) + '%')}`);
+
+    // what needs a decision
+    const list = $('attList'); list.textContent = '';
+    const att = attention();
+    $('attN').textContent = att.length || ''; $('attN').classList.toggle('hide', !att.length);
+    $('nHome').textContent = att.length || '';
+    if (!att.length) list.append(el('div', 'ok-all', '✓ لا شيء يحتاج انتباهك الآن'));
+    for (const a of att.slice(0, 8)) {
+      const d = el('div', 'att'), dot = el('i', 'dot'); dot.style.background = a.red ? 'var(--red)' : 'var(--gold)';
+      const tx = el('div', 'tx'); tx.append(el('b', '', a.name), el('small', '', a.sub));
+      d.append(dot, tx, a.link || (() => { const b = el('button', 'go', a.act); b.type = 'button'; b.addEventListener('click', a.fn); return b; })());
+      list.append(d);
+    }
+    if (att.length > 8) list.append(el('p', 'hint', `و${att.length - 8} غيرها`));
+
+    // income chart, one currency at a time
+    const curs = [...new Set(pays.map((p) => p.currency))].sort((a, b) => paysCount(b) - paysCount(a));
+    function paysCount(c) { return pays.filter((p) => p.currency === c).length; }
+    if (!curs.includes(chartCur)) chartCur = curs[0] || '';
+    const cb = $('curs'); cb.textContent = '';
+    if (curs.length > 1) for (const c of curs) { const b = el('button', c === chartCur ? 'on' : '', CURNAME[c] || c); b.type = 'button'; b.addEventListener('click', () => { chartCur = c; drawHome(); }); cb.append(b); }
+    const ch = $('chart'); ch.textContent = '';
+    if (payErr) { ch.append(el('div', 'empty', payErr)); }
+    else if (!pays.length) { ch.append(el('div', 'empty', 'لم تُسجَّل أي دفعة بعد')); }
+    else {
+      const months = []; for (let i = 5; i >= 0; i--) { const d = new Date(y, m - i, 1); months.push([d.getFullYear(), d.getMonth()]); }
+      const vals = months.map(([yy, mm]) => pays.filter((p) => p.currency === chartCur && inMonth(p, yy, mm)).reduce((a, p) => a + Number(p.amount), 0));
+      const max = Math.max(...vals, 1);
+      months.forEach(([yy, mm], i) => {
+        const c = el('div', i === 5 ? 'cur' : ''); const bar = el('i'); bar.style.height = Math.round(vals[i] / max * 100) + 'px';
+        c.append(el('em', '', vals[i] ? money(vals[i], chartCur) : ''), bar, el('span', '', iso(`${mm + 1}/${String(yy).slice(2)}`)));
+        ch.append(c);
+      });
+    }
+
+    // last payments
+    const lp = $('lastPays'); lp.textContent = '';
+    if (!pays.length) lp.append(el('div', 'empty', payErr || 'لا دفعات بعد'));
+    for (const p of pays.slice(0, 5)) {
+      const d = el('div', 'lp'), tx = el('div', 'tx');
+      tx.append(el('b', '', `${p.business || p.email} · ${PLAN[p.plan_kind] || '—'}${p.months ? ' ' + monthsTxt(p.months) : ''}`), el('small', '', iso(String(p.paid_at).slice(0, 10))));
+      d.append(tx, el('span', 'num', money(p.amount, p.currency)));
+      const r = rowOf(p.email); if (r) { d.style.cursor = 'pointer'; d.addEventListener('click', () => openDrawer(r, 'pays')); }
+      lp.append(d);
+    }
+
+    // cloud meters
+    const hc = $('homeCloud'); hc.textContent = '';
+    if (useErr) { hc.append(el('div', 'empty', useErr)); return; }
+    for (const [name, used, cp, capTxt] of globalBars().list) hc.append(meter(name, `${sizeTxt(used)} من ${iso(capTxt)}`, used / cp));
+    const big = usage.map((u) => ({ u, t: Number(u.db_bytes) + Number(u.file_bytes) })).filter((x) => x.t > 0).sort((a, b) => b.t - a.t)[0];
+    if (big) hc.append(el('p', 'hint', `الأكبر: ${nameOf(rowOf(big.u.em), big.u.em)} · ${sizeTxt(big.t).replace(/[⁦⁩]/g, '')}`));
+  }
+  function meter(name, txt, pct) {
+    const d = el('div', 'meter'), t = el('div', 't'); t.append(el('b', '', name), el('span', '', txt));
+    const b = el('div', 'bar8' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')), i = el('i'); i.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; b.append(i);
+    d.append(t, b); return d;
+  }
+
+  // ---- subscribers ----
+  let stF = '';
+  const ST_F = [['', 'الكل', () => true], ['active', 'فعّال', (r) => r.state === 'active'], ['trial', 'تجربة', (r) => r.state === 'trial'],
+    ['off', 'منتهٍ أو ملغى', (r) => r.state === 'expired' || r.state === 'canceled'], ['soon', 'ينتهي قريباً', soon]];
+  function fillFilters() {
+    const cf = $('cf'), keepC = cf.value; cf.length = 1;
+    [...new Set(rows.map((r) => r.country || 'غير معروف'))].sort().forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
+    cf.value = [...cf.options].some((o) => o.value === keepC) ? keepC : '';
+    const pf = $('pf'), keepP = pf.value; pf.length = 1;
+    [...new Set(rows.map((r) => Number(r.plan_kind) || 0))].sort().forEach((k) => { const o = document.createElement('option'); o.value = String(k); o.textContent = PLAN[k] || PLAN[0]; pf.appendChild(o); });
+    pf.value = [...pf.options].some((o) => o.value === keepP) ? keepP : '';
+  }
+  function filtered() {
+    const q = $('q').value.trim().toLowerCase(), cv = $('cf').value, pv = $('pf').value;
+    const stFn = (ST_F.find((s) => s[0] === stF) || ST_F[0])[2];
+    return rows.filter((r) => stFn(r) && (!cv || (r.country || 'غير معروف') === cv) && (!pv || String(Number(r.plan_kind) || 0) === pv)
+      && (!q || [r.email, r.business, r.country].some((v) => low(v).includes(q))));
+  }
+  function drawSubs() {
+    const sb = $('stf'); sb.textContent = '';
+    for (const [key, name, fn] of ST_F) {
+      const b = el('button', key === stF ? 'on' : '', name); b.type = 'button'; b.append(el('em', '', String(rows.filter(fn).length)));
+      b.addEventListener('click', () => { stF = key; drawSubs(); }); sb.append(b);
+    }
+    const box = $('list'); box.textContent = '';
+    const shown = filtered();
+    $('count').textContent = rows.length && shown.length !== rows.length ? `يظهر ${shown.length} من ${rows.length}` : '';
+    if (!shown.length) { box.append(el('div', 'empty', rows.length ? 'لا توجد نتائج' : 'لا يوجد مشتركون بعد')); return; }
+    const h = el('div', 'th');
+    for (const [t, c] of [['المشترك', ''], ['البلد', 'c-country'], ['الباقة', ''], ['الحالة', ''], ['ينتهي', ''], ['المستخدمون', ''], ['المساحة', 'c-space'], ['المدفوع', '']]) h.append(el('div', 'td ' + c, t));
+    box.append(h);
+    for (const r of shown) {
+      const k = el('button', 'tr' + (dr && low(dr.email) === low(r.email) ? ' sel' : '')); k.type = 'button';
+      const nm = el('div', 'td nm'); nm.append(el('b', r.business ? '' : 'mail', r.business || r.email || '—')); if (r.business) nm.append(el('small', 'mail', r.email));
+      const td = (cls, lb, text, tcls) => { const d = el('div', 'td ' + cls); if (lb) d.append(el('span', 'lb', lb)); d.append(el('span', tcls || '', text)); d.title = text; return d; };
+      const end = el('div', 'td end' + (soon(r) ? ' soon' : ''));
+      if (r.ends) { end.append(el('span', '', iso(r.ends))); end.append(el('small', soon(r) ? 'soon' : '', left(r))); } else end.append(el('span', 'none', '—'));
+      const us = staffOf(r.email), un = us ? (us.users || []).length : 0, seats = us ? us.seats || 0 : 0;
+      const ut = td('c-users', 'المستخدمون', un || seats ? `${un} / ${seats}` : '—', un > seats ? 'soon' : (un || seats ? '' : 'none'));
+      const u = usageOf(r.email), tot = u ? Number(u.db_bytes) + Number(u.file_bytes) : 0;
+      const st = el('div', 'td c-st'); st.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state));
+      const p = paidOf(r);
+      k.append(nm, td('c-country', '', r.country || '—', r.country ? '' : 'none'), td('c-plan', '', PLAN[r.plan_kind] || PLAN[0]), st, end, ut,
+        td('c-space', '', tot ? sizeTxt(tot) : '—', tot ? '' : 'none'), td('paid', '', p || '—', p ? '' : 'none'));
+      k.addEventListener('click', () => openDrawer(r, 'sub'));
+      box.append(k);
+    }
+  }
+  $('cf').addEventListener('change', drawSubs);
+  $('pf').addEventListener('change', drawSubs);
+  $('q').addEventListener('input', drawSubs);
+
+  // ---- payments and earnings ----
   function drawEarnings() {
     const sum = $('earnSum'), list = $('payList');
     sum.textContent = ''; list.textContent = '';
-    if (payErr) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = payErr; sum.appendChild(d); return; }
+    if (payErr) { sum.append(el('div', 'empty', payErr)); list.classList.add('hide'); return; }
     const now = new Date(), y = now.getFullYear(), m = now.getMonth();
     const periods = [
       ['هذا الشهر', (d) => d.getFullYear() === y && d.getMonth() === m, true],
@@ -722,12 +963,12 @@ button:disabled{opacity:.55;cursor:default}
       ['الكل', () => true],
     ];
     const curs = [...new Set(pays.map((p) => p.currency))];
-    if (!curs.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'لم تُسجَّل أي دفعة بعد. اكتب المبلغ عند التفعيل.'; sum.appendChild(d); }
+    if (!curs.length) sum.append(el('div', 'empty', 'لم تُسجَّل أي دفعة بعد. اكتب المبلغ عند تفعيل اشتراك المشترك.'));
     else {
-      const t = document.createElement('table'); t.className = 'earn';
-      const hr = t.insertRow(); const th0 = document.createElement('th'); th0.textContent = 'الفترة'; hr.appendChild(th0);
-      curs.forEach((c) => { const th = document.createElement('th'); th.textContent = c === 'TRY' ? 'ليرة تركية' : c === 'USD' ? 'دولار' : c === 'EUR' ? 'يورو' : c; hr.appendChild(th); });
-      const thn = document.createElement('th'); thn.textContent = 'الدفعات'; hr.appendChild(thn);
+      const t = el('table', 'earn');
+      const hr = t.insertRow(); hr.append(el('th', '', 'الفترة'));
+      curs.forEach((c) => hr.append(el('th', '', CURNAME[c] || c)));
+      hr.append(el('th', '', 'الدفعات'));
       for (const [name, inP, hl] of periods) {
         const tr = t.insertRow(); if (hl) tr.className = 'hl';
         const ps = pays.filter((p) => inP(new Date(p.paid_at)));
@@ -735,38 +976,262 @@ button:disabled{opacity:.55;cursor:default}
         curs.forEach((c) => { const td = tr.insertCell(); td.className = 'num'; td.textContent = money(ps.filter((p) => p.currency === c).reduce((a, p) => a + Number(p.amount), 0), c); });
         const tdn = tr.insertCell(); tdn.className = 'num'; tdn.textContent = ps.length;
       }
-      sum.appendChild(t);
+      sum.append(t);
     }
-    if (pays.length) list.classList.remove('hide'); else list.classList.add('hide');
-    for (const p of pays.slice(0, 100)) {
-      const d = el('div', 'pay');
-      const who = p.business ? cell('', '', p.business, p.email, '', 'mail') : cell('', '', p.email, '', 'mail');
-      const pl = cell('pl', '', PLAN[p.plan_kind] || '—', [monthsTxt(p.months), p.note].filter(Boolean).join(' · '));
-      const dt = cell('dt', '', iso(String(p.paid_at).slice(0, 10)), '', 'mail');
-      const amt = el('div', 'amt', money(p.amount, p.currency));
-      const del = el('button', 'b-red', 'حذف'); del.type = 'button';
-      let armedDel = null;
-      del.addEventListener('click', async () => {
-        if (!armedDel) { del.classList.add('sure'); del.textContent = 'تأكيد الحذف'; armedDel = setTimeout(() => { armedDel = null; del.classList.remove('sure'); del.textContent = 'حذف'; }, 5000); return; }
-        clearTimeout(armedDel); del.disabled = true;
-        try { await rpc('amimar_admin_delete_payment', { p_id: p.id }); await load(); } catch (e) { show($('fMsg'), e.message, false); del.disabled = false; }
-      });
-      d.append(who, pl, dt, amt, del); list.appendChild(d);
+    list.classList.toggle('hide', !pays.length);
+    for (const p of pays.slice(0, 100)) list.append(payRow(p));
+  }
+
+  // ---- space ----
+  function drawSpace() {
+    const sum = $('spaceSum'), list = $('spaceList');
+    sum.textContent = ''; list.textContent = ''; list.classList.add('hide');
+    if (useErr) { sum.append(el('div', 'empty', useErr)); return; }
+    const bars = el('div', 'bars');
+    for (const [name, used, cap, capTxt] of globalBars().list) {
+      const b = el('div', 'bar'); b.append(el('div', '', name), el('b', '', sizeTxt(used)), el('span', '', `من ${iso(capTxt)} في الخطة المجانية`));
+      const i = el('i'); const f = el('span'); f.style.width = Math.min(100, used / cap * 100).toFixed(1) + '%'; if (used / cap > 0.8) f.style.background = 'var(--red)'; i.append(f); b.append(i); bars.append(b);
+    }
+    sum.append(bars);
+    if (storeRows.length) {
+      const meas = storeRows.map((x) => x.measured_at).filter(Boolean).sort().slice(-1)[0];
+      const mrow = el('div', 'mrow');
+      const mb = btn('b-line sm', 'إعادة قياس البيانات');
+      mb.addEventListener('click', async () => { mb.disabled = true; try { await rpc('amimar_admin_measure'); await load(); toast('تم قياس البيانات الآن ✓', true); } catch (e) { toast(e.message, false); } finally { mb.disabled = false; } });
+      mrow.append(el('p', 'hint', meas ? `حجم السجلات يُقاس كل ساعة · آخر قياس ${iso(new Date(meas).toLocaleString('en-GB', { hour12: false }).slice(0, 17))}` : 'حجم السجلات يُقاس كل ساعة'), mb);
+      sum.append(mrow);
+    }
+    const items = usage.map((u) => ({ u, r: rowOf(u.em), total: Number(u.db_bytes) + Number(u.file_bytes) }))
+      .filter((x) => x.total > 0).sort((a, b) => b.total - a.total);
+    if (!items.length) return;
+    list.classList.remove('hide');
+    for (const { u, r, total } of items.slice(0, 50)) {
+      const info = endInfo(u, r);
+      const d = el('div', 'spc');
+      const who = r && r.business ? cell('who', '', r.business, u.em, '', 'mail') : cell('who', '', u.em || '—', '', 'mail');
+      const sz = cell('', '', sizeTxt(total), `بيانات ${sizeTxt(Number(u.db_bytes))} · صور ونسخ ${sizeTxt(Number(u.file_bytes))}`, 'sz');
+      const sq = storeOf(u.em);
+      if (sq) {
+        for (const kind of ['data', 'photos']) {
+          const pct = quotaPct(sq, kind), custom = sq[kind + '_custom'];
+          sz.append(el('small', custom ? 'cu' : '', `${KINDQ[kind]} ${sizeTxt(Number(sq[kind + '_used']))} من ${mbTxt(Number(sq[kind + '_limit_mb']))}${custom ? ' · خاصة' : ''}`));
+          const qb = el('i', 'qbar' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')); const f = el('span'); f.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; qb.append(f); sz.append(qb);
+        }
+      }
+      const rowsC = cell('', '', `${Number(u.db_rows).toLocaleString('en-US')} سطر`, `${Number(u.file_count)} ملف`);
+      const st = el('div', 'c st');
+      st.append(el('span', 'tag t-' + info.state, STATE[info.state] || info.state));
+      if (info.ended && u.ended_at) st.append(el('small', info.days >= 150 ? 'soon' : '', agoTxt(info.days)));
+      if (info.warned) st.append(el('small', info.sinceWarn >= 30 ? 'soon' : '', info.sinceWarn <= 0 ? 'نُبّه اليوم' : `نُبّه منذ ${info.sinceWarn} يوماً`));
+      d.classList.toggle('old', info.ended && (info.sinceWarn >= 30 || (!info.warned && info.days >= 180)));
+      const acts = el('div', 'acts');
+      acts.append(btn('b-line sm', 'إدارة', () => openDrawer(r || { email: u.em }, 'space')));
+      if (info.ended && !isSelf(u.em)) {
+        if (info.days >= 150 && u.em) acts.append(warnLink(u, r, info));
+        acts.append(wipeButton(u, info));
+      }
+      d.append(who, sz, rowsC, st, acts);
+      list.append(d);
     }
   }
 
-  const iso = (d) => '\u2066' + d + '\u2069'; // keeps dates left-to-right inside Arabic text
-  const validEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  // ---- staff accounts ----
+  function drawUsers() {
+    const box = $('usersList'), sum = $('usersSum'); box.textContent = ''; sum.textContent = '';
+    if (staffErr) { box.append(el('div', 'empty', staffErr)); return; }
+    const total = staffRows.reduce((a, x) => a + (x.users || []).length, 0), seats = staffRows.reduce((a, x) => a + (x.seats || 0), 0);
+    const bars = el('div', 'bars');
+    for (const [name, v, sub] of [['حسابات الدخول', total, `من ${seats} مدفوع`], ['مشتركون لديهم مستخدمون', staffRows.length, `من ${rows.length} حساب`]]) {
+      const b = el('div', 'bar'); b.append(el('div', '', name), el('b', '', String(v)), el('span', '', sub)); bars.append(b);
+    }
+    sum.append(bars);
+    if (!staffRows.length) { box.append(el('div', 'empty', 'لا يوجد مشترك لديه مستخدمون بعد')); return; }
+    for (const x of staffRows) {
+      const r = rowOf(x.email);
+      const b = el('button', 'ub'); b.type = 'button';
+      const h = el('div', 'uh'), nm = el('div');
+      nm.append(el('b', '', nameOf(r, x.email))); if (r && r.business) nm.append(el('small', '', ' ' + x.email));
+      const users = x.users || [];
+      h.append(nm, el('span', 'chip' + (users.length > x.seats ? ' u-bad' : ' u-ok'), `${users.length} من ${x.seats}`));
+      b.append(h);
+      if (users.length) b.append(userList(users)); else b.append(el('p', 'hint', 'لم يضف أي مستخدم بعد'));
+      b.addEventListener('click', () => openDrawer(r || { email: x.email }, 'users'));
+      box.append(b);
+    }
+  }
 
-  $('lGo').addEventListener('click', async () => {
-    const email = $('lEmail').value.trim(), password = $('lPass').value;
-    if (!email || !password) { show($('lMsg'), 'اكتب البريد وكلمة المرور', false); return; }
-    $('lGo').disabled = true;
-    try { keep(await auth({ email, password }, 'password')); $('lPass').value = ''; await enter(); }
-    catch (e) { show($('lMsg'), /Invalid login/i.test(e.message) ? 'البريد أو كلمة المرور غير صحيحة' : e.message, false); }
-    finally { $('lGo').disabled = false; }
+  // =====================================================================
+  // one subscriber's panel
+  // =====================================================================
+  let dr = null; // { email, tab } — email '' means a new activation by email
+  let lastFocus = null;
+  function openDrawer(r, tab) {
+    lastFocus = document.activeElement;
+    const email = (r && r.email) || '';
+    dr = { email, tab: tab || 'sub' };
+    $('fEmail').value = email;
+    const real = rowOf(email);
+    $('fPlan').value = String(real && real.plan_kind && PLAN[real.plan_kind] ? real.plan_kind : 6);
+    $('fMonths').value = '12';
+    $('fEmp').value = String((real && real.max_employees) || 0);
+    $('fUsers').value = String(staffOf(email)?.seats || 0);
+    $('fCountry').value = real ? codeOf(real.country) : '';
+    $('fAmount').value = '';
+    $('fMsg').className = 'msg'; resetCancel(); suggest();
+    $('scrim').classList.remove('hide'); $('drawer').classList.remove('hide'); document.body.classList.add('lock');
+    drawDrawer(); drawSubs();
+    $('drawer').querySelector('.db').scrollTop = 0;
+    (email ? $('dClose') : $('fEmail')).focus();
+  }
+  function closeDrawer() {
+    if (!dr) return;
+    dr = null;
+    $('scrim').classList.add('hide'); $('drawer').classList.add('hide'); document.body.classList.remove('lock');
+    if (rows.length) drawSubs();
+    if (lastFocus && document.contains(lastFocus)) try { lastFocus.focus(); } catch {}
+  }
+  $('dClose').addEventListener('click', closeDrawer);
+  $('scrim').addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dr) closeDrawer(); });
+  $('dTabs').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { if (!dr) return; dr.tab = b.dataset.t; drawDrawer(); }));
+  $('newSub').addEventListener('click', () => openDrawer(null, 'sub'));
+  // typing a known email in a new activation fills in what we know about him
+  $('fEmail').addEventListener('change', () => { if (dr && !dr.email) { const r = rowOf($('fEmail').value.trim()); if (r) openDrawer(r, 'sub'); } });
+
+  function drawDrawer() {
+    if (!dr) return;
+    const r = dr.email ? rowOf(dr.email) : null, isNew = !dr.email;
+    $('dAv').textContent = isNew ? '＋' : initial(r || { email: dr.email });
+    $('dName').textContent = isNew ? 'تفعيل اشتراك' : nameOf(r, dr.email);
+    $('dMail').textContent = isNew ? '' : (r && r.business ? dr.email : '');
+    const tag = $('dTag'); tag.textContent = ''; if (r) tag.append(el('span', 'tag t-' + r.state, STATE[r.state] || r.state));
+    if (isNew) dr.tab = 'sub';
+    const us = staffOf(dr.email), ps = isNew ? [] : paysOf(dr.email);
+    $('dUsersN').textContent = us ? String((us.users || []).length) : '';
+    $('dPaysN').textContent = ps.length ? String(ps.length) : '';
+    $('dTabs').classList.toggle('hide', isNew);
+    $('dTabs').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.t === dr.tab));
+    for (const t of ['sub', 'users', 'space', 'pays']) $('t-' + t).classList.toggle('hide', t !== dr.tab);
+
+    // subscription
+    $('fEmailBox').classList.toggle('hide', !isNew);
+    const kv = $('dKv'); kv.textContent = ''; kv.classList.toggle('hide', !r);
+    if (r) {
+      const add = (k, v, cls) => { kv.append(el('span', '', k), el('b', cls || '', v)); };
+      add('الباقة', PLAN[r.plan_kind] || PLAN[0]);
+      add('ينتهي', r.ends ? `${iso(r.ends)} · ${left(r)}` : '—', soon(r) ? 'soon' : '');
+      add('البلد', r.country || 'غير معروف');
+      add('عدد الموظفين', empTxt(r.max_employees));
+      add('المستخدمون', us ? `${(us.users || []).length} من ${us.seats || 0}` : '0');
+      if (r.joined) add('سجّل في', iso(String(r.joined).slice(0, 10)));
+      add('مجموع المدفوع', paidOf(r) || '—');
+    }
+    $('fHead').textContent = isNew ? 'الاشتراك' : r && r.state === 'active' ? 'تمديد أو تعديل الاشتراك' : 'تفعيل الاشتراك';
+    $('fGo').textContent = r && r.state === 'active' ? 'تمديد' : 'تفعيل';
+    $('fCancel').classList.toggle('hide', !r || !live(r));
+    $('fSaveCountry').classList.toggle('hide', isNew);
+    $('fSaveUsers').classList.toggle('hide', isNew);
+
+    // users
+    const tu = $('t-users'); tu.textContent = '';
+    if (dr.tab === 'users') {
+      if (staffErr) tu.append(el('div', 'empty', staffErr));
+      else {
+        const users = us ? us.users || [] : [], seats = us ? us.seats || 0 : 0;
+        const bx = el('div', 'kv'); bx.append(el('span', '', 'المدفوع'), el('b', '', String(seats)), el('span', '', 'المستخدَم'), el('b', users.length > seats ? 'soon' : '', String(users.length)));
+        tu.append(bx);
+        if (users.length > seats) tu.append(el('p', 'hint', 'أضاف أكثر من العدد المدفوع، فالحسابات الزائدة موقوفة حتى ترفع العدد.'));
+        if (users.length) tu.append(userList(users)); else tu.append(el('div', 'empty', 'لم يضف أي مستخدم بعد'));
+        tu.append(el('p', 'hint', 'يضيف المشترك المستخدمين بنفسه من البرنامج. أنت تحدّد العدد المدفوع فقط:'));
+        tu.append(btn('b-line', 'تغيير العدد المدفوع', () => { dr.tab = 'sub'; drawDrawer(); $('fUsers').focus(); $('fUsers').select(); }));
+      }
+    }
+
+    // space
+    const tsp = $('t-space'); tsp.textContent = '';
+    if (dr.tab === 'space') {
+      const u = usageOf(dr.email), sq = storeOf(dr.email);
+      if (useErr) tsp.append(el('div', 'empty', useErr));
+      if (u) {
+        const bx = el('div', 'kv');
+        bx.append(el('span', '', 'المجموع'), el('b', 'num', sizeTxt(Number(u.db_bytes) + Number(u.file_bytes)).replace(/[⁦⁩]/g, '')),
+          el('span', '', 'السجلات'), el('b', '', `${Number(u.db_rows).toLocaleString('en-US')} سطر`),
+          el('span', '', 'الملفات'), el('b', '', `${Number(u.file_count)} ملف`));
+        tsp.append(bx);
+      }
+      if (sq) {
+        tsp.append(el('div', 'dsec', 'الحدّ المسموح'));
+        for (const kind of ['data', 'photos']) {
+          const used = Number(sq[kind + '_used']), mb = Number(sq[kind + '_limit_mb']), custom = sq[kind + '_custom'], pct = quotaPct(sq, kind);
+          const q = el('div', 'qline'), t = el('div', 't');
+          t.append(el('b', '', KINDQ[kind] + (custom ? ' · مساحة خاصة' : '')), el('span', '', `${sizeTxt(used)} من ${mbTxt(mb)}`));
+          const qb = el('div', 'bar8' + (pct >= 0.95 ? ' full' : pct >= 0.8 ? ' warnq' : '')), fi = el('i'); fi.style.width = Math.min(100, pct * 100).toFixed(1) + '%'; qb.append(fi);
+          const ed = el('div', 'ed');
+          const inp = el('input'); inp.type = 'number'; inp.min = '10'; inp.max = '102400'; inp.step = '1'; inp.value = String(mb); inp.setAttribute('inputmode', 'numeric'); inp.setAttribute('aria-label', `${KINDQ[kind]} بالميغابايت`);
+          ed.append(inp, el('span', 'hint', 'MB'));
+          for (const v of [500, 1024, 2048, 5120, 10240]) { const pb = el('button', 'pre', mbTxt(v)); pb.type = 'button'; pb.addEventListener('click', () => { inp.value = String(v); }); ed.append(pb); }
+          ed.append(btn('b-green sm', 'حفظ', () => { const nmb = Number(inp.value); if (!Number.isInteger(nmb) || nmb < 10 || nmb > 102400) { toast('المساحة رقم صحيح من 10 إلى 102400 MB', false); return; } setStorage(dr.email, kind, nmb); }));
+          if (custom) ed.append(btn('b-line sm', 'الافتراضي', () => setStorage(dr.email, kind, null)));
+          q.append(t, qb, ed); tsp.append(q);
+        }
+        tsp.append(el('p', 'hint', 'الافتراضي: 100 MB للتجربة و1 GB للمشترك، لكل واحدة. البيانات = السجلات والنسخ الاحتياطية، والصور = ملفات الصور. عند امتلاء البيانات يتوقف إضافة سجلات ونسخ جديدة (التعديل والقراءة مسموحان)، وعند امتلاء الصور يتوقف رفع صور جديدة. لا يُحذف شيء.'));
+      } else if (!useErr) tsp.append(el('div', 'empty', 'لا توجد بيانات مساحة لهذا الحساب بعد'));
+      if (u && !isSelf(dr.email)) {
+        const info = endInfo(u, r);
+        if (info.ended && Number(u.db_bytes) + Number(u.file_bytes) > 0) {
+          tsp.append(el('div', 'dsec', 'اشتراك منتهٍ'));
+          tsp.append(el('p', 'hint', `${u.ended_at ? agoTxt(info.days) : 'منتهٍ'}${info.warned ? ` · نُبّه منذ ${Math.max(0, info.sinceWarn)} يوماً` : ''}. بعد 5 أشهر أرسل له تنبيهاً، وبعد شهر من التنبيه يمكنك حذف بياناته من السحابة؛ يبقى حسابه ودفعاته.`));
+          const a = el('div', 'dacts');
+          if (info.days >= 150) a.append(warnLink(u, r, info));
+          a.append(wipeButton(u, info));
+          tsp.append(a);
+        }
+      }
+    }
+
+    // payments
+    const tp = $('t-pays'); tp.textContent = '';
+    if (dr.tab === 'pays') {
+      if (payErr) tp.append(el('div', 'empty', payErr));
+      else if (!ps.length) tp.append(el('div', 'empty', 'لا دفعات مسجّلة لهذا المشترك. اكتب المبلغ عند التفعيل ليُسجَّل.'));
+      else {
+        const bx = el('div', 'kv'); bx.append(el('span', '', 'المجموع'), el('b', 'num', sumTxt(ps)), el('span', '', 'عدد الدفعات'), el('b', '', String(ps.length)));
+        tp.append(bx);
+        const box = el('div'); ps.forEach((p) => box.append(payRow(p, true))); tp.append(box);
+      }
+    }
+  }
+
+  // suggested amount: the plan for the chosen months + users (20$ a year each); extra employees are named, not priced here
+  const PRICE = { 1: [5, 50], 2: [7, 70], 3: [9, 90], 4: [10, 100], 5: [15, 150], 6: [20, 200] };
+  const HAS_EMP = { 1: true, 2: true, 3: true, 5: true, 6: true };
+  function suggest() {
+    const k = Number($('fPlan').value), m = Number($('fMonths').value), emp = Number($('fEmp').value || 0), users = Number($('fUsers').value || 0);
+    const pr = PRICE[k]; if (!pr || !(m > 0)) { $('fSugg').textContent = '—'; return; }
+    const years = Math.floor(m / 12), rest = m % 12;
+    const plan = years * pr[1] + rest * pr[0];
+    const u = Math.max(0, Math.trunc(users)) * 20 * (m / 12);
+    const total = Math.round((plan + u) * 100) / 100;
+    const parts = [`الباقة ${plan}$`]; if (u) parts.push(`المستخدمون ${Math.round(u * 100) / 100}$`);
+    const extra = HAS_EMP[k] && emp > 10 ? ` + ${Math.ceil((emp - 10) / 10)} × 20$ للموظفين الإضافيين` : '';
+    $('fSugg').textContent = `⁦$ ${total}⁩ (${parts.join(' + ')})${extra}`;
+  }
+  ['fPlan', 'fMonths', 'fEmp', 'fUsers'].forEach((id) => { $(id).addEventListener('input', suggest); $(id).addEventListener('change', suggest); });
+
+  async function saveUsers(email) {
+    const nU = Number($('fUsers').value || 0);
+    if (!Number.isInteger(nU) || nU < 0 || nU > 500) throw new Error('عدد المستخدمين رقم صحيح من 0 إلى 500');
+    try { await rpc('amimar_admin_set_seats', { p_email: email, p_seats: nU }); }
+    catch (e) { throw new Error(/SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase أولاً' : /no such subscriber/.test(e.message) ? 'لا يوجد حساب بهذا البريد' : e.message); }
+  }
+  $('fSaveUsers').addEventListener('click', async () => {
+    const email = $('fEmail').value.trim();
+    if (!validEmail(email)) { show($('fMsg'), 'اكتب بريد المشترك بشكل صحيح', false); return; }
+    $('fSaveUsers').disabled = true;
+    try { await saveUsers(email); show($('fMsg'), `حُفظ عدد المستخدمين: ${$('fUsers').value}`, true); await load(); }
+    catch (e) { show($('fMsg'), e.message, false); }
+    finally { $('fSaveUsers').disabled = false; }
   });
-  $('lPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('lGo').click(); });
 
   $('fGo').addEventListener('click', async () => {
     const email = $('fEmail').value.trim(), emp = Number($('fEmp').value || 0);
@@ -780,13 +1245,17 @@ button:disabled{opacity:.55;cursor:default}
       else {
         if ($('fCountry').value) await rpc('amimar_admin_set_country', { p_email: email, p_code: $('fCountry').value });
         const had = staffOf(email)?.seats || 0, want = Number($('fUsers').value || 0);
-        if (want !== had) { try { await saveUsers(email); } catch (e) { show($('fMsg'), e.message, false); } }
+        let note = '';
+        if (want !== had) { try { await saveUsers(email); } catch (e) { note = ' · ' + e.message; } }
         const amount = Number($('fAmount').value || 0);
         if (amount > 0) {
           await rpc('amimar_admin_add_payment', { p_email: email, p_amount: amount, p_currency: $('fCur').value, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_note: null });
           $('fAmount').value = '';
         }
-        show($('fMsg'), `تم التفعيل: ${email} · ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}`, true); await load();
+        const msg = `تم التفعيل: ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}${note}`;
+        if (dr && !dr.email) dr.email = email; // a new activation becomes this subscriber's panel
+        await load();
+        show($('fMsg'), msg, !note);
       }
     } catch (e) { show($('fMsg'), e.message, false); }
     finally { $('fGo').disabled = false; }
@@ -803,7 +1272,7 @@ button:disabled{opacity:.55;cursor:default}
     try {
       const res = await rpc('amimar_admin_cancel', { p_email: email });
       if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد', false);
-      else { show($('fMsg'), `أُلغي اشتراك ${email}`, true); await load(); }
+      else { await load(); show($('fMsg'), 'أُلغي الاشتراك', true); }
     } catch (e) { show($('fMsg'), e.message, false); }
     finally { $('fCancel').disabled = false; }
   });
@@ -816,19 +1285,28 @@ button:disabled{opacity:.55;cursor:default}
     try {
       const res = await rpc('amimar_admin_set_country', { p_email: email, p_code: code });
       if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد', false);
-      else { show($('fMsg'), `حُفظ البلد: ${email} · ${$('fCountry').selectedOptions[0].text}`, true); await load(); }
+      else { await load(); show($('fMsg'), `حُفظ البلد: ${$('fCountry').selectedOptions[0].text}`, true); }
     } catch (e) { show($('fMsg'), e.message, false); }
     finally { $('fSaveCountry').disabled = false; }
   });
 
-  $('cf').addEventListener('change', draw);
-  $('q').addEventListener('input', draw);
-  $('st').addEventListener('change', draw);
-  $('reload').addEventListener('click', load);
+  // ---- sign in ----
+  $('lGo').addEventListener('click', async () => {
+    const email = $('lEmail').value.trim(), password = $('lPass').value;
+    if (!email || !password) { show($('lMsg'), 'اكتب البريد وكلمة المرور', false); return; }
+    $('lGo').disabled = true;
+    try { keep(await auth({ email, password }, 'password')); $('lPass').value = ''; await enter(); }
+    catch (e) { show($('lMsg'), /Invalid login/i.test(e.message) ? 'البريد أو كلمة المرور غير صحيحة' : e.message, false); }
+    finally { $('lGo').disabled = false; }
+  });
+  $('lPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('lGo').click(); });
+
+  $('reload').addEventListener('click', async () => { await load(); toast('تم التحديث', true); });
   $('out').addEventListener('click', signOut);
+  $('out2').addEventListener('click', signOut);
 
   { const sel = $('fCountry'); const o0 = document.createElement('option'); o0.value = ''; o0.textContent = '— بدون تغيير —'; sel.appendChild(o0);
-    for (const [c, n] of COUNTRIES) { const o = document.createElement('option'); o.value = c; o.textContent = n; sel.appendChild(o); } }
+    for (const [c, nm] of COUNTRIES) { const o = document.createElement('option'); o.value = c; o.textContent = nm; sel.appendChild(o); } }
 
   try { const c = localStorage.getItem('amimar_admin_cur'); if (c) $('fCur').value = c; } catch {}
   $('fCur').addEventListener('change', () => { try { localStorage.setItem('amimar_admin_cur', $('fCur').value); } catch {} });
