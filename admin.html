@@ -115,6 +115,15 @@ button:disabled{opacity:.55;cursor:default}
 .pnotes{margin:12px 0 0;padding-inline-start:20px;font-size:14.5px;color:var(--muted)}
 .pnotes li{margin:4px 0}.pnotes b{color:var(--ink)}
 .two{display:grid;grid-template-columns:330px minmax(0,1fr);gap:14px;align-items:start}
+.span2{grid-column:span 2}@media(max-width:640px){.span2{grid-column:auto}}
+.sugg{min-height:42px;display:flex;align-items:center;font-weight:800;font-size:15px;color:var(--green)}
+.ub{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--card)}
+.ub .uh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.ub .uh b{font-size:15px}.ub .uh small{color:var(--muted);direction:ltr}
+.ub ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+.ub li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:14px;border-top:1px dashed var(--line);padding-top:4px}
+.ub li .who{font-weight:700;min-width:120px}.ub li .usr{color:var(--muted);direction:ltr}
+.chip.u-ok{color:var(--green);border-color:var(--green)}.chip.u-bad{color:var(--red);border-color:var(--red)}
 .two .card{margin-bottom:0}.two{margin-bottom:14px}
 .pcard{position:sticky;top:12px}
 .pcard .earn{font-size:14px}.pcard .earn th,.pcard .earn td{padding:8px 4px}
@@ -192,10 +201,12 @@ button:disabled{opacity:.55;cursor:default}
         <tr><td>4</td><td>المبيعات فقط</td><td class="num">$ 10</td><td class="num">$ 100</td></tr>
         <tr><td>5</td><td>المبيعات والرواتب</td><td class="num">$ 15</td><td class="num">$ 150</td></tr>
         <tr class="hl"><td>6</td><td>المتكامل</td><td class="num">$ 20</td><td class="num">$ 200</td></tr>
+        <tr><td>+</td><td>مستخدم إضافي</td><td class="num">—</td><td class="num">$ 20</td></tr>
       </table>
       <ul class="pnotes">
         <li><b>الموظفون:</b> كل باقة فيها موظفون تشمل حتى 10 موظفين، وكل 10 موظفين إضافيين بـ 20$ زيادة.</li>
         <li><b>المحاسبة الكاملة:</b> في الباقة المتكاملة (6) فقط.</li>
+        <li><b>المستخدمون:</b> كل حساب دخول لموظف (بوابة الموظف أو مستخدم بصلاحيات) بـ 20$ في السنة، وهو منفصل عن عدد الموظفين في الباقة. تحدّد عددهم في «عدد المستخدمين».</li>
       </ul>
     </section>
     <section class="card fcard">
@@ -224,15 +235,22 @@ button:disabled{opacity:.55;cursor:default}
         <div><label for="fEmp">عدد الموظفين</label>
           <input id="fEmp" type="number" min="0" step="1" value="0" inputmode="numeric"></div>
       </div>
+      <div class="row">
+        <div><label for="fUsers">عدد المستخدمين</label>
+          <input id="fUsers" type="number" min="0" max="500" step="1" value="0" inputmode="numeric"></div>
+        <div class="span2"><label>المبلغ المقترح</label><div class="sugg" id="fSugg">—</div></div>
+      </div>
       <div class="row row-pay">
         <div><label for="fCountry">البلد</label><select id="fCountry"></select></div>
         <div><label for="fAmount">المبلغ المدفوع</label><input id="fAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0"></div>
         <div><label for="fCur">العملة</label><select id="fCur"><option value="TRY">ليرة تركية ₺</option><option value="USD">دولار $</option><option value="EUR">يورو €</option></select></div>
       </div>
-      <p class="hint">عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. يُملأ البلد تلقائياً من جهاز المشترك، ويمكنك تعديله هنا. إذا كتبت المبلغ المدفوع، يُسجَّل مع التفعيل في قسم الأرباح.</p>
+      <p class="hint">عدد المستخدمين: حسابات الدخول لموظفي المشترك (0 = لا يوجد). يُحفظ مع التفعيل، أو وحده بزر «حفظ عدد المستخدمين». المبلغ المقترح: سعر الباقة للمدة + المستخدمون (ويُذكر عدد دفعات الموظفين الإضافيين إن وُجدت).
+      عدد الموظفين 0 يعني غير محدود. إذا كان الاشتراك ما زال سارياً، تُضاف المدة إلى تاريخ انتهائه. يُملأ البلد تلقائياً من جهاز المشترك، ويمكنك تعديله هنا. إذا كتبت المبلغ المدفوع، يُسجَّل مع التفعيل في قسم الأرباح.</p>
       <div class="btns">
         <button class="b-green" id="fGo">تفعيل</button>
         <button class="b-line" id="fSaveCountry">حفظ البلد فقط</button>
+        <button class="b-line" id="fSaveUsers">حفظ عدد المستخدمين</button>
         <button class="b-red" id="fCancel">إلغاء الاشتراك</button>
       </div>
       <div class="msg" id="fMsg"></div>
@@ -252,6 +270,13 @@ button:disabled{opacity:.55;cursor:default}
       <p class="hint">من انتهى اشتراكه تبقى بياناته في السحابة حتى يجدّد. بعد 5 أشهر يظهر زر «إرسال تنبيه» يفتح رسالة جاهزة له، وبعد شهر من التنبيه يمكنك حذف بياناته لتوفير المساحة؛ يبقى حسابه وسجلّ اشتراكه ودفعاته، وتبقى بياناته على حاسوبه وتُرفع من جديد إن جدّد.</p>
       <div class="pays" id="spaceList"></div>
       <div class="msg" id="sMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>حسابات الموظفين</h2>
+      <div id="usersSum"></div>
+      <p class="hint">لكل مشترك: عدد المستخدمين المدفوعين، ومن أضافهم، ونوع كل حساب، وآخر دخول. «خارج العدد» يعني أن المشترك أضاف أكثر من العدد المدفوع (بعد تخفيضه)، فهذا الحساب موقوف حتى ترفع العدد.</p>
+      <div class="pays" id="usersList"></div>
     </section>
 
     <section class="card">
@@ -409,6 +434,9 @@ button:disabled{opacity:.55;cursor:default}
     try { usage = await rpc('amimar_admin_usage') || []; useErr = ''; }
     catch (e) { usage = []; useErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v23 في Supabase لتفعيل قسم المساحة' : e.message; }
     drawSpace();
+    try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
+    catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
+    drawUsers();
     const n = (s) => rows.filter((r) => r.state === s).length;
     $('sAll').textContent = rows.length; $('sActive').textContent = n('active'); $('sTrial').textContent = n('trial'); $('sOff').textContent = n('expired') + n('canceled');
     const cf = $('cf'), keepC = cf.value; cf.length = 1;
@@ -434,7 +462,7 @@ button:disabled{opacity:.55;cursor:default}
 
   const initial = (r) => (String(r.business || r.email || '?').trim()[0] || '?').toUpperCase();
   const paidOf = (r) => { const paid = {}; pays.filter((p) => (p.email || '').toLowerCase() === (r.email || '').toLowerCase()).forEach((p) => { paid[p.currency] = (paid[p.currency] || 0) + Number(p.amount); }); const e = Object.entries(paid); return e.length ? e.map(([c, v]) => money(v, c)).join(' + ') : ''; };
-  const pick = (r) => { $('fEmail').value = r.email || ''; $('fPlan').value = String(r.plan_kind && PLAN[r.plan_kind] ? r.plan_kind : 6); $('fEmp').value = String(r.max_employees || 0); $('fCountry').value = codeOf(r.country); $('fMsg').className = 'msg'; resetCancel(); $('fEmail').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+  const pick = (r) => { $('fEmail').value = r.email || ''; $('fPlan').value = String(r.plan_kind && PLAN[r.plan_kind] ? r.plan_kind : 6); $('fEmp').value = String(r.max_employees || 0); $('fUsers').value = String(staffOf(r.email)?.seats || 0); suggest(); $('fCountry').value = codeOf(r.country); $('fMsg').className = 'msg'; resetCancel(); $('fEmail').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   const filtered = () => { const q = $('q').value.trim().toLowerCase(), st = $('st').value, cv = $('cf').value;
     const shown = rows.filter((r) => (!st || r.state === st) && (!cv || (r.country || 'غير معروف') === cv) && (!q || [r.email, r.business, r.country].some((v) => String(v || '').toLowerCase().includes(q))));
     $('count').textContent = rows.length ? (shown.length === rows.length ? `${rows.length} مشترك` : `يظهر ${shown.length} من ${rows.length}`) : ''; return shown; };
@@ -451,11 +479,79 @@ button:disabled{opacity:.55;cursor:default}
       const ch = el('div', 'chips');
       ch.append(el('span', 'chip', r.country || 'البلد غير معروف'), el('span', 'chip', PLAN[r.plan_kind] || PLAN[0]));
       if (r.ends) ch.append(el('span', 'chip' + (live(r) && r.days_left <= 7 ? ' soonc' : ''), `${left(r)} · ${iso(r.ends)}`));
+      const us = staffOf(r.email);
+      if (us && (us.seats > 0 || us.users.length)) ch.append(el('span', 'chip' + (us.users.length > us.seats ? ' soonc' : ''), `المستخدمون ${us.users.length} من ${us.seats}`));
       const p = paidOf(r);
       k.append(el('div', 'av', initial(r)), nm, ch, el('span', 'tag t-' + r.state, STATE[r.state] || r.state), el('div', p ? 'paid' : 'none', p || '—'));
       k.addEventListener('click', () => pick(r)); box.appendChild(k);
     }
   }
+
+  // ---- staff accounts per subscriber (amimar_mobile_v25.sql) ----
+  let staffRows = [], staffErr = '';
+  const staffOf = (email) => staffRows.find((x) => (x.email || '').toLowerCase() === (email || '').toLowerCase()) || null;
+  const KIND = { portal: 'بوابة موظف', role: 'مستخدم بصلاحيات' };
+  const BLOCK = { stopped: 'أوقفه صاحب الحساب', expired: 'اشتراك صاحب الحساب منتهٍ', seats: 'خارج العدد المدفوع' };
+  const seenTxt = (t) => { if (!t) return 'لم يدخل بعد'; const d = Math.floor((Date.now() - Date.parse(t)) / 86400000); return d <= 0 ? 'دخل اليوم' : d === 1 ? 'دخل أمس' : `آخر دخول منذ ${d} يوماً`; };
+  function drawUsers() {
+    const box = $('usersList'), sum = $('usersSum'); box.textContent = ''; sum.textContent = '';
+    if (staffErr) { box.appendChild(el('div', 'empty', staffErr)); return; }
+    const total = staffRows.reduce((a, x) => a + (x.users || []).length, 0), seats = staffRows.reduce((a, x) => a + (x.seats || 0), 0);
+    sum.appendChild(el('p', 'hint', `${staffRows.length} مشترك لديه مستخدمون · ${total} حساب من ${seats} مدفوع`));
+    if (!staffRows.length) { box.appendChild(el('div', 'empty', 'لا يوجد مشترك لديه مستخدمون بعد')); return; }
+    for (const x of staffRows) {
+      const r = rows.find((y) => (y.email || '').toLowerCase() === (x.email || '').toLowerCase());
+      const b = el('div', 'ub'), h = el('div', 'uh'), nm = el('div');
+      nm.append(el('b', '', (r && r.business) || x.email || '—')); if (r && r.business) nm.append(el('small', '', ' ' + x.email));
+      const users = x.users || [];
+      h.append(nm, el('span', 'chip' + (users.length > x.seats ? ' u-bad' : ' u-ok'), `${users.length} من ${x.seats}`));
+      b.append(h);
+      if (users.length) {
+        const ul = el('ul');
+        for (const u of users) {
+          const li = el('li');
+          li.append(el('span', 'who', u.name || '—'), el('span', 'usr', u.username || ''), el('span', 'chip', KIND[u.kind] || u.kind),
+            el('span', 'chip ' + (u.block ? 'u-bad' : 'u-ok'), u.block ? (BLOCK[u.block] || u.block) : 'يعمل'), el('span', 'usr', seenTxt(u.last_seen_at)));
+          ul.appendChild(li);
+        }
+        b.append(ul);
+      } else b.append(el('p', 'hint', 'لم يضف أي مستخدم بعد'));
+      b.style.cursor = 'pointer';
+      b.addEventListener('click', () => { if (r) pick(r); else { $('fEmail').value = x.email || ''; $('fUsers').value = String(x.seats || 0); suggest(); } });
+      box.appendChild(b);
+    }
+  }
+
+  // suggested amount: the plan for the chosen months + users (20$ a year each); extra employees are named, not priced here
+  const PRICE = { 1: [5, 50], 2: [7, 70], 3: [9, 90], 4: [10, 100], 5: [15, 150], 6: [20, 200] };
+  const HAS_EMP = { 1: true, 2: true, 3: true, 5: true, 6: true };
+  function suggest() {
+    const k = Number($('fPlan').value), m = Number($('fMonths').value), emp = Number($('fEmp').value || 0), users = Number($('fUsers').value || 0);
+    const pr = PRICE[k]; if (!pr || !(m > 0)) { $('fSugg').textContent = '—'; return; }
+    const years = Math.floor(m / 12), rest = m % 12;
+    let plan = years * pr[1] + rest * pr[0];
+    const u = Math.max(0, Math.trunc(users)) * 20 * (m / 12);
+    const total = Math.round((plan + u) * 100) / 100;
+    const parts = [`الباقة ${plan}$`]; if (u) parts.push(`المستخدمون ${Math.round(u * 100) / 100}$`);
+    const extra = HAS_EMP[k] && emp > 10 ? ` + ${Math.ceil((emp - 10) / 10)} × 20$ للموظفين الإضافيين` : '';
+    $('fSugg').textContent = `\u2066$ ${total}\u2069 (${parts.join(' + ')})${extra}`;
+  }
+  ['fPlan', 'fMonths', 'fEmp', 'fUsers'].forEach((id) => { $(id).addEventListener('input', suggest); $(id).addEventListener('change', suggest); });
+
+  async function saveUsers(email) {
+    const n = Number($('fUsers').value || 0);
+    if (!Number.isInteger(n) || n < 0 || n > 500) throw new Error('عدد المستخدمين رقم صحيح من 0 إلى 500');
+    try { await rpc('amimar_admin_set_seats', { p_email: email, p_seats: n }); }
+    catch (e) { throw new Error(/SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase أولاً' : /no such subscriber/.test(e.message) ? 'لا يوجد حساب بهذا البريد' : e.message); }
+  }
+  $('fSaveUsers').addEventListener('click', async () => {
+    const email = $('fEmail').value.trim();
+    if (!validEmail(email)) { show($('fMsg'), 'اكتب بريد المشترك بشكل صحيح', false); return; }
+    $('fSaveUsers').disabled = true;
+    try { await saveUsers(email); show($('fMsg'), `حُفظ عدد المستخدمين: ${email} · ${$('fUsers').value}`, true); await load(); }
+    catch (e) { show($('fMsg'), e.message, false); }
+    finally { $('fSaveUsers').disabled = false; }
+  });
 
   // ---- cloud space per subscriber, and freeing an ended subscription's space ----
   let usage = [], useErr = '';
@@ -628,6 +724,8 @@ button:disabled{opacity:.55;cursor:default}
       if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد. يجب أن يسجّل المشترك في Amimar أولاً', false);
       else {
         if ($('fCountry').value) await rpc('amimar_admin_set_country', { p_email: email, p_code: $('fCountry').value });
+        const had = staffOf(email)?.seats || 0, want = Number($('fUsers').value || 0);
+        if (want !== had) { try { await saveUsers(email); } catch (e) { show($('fMsg'), e.message, false); } }
         const amount = Number($('fAmount').value || 0);
         if (amount > 0) {
           await rpc('amimar_admin_add_payment', { p_email: email, p_amount: amount, p_currency: $('fCur').value, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_note: null });
@@ -680,6 +778,7 @@ button:disabled{opacity:.55;cursor:default}
   try { const c = localStorage.getItem('amimar_admin_cur'); if (c) $('fCur').value = c; } catch {}
   $('fCur').addEventListener('change', () => { try { localStorage.setItem('amimar_admin_cur', $('fCur').value); } catch {} });
 
+  suggest();
   if (session && session.access) enter();
 }
 </script>
