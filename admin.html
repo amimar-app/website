@@ -310,7 +310,15 @@ small.cu{color:var(--green)!important;font-weight:700}
 .actform input,.actform select{min-height:38px}.actform label{margin:6px 0 3px}
 .actform .sum{margin:8px 0 2px;padding:7px 10px}
 .actform .dacts{margin-top:8px}.actform .dacts .btn{min-height:36px;padding:0 12px}
-.row2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px}
+.row2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1.2fr) minmax(0,.8fr);gap:12px}
+#errN.bad{color:var(--red,#C0392B)}
+.errs{display:flex;flex-direction:column;gap:10px}
+.er{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:12px 14px}
+.er .m{font-weight:800;font-size:14px;direction:ltr;text-align:left;word-break:break-word}
+.er .meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted);margin-top:6px}
+.er details{margin-top:8px}.er summary{cursor:pointer;font-size:12.5px;color:var(--green);font-weight:800}
+.er pre{direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;font-size:11.5px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;max-height:220px;overflow:auto;margin:6px 0 0}
+.app-p{color:#1E8A5E}.app-d{color:#2563EB}
 .profit{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .profit small{display:block;color:var(--muted);font-size:12.5px;font-weight:700}
 .profit b{display:block;font-size:22px;font-weight:900;color:var(--green);direction:ltr;text-align:right}
@@ -456,6 +464,10 @@ small.cu{color:var(--green)!important;font-weight:700}
         <div class="sh"><h2>الأرباح</h2></div>
         <div class="profit"><small id="profitSince"></small><b id="profit">—</b><button class="btn b-line sm" id="profitReset">مسح وبدء من اليوم</button></div>
       </section>
+      <section class="card">
+        <div class="sh"><h2>الأعطال</h2></div>
+        <div class="profit"><small id="errSub">آخر 30 يوماً</small><b id="errN">—</b><button class="btn b-line sm" id="errOpen">عرض الأعطال</button></div>
+      </section>
       </div>
     </div>
   </div>
@@ -480,6 +492,14 @@ small.cu{color:var(--green)!important;font-weight:700}
     <div id="t-users" class="hide"></div>
     <div id="t-pays" class="hide"></div>
   </div>
+</aside>
+<aside class="drawer hide" id="errDrawer" role="dialog" aria-modal="true" aria-labelledby="eTitle">
+  <div class="dh">
+    <div class="tx"><b id="eTitle">الأعطال</b><small>أخطاء حدثت عند المشتركين على الهاتف والحاسوب، بلا بيانات عملاء</small></div>
+    <button class="btn b-line sm" id="errClear">مسح القائمة</button>
+    <button class="x" id="eClose" aria-label="إغلاق">✕</button>
+  </div>
+  <div class="db"><div id="errList" class="errs"></div></div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -615,7 +635,7 @@ small.cu{color:var(--green)!important;font-weight:700}
   $('mfaBack').addEventListener('click', signOut);
 
   // ---- data ----
-  let loading = false, counts = [], profitSince = null, profitOk = false, devices = [], devOk = false;
+  let loading = false, counts = [], profitSince = null, profitOk = false, devices = [], devOk = false, errs = [], errOk = false;
   async function load() {
     if (loading) return; loading = true; $('reload').disabled = true;
     try {
@@ -630,6 +650,7 @@ small.cu{color:var(--green)!important;font-weight:700}
       try { counts = await rpc('amimar_admin_counts') || []; } catch (e) { counts = []; }
       try { devices = await rpc('amimar_admin_devices') || []; devOk = true; } catch (e) { devices = []; devOk = false; }
       try { profitSince = await rpc('amimar_admin_profit_since'); profitOk = true; } catch (e) { profitSince = null; profitOk = false; }
+      try { errs = await rpc('amimar_admin_errors', { p_days: 30 }) || []; errOk = true; } catch (e) { errs = []; errOk = false; }
       try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
       catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
       pays = [...pays].sort((a, b) => String(b.paid_at).localeCompare(String(a.paid_at)));
@@ -808,7 +829,7 @@ small.cu{color:var(--green)!important;font-weight:700}
   const empOf = (email) => { const c = counts.find((x) => low(x.email) === low(email)); return c ? Number(c.employees) : null; };
   const matches = (r) => { const q = $('q').value.trim().toLowerCase(); return !q || [r.email, r.business, r.country].some((v) => low(v).includes(q)); };
 
-  function renderAll() { drawGroups(); drawCloud(); drawProfit(); drawForm(); if (dr) drawDrawer(); }
+  function renderAll() { drawGroups(); drawCloud(); drawProfit(); drawErrs(); drawForm(); if (dr) drawDrawer(); if (errOpenNow) drawErrList(); }
 
   function drawGroups() {
     $('cTot').textContent = String(rows.length);
@@ -1008,6 +1029,55 @@ small.cu{color:var(--green)!important;font-weight:700}
     clearTimeout(armedP); armedP = null; b.classList.remove('sure'); b.textContent = 'مسح وبدء من اليوم';
     const d = new Date(), today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     try { await rpc('amimar_admin_set_profit_since', { p_date: today }); await load(); toast('بدأ حساب الأرباح من اليوم ✓', true); }
+    catch (e) { toast(e.message, false); }
+  });
+
+  // =====================================================================
+  // error reports from the phones and computers (v32)
+  // =====================================================================
+  let errOpenNow = false, armedE = null;
+  const whenTxt = (t) => { const d = new Date(t); return isNaN(d) ? '' : iso(d.toLocaleString('en-GB', { hour12: false }).slice(0, 17)); };
+  function drawErrs() {
+    const n = $('errN'), b = $('errOpen');
+    if (!errOk) { n.textContent = '—'; n.classList.remove('bad'); $('errSub').textContent = 'شغّل ملف SQL v32 لتفعيل الأعطال'; b.classList.add('hide'); return; }
+    const total = errs.reduce((a, e) => a + Number(e.hits || 0), 0);
+    n.textContent = String(errs.length); n.classList.toggle('bad', errs.length > 0);
+    $('errSub').textContent = errs.length ? `آخر 30 يوماً · ${total} مرة` : 'آخر 30 يوماً · لا أعطال';
+    b.classList.toggle('hide', !errs.length);
+  }
+  function drawErrList() {
+    const box = $('errList'); box.textContent = '';
+    if (!errs.length) { box.append(el('div', 'empty', 'لا أعطال')); return; }
+    for (const e of errs) {
+      const c = el('div', 'er');
+      c.append(el('div', 'm', e.message || ''));
+      const m = el('div', 'meta');
+      m.append(el('b', e.app === 'desktop' ? 'app-d' : 'app-p', e.app === 'desktop' ? 'الحاسوب' : 'الهاتف'));
+      if (e.version) { const v = el('span', '', 'النسخة '); v.append(el('b', '', iso(e.version))); m.append(v); }
+      if (e.screen) { const v = el('span', '', 'الشاشة: '); v.append(el('b', '', iso(e.screen))); m.append(v); }
+      m.append(el('span', '', `${e.hits} مرة · ${e.users === 1 || e.users === '1' ? 'مشترك واحد' : e.users + ' مشتركين'}`));
+      m.append(el('span', '', 'آخر مرة ' + whenTxt(e.last_at)));
+      if (e.platform) m.append(el('span', '', iso(e.platform)));
+      c.append(m);
+      const det = document.createElement('details'); det.append(el('summary', '', 'التفاصيل'));
+      if (e.emails) det.append(el('p', 'hint', 'الحسابات: ' + e.emails));
+      if (e.stack) det.append(el('pre', '', e.stack));
+      c.append(det);
+      box.append(c);
+    }
+  }
+  let errFocus = null;
+  function openErrs() { errFocus = document.activeElement; errOpenNow = true; drawErrList(); $('scrim').classList.remove('hide'); $('errDrawer').classList.remove('hide'); document.body.classList.add('lock'); $('eClose').focus(); }
+  function closeErrs() { if (!errOpenNow) return; errOpenNow = false; $('errDrawer').classList.add('hide'); if (!dr) { $('scrim').classList.add('hide'); document.body.classList.remove('lock'); } if (errFocus && document.contains(errFocus)) try { errFocus.focus(); } catch {} }
+  $('errOpen').addEventListener('click', openErrs);
+  $('eClose').addEventListener('click', closeErrs);
+  $('scrim').addEventListener('click', closeErrs);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && errOpenNow) closeErrs(); });
+  $('errClear').addEventListener('click', async () => {
+    const b = $('errClear');
+    if (!armedE) { b.classList.add('sure'); b.textContent = 'اضغط مرة أخرى للتأكيد'; armedE = setTimeout(() => { armedE = null; b.classList.remove('sure'); b.textContent = 'مسح القائمة'; }, 5000); return; }
+    clearTimeout(armedE); armedE = null; b.classList.remove('sure'); b.textContent = 'مسح القائمة';
+    try { await rpc('amimar_admin_clear_errors'); closeErrs(); await load(); toast('مُسحت قائمة الأعطال ✓', true); }
     catch (e) { toast(e.message, false); }
   });
 
