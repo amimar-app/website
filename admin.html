@@ -230,6 +230,10 @@ small.cu{color:var(--green)!important;font-weight:700}
 .f3{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:0 10px}
 .sum{background:var(--soft);border-radius:10px;padding:10px 12px;font-weight:800;color:var(--green);margin:12px 0 4px;font-size:13.5px}
 .sum span{display:block;font-size:12px;color:var(--muted);font-weight:700}
+#fSugg .tot{font-size:20px;font-weight:900;direction:ltr;text-align:right}
+#fSugg .ln{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:700;color:var(--ink);padding:3px 0;border-top:1px dashed #1E8A5E33}
+#fSugg .ln b{direction:ltr;color:var(--green);white-space:nowrap}
+#fSugg .ln:first-of-type{margin-top:4px}
 .dacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .dsec{font-size:13px;font-weight:900;margin:16px 0 6px}
 .qline{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--bg)}
@@ -437,6 +441,7 @@ small.cu{color:var(--green)!important;font-weight:700}
           </select></div>
         <div><label for="fMonths">المدة</label>
           <select id="fMonths">
+            <option value="d10">10 أيام</option>
             <option value="1">شهر</option>
             <option value="3">3 أشهر</option>
             <option value="6">6 أشهر</option>
@@ -1252,19 +1257,27 @@ small.cu{color:var(--green)!important;font-weight:700}
     }
   }
 
-  // suggested amount: the plan for the chosen months + users (20$ a year each); extra employees are named, not priced here
+  // the price: the plan for the chosen time + extra employees (20$ a year for each 10 above 10) + users (20$ a year each),
+  // shown as a total and one line per part. A shorter time pays its share (10 days = a third of the month's price).
   const PRICE = { 1: [5, 50], 2: [7, 70], 3: [9, 90], 4: [10, 100], 5: [15, 150], 6: [20, 200] };
   const HAS_EMP = { 1: true, 2: true, 3: true, 5: true, 6: true };
+  // the chosen time: {months} or {days}
+  const period = () => { const v = $('fMonths').value; return v.startsWith('d') ? { months: 0, days: Number(v.slice(1)) } : { months: Number(v), days: 0 }; };
+  const r2 = (x) => Math.round(x * 100) / 100;
   function suggest() {
-    const k = Number($('fPlan').value), m = Number($('fMonths').value), emp = Number($('fEmp').value || 0), users = Number($('fUsers').value || 0);
-    const pr = PRICE[k]; if (!pr || !(m > 0)) { $('fSugg').textContent = '—'; return; }
-    const years = Math.floor(m / 12), rest = m % 12;
-    const plan = years * pr[1] + rest * pr[0];
-    const u = Math.max(0, Math.trunc(users)) * 20 * (m / 12);
-    const total = Math.round((plan + u) * 100) / 100;
-    const parts = [`الباقة ${plan}$`]; if (u) parts.push(`المستخدمون ${Math.round(u * 100) / 100}$`);
-    const extra = HAS_EMP[k] && emp > 10 ? ` + ${Math.ceil((emp - 10) / 10)} × 20$ للموظفين الإضافيين` : '';
-    $('fSugg').textContent = `⁦$ ${total}⁩ (${parts.join(' + ')})${extra}`;
+    const box = $('fSugg'); box.textContent = '';
+    const k = Number($('fPlan').value), { months: m, days: d } = period();
+    const emp = Number($('fEmp').value || 0), users = Math.max(0, Math.trunc(Number($('fUsers').value || 0)));
+    const pr = PRICE[k]; if (!pr || !(m > 0 || d > 0)) { box.textContent = '—'; return; }
+    const yearShare = m > 0 ? m / 12 : d / 365;                 // for the yearly prices (users, extra employees)
+    const plan = r2(m > 0 ? Math.floor(m / 12) * pr[1] + (m % 12) * pr[0] : pr[0] * d / 30);
+    const lines = [[`الباقة: ${$('fPlan').selectedOptions[0].text} · ${$('fMonths').selectedOptions[0].text}`, plan]];
+    const packs = HAS_EMP[k] && emp > 10 ? Math.ceil((emp - 10) / 10) : 0;
+    if (packs) lines.push([`موظفون إضافيون: ${emp - 10} (${packs} × 10) × 20$ سنوياً`, r2(packs * 20 * yearShare)]);
+    if (users) lines.push([`المستخدمون: ${users} × 20$ سنوياً`, r2(users * 20 * yearShare)]);
+    const total = r2(lines.reduce((a, l) => a + l[1], 0));
+    box.append(el('div', 'tot', `$ ${total}`));
+    for (const [t, v] of lines) { const ln = el('div', 'ln'); ln.append(el('span', '', t), el('b', '', `$ ${v}`)); box.append(ln); }
   }
   ['fPlan', 'fMonths', 'fEmp', 'fUsers'].forEach((id) => { $(id).addEventListener('input', suggest); $(id).addEventListener('change', suggest); });
 
@@ -1290,7 +1303,7 @@ small.cu{color:var(--green)!important;font-weight:700}
     if ($('fAmount').value && !(Number($('fAmount').value) >= 0)) { show($('fMsg'), 'المبلغ المدفوع رقم صحيح أو عشري', false); return; }
     $('fGo').disabled = true;
     try {
-      const res = await rpc('amimar_admin_activate', { p_email: email, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_max_employees: emp });
+      const res = await rpc(period().days ? 'amimar_admin_activate_days' : 'amimar_admin_activate', { p_email: email, p_plan_kind: Number($('fPlan').value), p_max_employees: emp, ...(period().days ? { p_days: period().days } : { p_months: period().months }) });
       if (res === 'not_found') show($('fMsg'), 'لا يوجد حساب بهذا البريد. يجب أن يسجّل المشترك في Amimar أولاً', false);
       else {
         if ($('fCountry').value) await rpc('amimar_admin_set_country', { p_email: email, p_code: $('fCountry').value });
@@ -1299,7 +1312,7 @@ small.cu{color:var(--green)!important;font-weight:700}
         if (want !== had) { try { await saveUsers(email); } catch (e) { note = ' · ' + e.message; } }
         const amount = Number($('fAmount').value || 0);
         if (amount > 0) {
-          await rpc('amimar_admin_add_payment', { p_email: email, p_amount: amount, p_currency: $('fCur').value, p_plan_kind: Number($('fPlan').value), p_months: Number($('fMonths').value), p_note: null });
+          await rpc('amimar_admin_add_payment', { p_email: email, p_amount: amount, p_currency: $('fCur').value, p_plan_kind: Number($('fPlan').value), p_months: period().months, p_note: period().days ? `${period().days} أيام` : null });
           $('fAmount').value = '';
         }
         const msg = `تم التفعيل: ${$('fPlan').selectedOptions[0].text} · حتى ${iso(String(res).replace('ok:', ''))}${note}`;
