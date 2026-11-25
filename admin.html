@@ -930,7 +930,7 @@ small.cu{color:var(--green)!important;font-weight:700}
       for (const r of list) {
         const k = el('button', 'acc' + (low(r.email) === low(sel) ? ' sel' : '')); k.type = 'button';
         const nm = el('div', 'nm'); nm.append(el('b', r.business ? '' : 'mail', r.business || r.email || '—'));
-        nm.append(el('small', soon(r) ? 'soon' : '', [r.business ? r.email : '', r.ends ? `${iso(r.ends)} · ${left(r)}` : ''].filter(Boolean).join(' · ')));
+        nm.append(el('small', soon(r) ? 'soon' : '', [r.business ? r.email : '', BT[r.business_type] || '', r.city || '', r.ends ? `${iso(r.ends)} · ${left(r)}` : ''].filter(Boolean).join(' · ')));
         const e = empOf(r.email);
         const us = staffOf(r.email), un = us ? (us.users || []).length : 0, seats = us ? us.seats || 0 : 0;
         k.append(nm, el('span', 'n' + (e == null ? ' none' : ''), e == null ? '—' : String(e)),
@@ -1022,6 +1022,8 @@ small.cu{color:var(--green)!important;font-weight:700}
   // typing / picking a known email fills in what we know about him
   $('fEmail').addEventListener('change', () => { const r = rowOf($('fEmail').value.trim()); if (r && low(r.email) !== low(sel)) selectAccount(r); });
 
+  // the business types (the same as both apps) — amimar_admin_list gives the code (v36)
+  const BT = {general: 'نشاط عام', grocery: 'بقالة / سوبر ماركت', retail: 'محل بيع بالتجزئة', wholesale: 'تجارة بالجملة', clothing: 'ملابس وأحذية', electronics: 'إلكترونيات وأجهزة', mobile: 'موبايلات وإكسسوار', hardware: 'خردوات / مواد بناء', autoparts: 'قطع غيار سيارات', pharmacy: 'صيدلية', cosmetics: 'مستحضرات تجميل وعطور', bookstore: 'مكتبة وقرطاسية', florist: 'محل ورود', toys: 'ألعاب وهدايا', furniture: 'أثاث ومفروشات', jewelry: 'مجوهرات وذهب', petshop: 'محل حيوانات أليفة', restaurant: 'مطعم / كافيه', sweets: 'حلويات', bakery: 'مخبز / أفران', butcher: 'ملحمة', juice: 'عصائر ومثلجات', services: 'خدمات عامة', travel: 'سياحة وسفر', shipping: 'شحن وتوصيل', realestate: 'مكتب عقارات', salon: 'صالون وحلاقة', gym: 'نادٍ رياضي', clinic: 'عيادة / مركز طبي', laundry: 'مغسلة ملابس', carwash: 'مغسلة سيارات', maintenance: 'صيانة وتصليح', education: 'معهد / دورات', photography: 'استوديو تصوير', tailoring: 'خياطة / أتيليه', other: 'غير ذلك' };
   function drawForm() {
     const r = sel ? rowOf(sel) : null;
     $('fTitle').textContent = r ? nameOf(r) : 'تفعيل اشتراك';
@@ -1037,6 +1039,8 @@ small.cu{color:var(--green)!important;font-weight:700}
       add('مجموع المدفوع', paidOf(r) || '—');
       add('الموظفون', `${e == null ? '—' : e} · الحد ${empTxt(r.max_employees)}`);
       add('المستخدمون', us ? `${(us.users || []).length} من ${us.seats || 0}` : '0');
+      add('نوع العمل', BT[r.business_type] || '—');
+      add('البلد والمدينة', [r.country, r.city].filter(Boolean).join(' · ') || '—');
       add('البريد', r.email, 'mail');
       if (devOk) {
         const mine = devices.filter((d) => low(d.email) === low(r.email));
