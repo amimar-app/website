@@ -442,7 +442,7 @@ h1{font-weight:800;line-height:1.12}h2{font-weight:800;line-height:1.15}h3{font-
         <li><span class="n">3</span><div><h3>Telefonunuzdan takip edip karar verirsiniz</h3><p>Günün satışları, müşteri borçları, azalan ürünler ve gelen çalışanlar. Görev hatırlatmaları uygulama kapalıyken de gelir.</p></div></li>
       </ol>
     </div>
-    <figure class="syncpic" style="margin:0"><img src="../img/sync.jpg" width="720" height="1280" alt="Bilgisayardaki gösterge paneli ve telefondaki ana sayfa, aynı rakamlarla" loading="lazy"></figure>
+    <figure class="syncpic" style="margin:0"><picture><source srcset="../img/sync.webp" type="image/webp"><img src="../img/sync.jpg" width="720" height="1280" alt="Bilgisayardaki gösterge paneli ve telefondaki ana sayfa, aynı rakamlarla" loading="lazy"></picture></figure>
   </div>
 </section>
 
@@ -650,7 +650,7 @@ h1{font-weight:800;line-height:1.12}h2{font-weight:800;line-height:1.15}h3{font-
 
   const shots = [['home', 'Ana sayfa'], ['cashier', 'Kasa'], ['invoices', 'Faturalar'], ['stock', 'Stok'], ['profits', 'Kâr'], ['payroll', 'Maaşlar'], ['assistant', 'Akıllı asistan']];
   const gal = document.getElementById('gallery');
-  gal.innerHTML = shots.map(([f, t]) => `<figure><img src="../img/${f}.jpg" width="720" height="1280" alt="Amimar uygulamasında ${t} ekranı" loading="lazy"><figcaption>${t}</figcaption></figure>`).join('');
+  gal.innerHTML = shots.map(([f, t]) => `<figure><picture><source srcset="../img/${f}.webp" type="image/webp"><img src="../img/${f}.jpg" width="720" height="1280" alt="Amimar uygulamasında ${t} ekranı" loading="lazy"></picture><figcaption>${t}</figcaption></figure>`).join('');
   document.querySelectorAll('.shots-nav button').forEach((b) => b.addEventListener('click', () => {
     const step = gal.querySelector('figure').offsetWidth + 18;
     gal.scrollBy({ left: step * Number(b.dataset.dir), behavior: 'smooth' });

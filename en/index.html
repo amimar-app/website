@@ -442,7 +442,7 @@ h1{font-weight:800;line-height:1.12}h2{font-weight:800;line-height:1.15}h3{font-
         <li><span class="n">3</span><div><h3>You follow and decide from your phone</h3><p>Today's sales, customer debts, items running low and who came to work. Task reminders arrive even when the app is closed.</p></div></li>
       </ol>
     </div>
-    <figure class="syncpic" style="margin:0"><img src="../img/sync.jpg" width="720" height="1280" alt="The computer's dashboard and the phone's home screen with the same numbers" loading="lazy"></figure>
+    <figure class="syncpic" style="margin:0"><picture><source srcset="../img/sync.webp" type="image/webp"><img src="../img/sync.jpg" width="720" height="1280" alt="The computer's dashboard and the phone's home screen with the same numbers" loading="lazy"></picture></figure>
   </div>
 </section>
 
@@ -650,7 +650,7 @@ h1{font-weight:800;line-height:1.12}h2{font-weight:800;line-height:1.15}h3{font-
 
   const shots = [['home', 'Home'], ['cashier', 'Point of sale'], ['invoices', 'Invoices'], ['stock', 'Stock'], ['profits', 'Profit'], ['payroll', 'Payroll'], ['assistant', 'Smart assistant']];
   const gal = document.getElementById('gallery');
-  gal.innerHTML = shots.map(([f, t]) => `<figure><img src="../img/${f}.jpg" width="720" height="1280" alt="${t} screen in the Amimar app" loading="lazy"><figcaption>${t}</figcaption></figure>`).join('');
+  gal.innerHTML = shots.map(([f, t]) => `<figure><picture><source srcset="../img/${f}.webp" type="image/webp"><img src="../img/${f}.jpg" width="720" height="1280" alt="${t} screen in the Amimar app" loading="lazy"></picture><figcaption>${t}</figcaption></figure>`).join('');
   document.querySelectorAll('.shots-nav button').forEach((b) => b.addEventListener('click', () => {
     const step = gal.querySelector('figure').offsetWidth + 18;
     gal.scrollBy({ left: step * Number(b.dataset.dir), behavior: 'smooth' });
