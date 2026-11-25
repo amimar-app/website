@@ -529,6 +529,8 @@ small.cu{color:var(--green)!important;font-weight:700}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+  // never inside another site's frame (clickjacking)
+  if (window.top !== window.self) { document.documentElement.innerHTML = ''; try { window.top.location.replace(window.location.href); } catch {} throw new Error('framed'); }
 {
   const URL_ = 'https://wgbkeyjxlvnlvnktaceu.supabase.co';
   const KEY = 'sb_publishable_Uml5PUTleBheCLTOLJ7iVQ_BcadaI3g'; // the public app key (the same one inside the apps)
