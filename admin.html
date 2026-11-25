@@ -1119,8 +1119,8 @@ small.cu{color:var(--green)!important;font-weight:700}
       m.append(el('span', '', 'آخر مرة ' + whenTxt(e.last_at)));
       if (e.platform) m.append(el('span', '', iso(e.platform)));
       c.append(m);
+      if (e.emails) { const w = el('div', 'meta'); const v = el('span', '', 'عند: '); v.append(el('b', '', e.emails)); w.append(v); c.append(w); }
       const det = document.createElement('details'); det.append(el('summary', '', 'التفاصيل'));
-      if (e.emails) det.append(el('p', 'hint', 'الحسابات: ' + e.emails));
       if (e.stack) det.append(el('pre', '', e.stack));
       c.append(det);
       box.append(c);
