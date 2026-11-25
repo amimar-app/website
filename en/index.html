@@ -290,7 +290,43 @@ footer{border-top:1px solid var(--line)}
 .devs .no{background:#D9533B14;border-color:#D9533B55;color:#D9533B}
 @media(max-width:980px){.news{grid-template-columns:repeat(2,1fr)}.nw.w4,.nw.w3,.nw.w2{grid-column:span 1}.nw.w4{grid-column:span 2}}
 @media(max-width:640px){.news{grid-template-columns:1fr}.nw.w4{grid-column:auto}.whs{flex-wrap:wrap}.whs .ar{display:none}.whs .box{flex:1 1 40%}.whs .box:last-child{flex-basis:100%}.devs{flex-wrap:wrap}.devs div{flex:1 1 40%}.devs .no{flex-basis:100%}}
+/* ===== art direction v2: away from the «made by AI» look ===== */
+h1,h2,h3,.facts b,.how b,.brand span,.btn{font-family:"Alexandria",Tajawal,system-ui,sans-serif;letter-spacing:-.01em}
+h1{font-weight:800;line-height:1.12}h2{font-weight:800;line-height:1.15}h3{font-weight:700}
+.eyebrow{display:none!important}
+.sec-head{border-top:1px solid var(--line);padding-top:22px;max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 40px;align-items:end}
+.sec-head h2{margin:0}.sec-head .lead{margin:0;max-width:52ch}
+.greenband .sec-head,.dl .sec-head{border-color:#ffffff33}
+.faq .sec-head{display:block}.faq .sec-head .lead{margin-top:10px}
+.scene{background:var(--green)!important}
+/* what's new: no pills, no emoji */
+.nw .tag{display:none}.nw h3{padding-inline-end:0}
+/* features: a written list in two columns, no icon boxes, no badges */
+.grid.fgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;margin-top:22px}
+.feat{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:18px 0 20px;gap:4px}
+.feat svg,.feat .tag{display:none}
+.feat h3{font-size:18px}.feat p{font-size:15.5px;max-width:52ch}
+.feat.in{animation:none}
+.ftabs{margin-top:26px}
+/* start: three steps on one line, numbers instead of cards */
+.how{gap:0;border-block:1px solid var(--line)}
+.how .card{background:none;border:0;border-radius:0;padding:24px 0 26px;padding-inline-end:28px}
+.how .card+.card{border-inline-start:1px solid var(--line);padding-inline-start:28px}
+.how .card b{font-size:56px;font-weight:800;color:var(--gold);margin-bottom:10px}
+/* download: one list, a row per device */
+.dl-grid{display:block;margin-top:26px;border-top:1px solid #ffffff2e}
+.dl-card{background:none;border:0;border-bottom:1px solid #ffffff2e;border-radius:0;padding:18px 0;display:grid;grid-template-columns:200px minmax(0,1fr) 230px;align-items:center;gap:20px}
+.dl-card h3{font-size:20px;margin:0}.dl-card p{margin:0}
+.dl-card .btn,.dl-card .store{width:100%}
+/* who it suits: plain lines instead of tinted boxes with tick squares */
+.checks{gap:0}.checks li{display:block;background:none;border-radius:0;border-top:1px solid #ffffff33;padding:14px 0}
+.checks li::before{display:none}
+.checks b{font-family:"Alexandria",Tajawal,sans-serif;font-weight:700}
+@media(max-width:820px){.sec-head{grid-template-columns:minmax(0,1fr)}.grid.fgrid{grid-template-columns:minmax(0,1fr)}
+ .how{grid-template-columns:minmax(0,1fr)}.how .card+.card{border-inline-start:0;border-top:1px solid var(--line);padding-inline-start:0}
+ .dl-card{grid-template-columns:minmax(0,1fr)}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -414,7 +450,7 @@ footer{border-top:1px solid var(--line)}
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Latest updates</span>
-      <h2>New in Amimar</h2>
+      <h2>Added this month</h2>
       <p class="lead">Warehouses, cheques, installments and users with permissions, all on the computer and the phone together, with the same data.</p>
     </div>
     <div class="news">
@@ -430,7 +466,7 @@ footer{border-top:1px solid var(--line)}
       <article class="nw w2"><span class="tag">New</span><h3>Employee portal</h3><p>Employees see their pay and attendance on their phone, and nothing else.</p>
         <div class="mini" aria-hidden="true"><div class="ph"><div><b>Your pay so far</b><div class="big">8,450</div><div class="box" style="border:0;padding:0;background:none"><div class="r"><span>Days worked</span><b>22</b></div><div class="r"><span>Advances</span><b>1,000</b></div></div></div></div></div></article>
       <article class="nw w3"><span class="tag">New</span><h3>Your account is protected</h3><p>The main email is open on one computer and one phone at a time, so nobody gets into your account from another device.</p>
-        <div class="mini devs" aria-hidden="true"><div>💻 Your computer<span class="pl">Open</span></div><div>📱 Your phone<span class="pl">Open</span></div><div class="no">📱 Another device<span>Refused</span></div></div></article>
+        <div class="mini devs" aria-hidden="true"><div>Your computer<span class="pl">Open</span></div><div>Your phone<span class="pl">Open</span></div><div class="no">Another device<span>Refused</span></div></div></article>
       <article class="nw w3"><span class="tag">New</span><h3>Seller name on invoices</h3><p>Every invoice shows who made the sale, so you know how each employee performs.</p>
         <div class="mini" aria-hidden="true"><div class="box"><div class="r"><span>Invoice 1269</span><span>Seller: <b>Sam</b></span></div><div class="r"><span>Invoice 1270</span><span>Seller: <b>Leila</b></span></div></div></div></article>
     </div>
@@ -441,8 +477,8 @@ footer{border-top:1px solid var(--line)}
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Features</span>
-      <h2>Everything your business needs in one place</h2>
-      <p class="lead">Instead of notebooks, Excel sheets and scattered programs.</p>
+      <h2>From the invoice to the payroll, in one program</h2>
+      <p class="lead">What you used to keep in a notebook, in Excel sheets and in three programs is here, sorted into four sections.</p>
     </div>
     <div class="ftabs" role="tablist" id="ftabs"></div>
     <div class="grid" id="feats"></div>
@@ -467,7 +503,7 @@ footer{border-top:1px solid var(--line)}
   <div class="wrap cols">
     <div>
       <span class="eyebrow">Who is it for?</span>
-      <h2>Fits every business</h2>
+      <h2>Speaks the language of your trade</h2>
       <p class="lead" style="margin-top:12px">You pick your trade at first sign-in and the names and screens adapt: an item becomes a product, a meal or a service, depending on your business.</p>
       <div class="chips" id="chips"></div>
     </div>
@@ -521,7 +557,7 @@ footer{border-top:1px solid var(--line)}
 
 <section class="band" id="faq" style="padding-top:0">
   <div class="wrap faq">
-    <div class="sec-head"><span class="eyebrow">FAQ</span><h2>Questions our customers ask</h2><p class="lead">If your question isn't here, message us on WhatsApp.</p></div>
+    <div class="sec-head"><span class="eyebrow">FAQ</span><h2>Questions shop owners ask</h2><p class="lead">If your question isn't here, message us on WhatsApp.</p></div>
     <div>
       <details open><summary>Do I need both the computer and the phone?</summary><p>No. Work on the phone alone, the computer alone, or both together so the data stays in sync.</p></details>
       <details><summary>What if the shop's internet goes down?</summary><p>The computer program keeps working offline, then syncs everything with the phone as soon as the connection is back.</p></details>
