@@ -324,7 +324,12 @@ small.cu{color:var(--green)!important;font-weight:700}
 .actform input,.actform select{min-height:38px}.actform label{margin:6px 0 3px}
 .actform .sum{margin:8px 0 2px;padding:7px 10px}
 .actform .dacts{margin-top:8px}.actform .dacts .btn{min-height:36px;padding:0 12px}
-.row2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1.2fr) minmax(0,.8fr);gap:12px}
+.row2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1.2fr) minmax(0,.8fr) minmax(0,.8fr);gap:12px}
+@media(max-width:1500px){.row2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+#logN.bad{color:var(--red,#C0392B)}
+.lg{padding:10px 0;border-bottom:1px solid var(--line)}.lg:last-child{border-bottom:0}
+.lg .t{display:flex;justify-content:space-between;gap:10px;font-weight:700}.lg .t .w{font-weight:500;opacity:.7;font-size:13px}
+.lg.bad .t>b{color:var(--red,#C0392B)}.lg .meta{font-size:13px;opacity:.8;display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:3px}
 #errN.bad{color:var(--red,#C0392B)}
 .errs{display:flex;flex-direction:column;gap:10px}
 .er{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:12px 14px}
@@ -498,6 +503,10 @@ small.cu{color:var(--green)!important;font-weight:700}
         <div class="sh"><h2>الأعطال</h2></div>
         <div class="profit"><small id="errSub">آخر 30 يوماً</small><b id="errN">—</b><button class="btn b-line sm" id="errOpen">عرض الأعطال</button></div>
       </section>
+      <section class="card">
+        <div class="sh"><h2>سجل الإدارة</h2></div>
+        <div class="profit"><small id="logSub">رموز خاطئة · آخر 24 ساعة</small><b id="logN">—</b><button class="btn b-line sm" id="logOpen">عرض السجل</button></div>
+      </section>
       </div>
     </div>
   </div>
@@ -530,6 +539,13 @@ small.cu{color:var(--green)!important;font-weight:700}
     <button class="x" id="eClose" aria-label="إغلاق">✕</button>
   </div>
   <div class="db"><div id="errList" class="errs"></div></div>
+</aside>
+<aside class="drawer hide" id="logDrawer" role="dialog" aria-modal="true" aria-labelledby="lTitle">
+  <div class="dh">
+    <div class="tx"><b id="lTitle">سجل الإدارة</b><small>كل تغيير في هذه الصفحة وكل محاولة لرمز الدخول، آخر 300 حركة</small></div>
+    <button class="x" id="lClose" aria-label="إغلاق">✕</button>
+  </div>
+  <div class="db"><div id="logList"></div></div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -702,7 +718,7 @@ small.cu{color:var(--green)!important;font-weight:700}
   $('mfaBack').addEventListener('click', signOut);
 
   // ---- data ----
-  let loading = false, counts = [], profitSince = null, profitOk = false, devices = [], devOk = false, errs = [], errOk = false;
+  let loading = false, counts = [], profitSince = null, profitOk = false, devices = [], devOk = false, errs = [], errOk = false, logs = [], logOk = false;
   async function load() {
     if (loading) return; loading = true; $('reload').disabled = true;
     try {
@@ -718,6 +734,7 @@ small.cu{color:var(--green)!important;font-weight:700}
       try { devices = await rpc('amimar_admin_devices') || []; devOk = true; } catch (e) { devices = []; devOk = false; }
       try { profitSince = await rpc('amimar_admin_profit_since'); profitOk = true; } catch (e) { profitSince = null; profitOk = false; }
       try { errs = await rpc('amimar_admin_errors', { p_days: 30 }) || []; errOk = true; } catch (e) { errs = []; errOk = false; }
+      try { logs = await rpc('amimar_admin_log_list', { p_limit: 300 }) || []; logOk = true; } catch (e) { logs = []; logOk = false; }
       try { staffRows = await rpc('amimar_admin_staff') || []; staffErr = ''; }
       catch (e) { staffRows = []; staffErr = /SQL/.test(e.message) ? 'شغّل ملف SQL v25 في Supabase لتفعيل حسابات الموظفين' : e.message; }
       pays = [...pays].sort((a, b) => String(b.paid_at).localeCompare(String(a.paid_at)));
@@ -896,7 +913,7 @@ small.cu{color:var(--green)!important;font-weight:700}
   const empOf = (email) => { const c = counts.find((x) => low(x.email) === low(email)); return c ? Number(c.employees) : null; };
   const matches = (r) => { const q = $('q').value.trim().toLowerCase(); return !q || [r.email, r.business, r.country].some((v) => low(v).includes(q)); };
 
-  function renderAll() { drawGroups(); drawCloud(); drawProfit(); drawErrs(); drawForm(); if (dr) drawDrawer(); if (errOpenNow) drawErrList(); }
+  function renderAll() { drawGroups(); drawCloud(); drawProfit(); drawErrs(); drawLog(); drawForm(); if (dr) drawDrawer(); if (errOpenNow) drawErrList(); if (logOpenNow) drawLogList(); }
 
   function drawGroups() {
     $('cTot').textContent = String(rows.length);
@@ -1151,6 +1168,47 @@ small.cu{color:var(--green)!important;font-weight:700}
     try { await rpc('amimar_admin_clear_errors'); closeErrs(); await load(); toast('مُسحت قائمة الأعطال ✓', true); }
     catch (e) { toast(e.message, false); }
   });
+
+  // ---- management log (amimar_mobile_v42.sql) ----
+  const ACT = { activate: 'تفعيل اشتراك', activate_days: 'تفعيل بالأيام', add_payment: 'إضافة دفعة', cancel: 'إلغاء اشتراك',
+    clear_errors: 'مسح قائمة الأعطال', delete_payment: 'حذف دفعة', free_devices: 'تحرير الأجهزة', mark_warned: 'تعليم بأنه نُبِّه',
+    set_country: 'تغيير البلد', set_profit_since: 'بدء الأرباح من جديد', set_seats: 'تغيير عدد المستخدمين', set_storage: 'تغيير المساحة',
+    wipe_data: 'مسح بيانات حساب', code_wrong: 'رمز دخول خاطئ', code_locked: 'قفل بعد محاولات خاطئة', code_ok: 'رمز دخول صحيح', login: 'دخول إلى الصفحة' };
+  const LKEY = { email: 'الحساب', plan_kind: 'الخطة', months: 'الأشهر', days: 'الأيام', max_employees: 'الموظفون', amount: 'المبلغ',
+    currency: 'العملة', note: 'ملاحظة', id: 'الرقم', code: 'البلد', date: 'التاريخ', seats: 'المستخدمون', kind: 'النوع', mb: 'ميغابايت' };
+  const BAD = { code_wrong: 1, code_locked: 1, wipe_data: 1 };
+  let logOpenNow = false, logFocus = null;
+  function drawLog() {
+    const n = $('logN'), b = $('logOpen');
+    if (!logOk) { n.textContent = '—'; n.classList.remove('bad'); $('logSub').textContent = 'شغّل ملف SQL v42 لتفعيل السجل'; b.classList.add('hide'); return; }
+    const day = Date.now() - 864e5;
+    const wrong = logs.filter((l) => (l.action === 'code_wrong' || l.action === 'code_locked') && new Date(l.at).getTime() > day).length;
+    n.textContent = String(wrong); n.classList.toggle('bad', wrong > 0);
+    $('logSub').textContent = 'رموز خاطئة · آخر 24 ساعة';
+    b.classList.toggle('hide', !logs.length);
+  }
+  function drawLogList() {
+    const box = $('logList'); box.textContent = '';
+    if (!logs.length) { box.append(el('div', 'empty', 'لا حركات بعد')); return; }
+    for (const l of logs) {
+      const c = el('div', 'lg' + (BAD[l.action] ? ' bad' : ''));
+      const t = el('div', 't'); t.append(el('b', '', ACT[l.action] || l.action), el('span', 'w', whenTxt(l.at))); c.append(t);
+      const m = el('div', 'meta');
+      m.append(el('span', '', l.email ? 'بواسطة ' + l.email : 'زائر غير مسجّل'));
+      if (l.ip) { const v = el('span', '', 'العنوان '); v.append(el('b', '', iso(l.ip))); m.append(v); }
+      if (l.detail && typeof l.detail === 'object') for (const [k, v] of Object.entries(l.detail)) {
+        if (v == null || v === '') continue;
+        const s = el('span', '', (LKEY[k] || k) + ': '); s.append(el('b', '', iso(String(v)))); m.append(s);
+      }
+      c.append(m); box.append(c);
+    }
+  }
+  function openLog() { logFocus = document.activeElement; logOpenNow = true; drawLogList(); $('scrim').classList.remove('hide'); $('logDrawer').classList.remove('hide'); document.body.classList.add('lock'); $('lClose').focus(); }
+  function closeLog() { if (!logOpenNow) return; logOpenNow = false; $('logDrawer').classList.add('hide'); if (!dr && !errOpenNow) { $('scrim').classList.add('hide'); document.body.classList.remove('lock'); } if (logFocus && document.contains(logFocus)) try { logFocus.focus(); } catch {} }
+  $('logOpen').addEventListener('click', openLog);
+  $('lClose').addEventListener('click', closeLog);
+  $('scrim').addEventListener('click', closeLog);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && logOpenNow) closeLog(); });
 
   // =====================================================================
   // one subscriber's details: space, users, payments
