@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>Amimar</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;
+--bg:light-dark(#F2ECE2,#0E1512);--card:light-dark(#FCFAF5,#17211C);--ink:light-dark(#17211C,#EAF0EB);--muted:light-dark(#5F6A62,#9DAAA1);
+--line:light-dark(#E2D9C9,#26322C);--green:light-dark(#1E8A5E,#2FA673);--coral:light-dark(#C2452F,#E0705A);--gold:light-dark(#9A6B1F,#D7A54E)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.6 Tajawal,"Segoe UI",Tahoma,sans-serif}
+main{max-width:620px;margin:0 auto;padding:18px 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.shop{font-size:22px;font-weight:900;line-height:1.2}
+.shop small{display:block;font-size:13.5px;font-weight:500;color:var(--muted);margin-top:4px}
+.langs{display:flex;gap:4px}
+.langs button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:4px 9px;font:700 13px Tajawal,sans-serif;cursor:pointer}
+.langs button[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+h1{font-size:19px;margin:0 0 4px;font-weight:900}
+h2{font-size:16px;margin:0 0 10px;font-weight:800}
+.muted{color:var(--muted);font-size:14px}
+.pin{display:flex;gap:10px;justify-content:center;margin:18px 0 10px;direction:ltr}
+.pin input{width:54px;height:62px;text-align:center;font:800 28px Tajawal,sans-serif;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+.pin input:focus{outline:none;border-color:var(--green)}
+.err{color:var(--coral);font-weight:700;text-align:center;min-height:24px;font-size:14.5px}
+.bal{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line)}
+.bal:last-child{border-bottom:0}
+.big{font-size:26px;font-weight:900;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.num{direction:ltr;unicode-bidi:isolate;font-weight:800;white-space:nowrap}
+.row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.row:last-child{border-bottom:0}
+.row .t{font-weight:700}
+details{border-bottom:1px solid var(--line)}
+details:last-child{border-bottom:0}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:10px;padding:10px 0}
+summary::-webkit-details-marker{display:none}
+.items{font-size:14px;color:var(--muted);padding:0 0 10px}
+.items div{display:flex;justify-content:space-between;gap:8px}
+.tag{font-size:12.5px;font-weight:700;border-radius:6px;padding:1px 7px}
+.ok{color:var(--green)}.late{color:var(--coral)}
+.more{display:block;width:100%;margin-top:6px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:8px;font:700 14px Tajawal,sans-serif;cursor:pointer}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:24px}
+footer a{color:var(--muted)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="shop" id="shop">Amimar</div>
+    <div class="langs" id="langs"><button data-l="ar">ع</button><button data-l="tr">TR</button><button data-l="en">EN</button></div>
+  </header>
+
+  <section class="card" id="gate">
+    <h1 data-t="hello"></h1>
+    <p class="muted" data-t="enterPin"></p>
+    <div class="pin" id="pin">
+      <input inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="1"><input inputmode="numeric" maxlength="1" aria-label="2"><input inputmode="numeric" maxlength="1" aria-label="3"><input inputmode="numeric" maxlength="1" aria-label="4">
+    </div>
+    <div class="err" id="err" role="alert"></div>
+  </section>
+
+  <div id="acct" class="hidden">
+    <section class="card">
+      <h1 id="who"></h1>
+      <p class="muted" data-t="updated"></p>
+      <div id="bal"></div>
+    </section>
+    <section class="card hidden" id="instCard"><h2 data-t="inst"></h2><div id="inst"></div></section>
+    <section class="card hidden" id="chqCard"><h2 data-t="chq"></h2><div id="chq"></div></section>
+    <section class="card"><h2 data-t="invs"></h2><div id="invs"></div></section>
+    <section class="card"><h2 data-t="pays"></h2><div id="pays"></div></section>
+  </div>
+
+  <footer><span data-t="readOnly"></span><br><span data-t="by"></span> <a href="https://amimar.app" rel="noopener">Amimar</a></footer>
+</main>
+<script>
+(function () {
+  var SB = 'https://wgbkeyjxlvnlvnktaceu.supabase.co', KEY = 'sb_publishable_Uml5PUTleBheCLTOLJ7iVQ_BcadaI3g';
+  var T = {
+    ar: { hello: 'مرحباً', enterPin: 'اكتب رمز الدخول: آخر 4 أرقام من رقم موبايلك، إلا إذا أعطاك المحل رمزاً آخر.', gone: 'هذا الرابط غير صالح أو أوقفه المحل.', pin: 'الرمز غير صحيح.', locked: 'محاولات كثيرة. حاول بعد 15 دقيقة.', busy: 'محاولات كثيرة من هذا الجهاز. حاول بعد ساعة.', net: 'تعذّر الاتصال. تأكد من الإنترنت وحاول مرة أخرى.', updated: 'حسابك مع المحل كما هو مسجّل الآن.', owe: 'المتبقي عليك', credit: 'رصيد لك', settled: 'الحساب مسدَّد', invoiced: 'المبيعات', paid: 'المدفوع', invs: 'الفواتير', pays: 'الدفعات', inst: 'الأقساط', chq: 'الشيكات', none: 'لا يوجد', paidInst: 'مدفوع', due: 'مستحق', overdue: 'متأخر', ret: 'مرتجع', chqS: ['في الصندوق', 'صُرف', 'مرتجع'], more: 'عرض المزيد', readOnly: 'هذه الصفحة للعرض فقط.', by: 'بواسطة', disc: 'خصم', vat: 'ضريبة', inv: 'فاتورة', of: 'من' },
+    tr: { hello: 'Merhaba', enterPin: 'Giriş kodunu yazın: telefon numaranızın son 4 hanesi (mağaza size başka bir kod vermediyse).', gone: 'Bu bağlantı geçersiz veya mağaza tarafından durduruldu.', pin: 'Kod yanlış.', locked: 'Çok fazla deneme. 15 dakika sonra tekrar deneyin.', busy: 'Bu cihazdan çok fazla deneme. Bir saat sonra tekrar deneyin.', net: 'Bağlanılamadı. İnterneti kontrol edip tekrar deneyin.', updated: 'Mağazadaki hesabınız, şu an kayıtlı olduğu haliyle.', owe: 'Kalan borcunuz', credit: 'Alacağınız', settled: 'Hesap kapalı', invoiced: 'Satışlar', paid: 'Ödenen', invs: 'Faturalar', pays: 'Ödemeler', inst: 'Taksitler', chq: 'Çekler', none: 'Yok', paidInst: 'Ödendi', due: 'Vadesi', overdue: 'Gecikmiş', ret: 'İade', chqS: ['Portföyde', 'Tahsil edildi', 'Karşılıksız'], more: 'Daha fazla', readOnly: 'Bu sayfa yalnızca görüntüleme içindir.', by: 'Hazırlayan:', disc: 'İndirim', vat: 'KDV', inv: 'Fatura', of: '/' },
+    en: { hello: 'Hello', enterPin: 'Enter your code: the last 4 digits of your phone number, unless the shop gave you another code.', gone: 'This link is not valid, or the shop has stopped it.', pin: 'Wrong code.', locked: 'Too many tries. Try again in 15 minutes.', busy: 'Too many tries from this device. Try again in an hour.', net: "Couldn't connect. Check the internet and try again.", updated: 'Your account with the shop, as it stands now.', owe: 'You owe', credit: 'In your favour', settled: 'All settled', invoiced: 'Sales', paid: 'Paid', invs: 'Invoices', pays: 'Payments', inst: 'Instalments', chq: 'Cheques', none: 'None', paidInst: 'Paid', due: 'Due', overdue: 'Overdue', ret: 'Return', chqS: ['In hand', 'Cleared', 'Returned'], more: 'Show more', readOnly: 'This page is for viewing only.', by: 'Made with', disc: 'Discount', vat: 'VAT', inv: 'Invoice', of: 'of' }
+  };
+  var SYM = { TRY: '₺', USD: '$', EUR: '€', GBP: '£', SAR: 'ر.س', AED: 'د.إ', SYP: 'ل.س', IQD: 'د.ع', EGP: 'ج.م', JOD: 'د.أ', KWD: 'د.ك', QAR: 'ر.ق', LBP: 'ل.ل' };
+  var token = (location.hash || '').replace(/^#/, '').trim();
+  var nav = (navigator.language || 'ar').slice(0, 2);
+  var lang = localStorage.getItem('amimar_cl') || (nav === 'tr' ? 'tr' : nav === 'en' ? 'en' : 'ar');
+  var data = null, shown = 20;
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var n = function (v) { var x = typeof v === 'string' ? parseFloat(v) : Number(v == null ? 0 : v); return isFinite(x) ? x : 0; };
+  var r2 = function (x) { return Math.round((x + Number.EPSILON) * 100) / 100; };
+  var code = function (c) { return typeof c === 'string' && c.trim() ? c.trim().toUpperCase() : 'TRY'; };
+  var money = function (v, c) { var s = Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); return (v < 0 ? '−' : '') + (SYM[c] || c) + ' ' + s; };
+  var date = function (d) { return d ? d.slice(8, 10) + '.' + d.slice(5, 7) + '.' + d.slice(0, 4) : ''; };
+  // the same rules as the app (fx.ts): a document counts in its own currency
+  function bInv(i) { var tl = n(i.total), c = code(i.currency); if (i.fx === false || c === 'TRY') return ['TRY', tl]; var r = n(i.rate); return [c, i.total_cur != null ? n(i.total_cur) : i.doc && i.doc.total != null ? n(i.doc.total) : r > 0 ? tl / r : 0]; }
+  function bPay(p) { var tl = n(p.amount), c = code(p.currency); if (p.fx === false) return ['TRY', tl]; var ap = p.apply_cur ? code(p.apply_cur) : ''; if (ap && ap !== c && n(p.apply_amount) > 0) return [ap, n(p.apply_amount)]; if (c === 'TRY') return ['TRY', tl]; var r = n(p.rate); return [c, p.amount_cur != null ? n(p.amount_cur) : r > 0 ? tl / r : 0]; }
+
+  function apply() {
+    var t = T[lang];
+    document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t[el.getAttribute('data-t')]; });
+    document.querySelectorAll('#langs button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-l') === lang); });
+    if (data) render();
+  }
+  document.querySelectorAll('#langs button').forEach(function (b) {
+    b.onclick = function () { lang = b.getAttribute('data-l'); try { localStorage.setItem('amimar_cl', lang); } catch (e) {} apply(); };
+  });
+
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#pin input'));
+  boxes.forEach(function (box, i) {
+    box.addEventListener('input', function () {
+      var v = box.value.replace(/\D/g, '');
+      if (v.length > 1) { v.split('').slice(0, 4 - i).forEach(function (d, k) { boxes[i + k].value = d; }); }
+      else box.value = v;
+      var next = boxes.find(function (b) { return !b.value; });
+      if (next) next.focus(); else go();
+      $('err').textContent = '';
+    });
+    box.addEventListener('keydown', function (e) { if (e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus(); });
+  });
+
+  function go() {
+    var pin = boxes.map(function (b) { return b.value; }).join('');
+    if (!/^\d{4}$/.test(pin)) return;
+    boxes.forEach(function (b) { b.disabled = true; });
+    fetch(SB + '/rest/v1/rpc/amimar_cportal_view', {
+      method: 'POST', headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_token: token, p_pin: pin })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      boxes.forEach(function (b) { b.disabled = false; });
+      if (!j || j.error || j.message) {
+        $('err').textContent = T[lang][(j && j.error) || 'net'] || T[lang].net;
+        boxes.forEach(function (b) { b.value = ''; }); boxes[0].focus();
+        return;
+      }
+      data = j;
+      if (!localStorage.getItem('amimar_cl') && j.lang != null) lang = ['ar', 'tr', 'en'][j.lang] || lang;
+      $('gate').classList.add('hidden'); $('acct').classList.remove('hidden');
+      apply();
+    }).catch(function () {
+      boxes.forEach(function (b) { b.disabled = false; }); $('err').textContent = T[lang].net;
+    });
+  }
+
+  function render() {
+    var t = T[lang], d = data;
+    $('shop').innerHTML = esc(d.shop.name || 'Amimar') + (d.shop.phone || d.shop.addr ? '<small>' + esc([d.shop.phone, d.shop.addr].filter(Boolean).join(' · ')) + '</small>' : '');
+    $('who').textContent = d.client;
+    // the balance, per currency
+    var acc = {};
+    d.invoices.forEach(function (i) { var b = bInv(i); (acc[b[0]] = acc[b[0]] || { inv: 0, paid: 0 }).inv += b[1]; });
+    d.payments.forEach(function (p) { var b = bPay(p); (acc[b[0]] = acc[b[0]] || { inv: 0, paid: 0 }).paid += b[1]; });
+    var keys = Object.keys(acc).sort(function (a, b) { return a === 'TRY' ? -1 : b === 'TRY' ? 1 : a < b ? -1 : 1; });
+    var html = '';
+    keys.forEach(function (c) {
+      var rem = r2(acc[c].inv - acc[c].paid);
+      var lbl = rem > 0.009 ? t.owe : rem < -0.009 ? t.credit : t.settled;
+      html += '<div class="bal"><div><div class="t">' + lbl + '</div><div class="muted">' + t.invoiced + ' <span class="num">' + money(r2(acc[c].inv), c) + '</span> · ' + t.paid + ' <span class="num">' + money(r2(acc[c].paid), c) + '</span></div></div>' +
+        '<div class="big ' + (rem > 0.009 ? 'late' : 'ok') + '">' + money(Math.abs(rem), c) + '</div></div>';
+    });
+    $('bal').innerHTML = html || '<p class="muted">' + t.none + '</p>';
+    // instalments
+    var today = new Date().toISOString().slice(0, 10);
+    $('instCard').classList.toggle('hidden', !d.installments.length);
+    $('inst').innerHTML = d.installments.map(function (x) {
+      var c = code(x.currency), v = c === 'TRY' ? n(x.amount) : n(x.amount_cur);
+      var st = x.paid ? '<span class="tag ok">' + t.paidInst + ' ' + date(x.paid_date) + '</span>' : x.due_date < today ? '<span class="tag late">' + t.overdue + ' · ' + date(x.due_date) + '</span>' : '<span class="tag">' + t.due + ' ' + date(x.due_date) + '</span>';
+      return '<div class="row"><div><div class="t">' + x.seq + ' ' + t.of + ' ' + x.count + '</div>' + st + '</div><div class="num">' + money(v, c) + '</div></div>';
+    }).join('');
+    // cheques
+    $('chqCard').classList.toggle('hidden', !d.cheques.length);
+    $('chq').innerHTML = d.cheques.map(function (x) {
+      var c = code(x.currency), v = c === 'TRY' ? n(x.amount) : n(x.amount_cur);
+      return '<div class="row"><div><div class="t">' + esc(x.number || '') + (x.bank ? ' · ' + esc(x.bank) : '') + '</div><span class="muted">' + t.due + ' ' + date(x.due_date) + ' · ' + (t.chqS[x.status] || '') + '</span></div><div class="num">' + money(v, c) + '</div></div>';
+    }).join('');
+    // invoices (newest first), each opens to its lines
+    var invs = d.invoices.slice(0, shown);
+    $('invs').innerHTML = invs.length ? invs.map(function (i) {
+      var b = bInv(i), doc = i.doc || {}, lines = '';
+      if (Array.isArray(doc.items)) lines = doc.items.map(function (it) { return '<div><span>' + esc(it.name) + ' × ' + esc(it.qty) + (it.unit ? ' ' + esc(it.unit) : '') + '</span><span class="num">' + money(n(it.qty) * n(it.price), b[0]) + '</span></div>'; }).join('');
+      else if (Array.isArray(doc.lines)) lines = doc.lines.map(function (l) { return '<div><span>' + esc(doc.model_name || '') + ' ' + esc(l.c || '') + ' × ' + esc(l.q) + '</span><span class="num">' + money(n(l.q) * n(doc.price), b[0]) + '</span></div>'; }).join('');
+      if (n(doc.discount) > 0) lines += '<div><span>' + t.disc + '</span><span class="num">' + money(-n(doc.discount), b[0]) + '</span></div>';
+      if (n(doc.vat) > 0) lines += '<div><span>' + t.vat + ' ' + n(doc.vat_pct) + '%</span><span class="num">' + money(n(doc.vat), b[0]) + '</span></div>';
+      return '<details><summary><span><span class="t">' + t.inv + ' ' + esc(i.number || '') + '</span> <span class="muted">' + date(i.date) + '</span></span><span class="num">' + money(b[1], b[0]) + '</span></summary>' + (lines ? '<div class="items">' + lines + '</div>' : '') + '</details>';
+    }).join('') + (d.invoices.length > shown ? '<button class="more" id="moreInv">' + t.more + '</button>' : '') : '<p class="muted">' + t.none + '</p>';
+    var mb = $('moreInv'); if (mb) mb.onclick = function () { shown += 30; render(); };
+    // payments
+    $('pays').innerHTML = d.payments.length ? d.payments.slice(0, 60).map(function (p) {
+      var b = bPay(p);
+      return '<div class="row"><div><span class="t">' + (p.is_return ? t.ret : esc(p.method || t.paid)) + '</span> <span class="muted">' + date(p.date) + '</span></div><div class="num ok">' + money(b[1], b[0]) + '</div></div>';
+    }).join('') : '<p class="muted">' + t.none + '</p>';
+  }
+
+  apply();
+  if (!/^[A-Za-z0-9_-]{20,30}$/.test(token)) {
+    $('err').textContent = T[lang].gone; boxes.forEach(function (b) { b.disabled = true; });
+  } else boxes[0].focus();
+})();
+</script>
+</body>
+</html>
