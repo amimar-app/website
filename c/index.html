@@ -8,19 +8,29 @@
 <meta name="color-scheme" content="light dark">
 <title>Amimar</title>
 <link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<meta name="theme-color" content="#1E8A5E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light dark;
 --bg:light-dark(#F2ECE2,#0E1512);--card:light-dark(#FCFAF5,#17211C);--ink:light-dark(#17211C,#EAF0EB);--muted:light-dark(#5F6A62,#9DAAA1);
---line:light-dark(#E2D9C9,#26322C);--green:light-dark(#1E8A5E,#2FA673);--coral:light-dark(#C2452F,#E0705A);--gold:light-dark(#9A6B1F,#D7A54E)}
+--line:light-dark(#E2D9C9,#26322C);--green:light-dark(#1E8A5E,#2FA673);--coral:light-dark(#C2452F,#E0705A);--gold:light-dark(#9A6B1F,#D7A54E);--green2:light-dark(#34A873,#3DBA82);--deep:light-dark(#14704A,#0B2A1D)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.6 Tajawal,"Segoe UI",Tahoma,sans-serif}
 main{max-width:620px;margin:0 auto;padding:18px 16px 40px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.shop{font-size:22px;font-weight:900;line-height:1.2}
-.shop small{display:block;font-size:13.5px;font-weight:500;color:var(--muted);margin-top:4px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font:800 21px Alexandria,Tajawal,sans-serif;letter-spacing:-.01em;direction:ltr}
+.brand b{color:var(--green)}
+.hero{position:relative;overflow:hidden;border-radius:18px;padding:20px 18px;margin-bottom:14px;color:#fff;background:linear-gradient(135deg,#1E8A5E,#14704A)}
+.hero::after{content:"";position:absolute;inset-inline-end:-36px;bottom:-46px;width:150px;height:150px;border-radius:30px;background:#34A873;opacity:.35;transform:rotate(14deg)}
+.hero .lbl{font-size:13px;font-weight:700;opacity:.85;margin-bottom:4px}
+.shop{position:relative;z-index:1;font:800 23px/1.25 Alexandria,Tajawal,sans-serif}
+.shop small{display:block;font:500 14px Tajawal,sans-serif;opacity:.88;margin-top:6px}
+h1,h2{font-family:Alexandria,Tajawal,sans-serif}
+.gatelogo{display:flex;justify-content:center;margin-bottom:8px}
+#gate{text-align:center}
 .langs{display:flex;gap:4px}
 .langs button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:4px 9px;font:700 13px Tajawal,sans-serif;cursor:pointer}
 .langs button[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
@@ -56,11 +66,14 @@ footer a{color:var(--muted)}
 <body>
 <main>
   <header>
-    <div class="shop" id="shop">Amimar</div>
+    <a class="brand" href="https://amimar.app" rel="noopener" aria-label="Amimar"><svg width="32" height="32" viewBox="128 142 256 248" aria-hidden="true"><rect x="143" y="156" width="121" height="220" rx="16" fill="#1E8A5E"/><rect x="262" y="209" width="107" height="167" rx="16" fill="#34A873"/><g fill="#F2ECE2"><rect x="166" y="189" width="22" height="22" rx="4"/><rect x="216" y="189" width="22" height="22" rx="4"/><rect x="166" y="235" width="22" height="22" rx="4"/><rect x="216" y="235" width="22" height="22" rx="4"/><rect x="166" y="281" width="22" height="22" rx="4"/><rect x="216" y="281" width="22" height="22" rx="4"/><rect x="292" y="242" width="20" height="20" rx="4"/><rect x="334" y="242" width="20" height="20" rx="4"/><rect x="292" y="282" width="20" height="20" rx="4"/><rect x="334" y="282" width="20" height="20" rx="4"/></g></svg><span><b>Am</b>imar</span></a>
     <div class="langs" id="langs"><button data-l="ar">ع</button><button data-l="tr">TR</button><button data-l="en">EN</button></div>
   </header>
 
+  <section class="hero hidden" id="hero"><div class="lbl" data-t="acctAt"></div><div class="shop" id="shop">…</div></section>
+
   <section class="card" id="gate">
+    <div class="gatelogo"><svg width="54" height="54" viewBox="128 142 256 248" aria-hidden="true"><rect x="143" y="156" width="121" height="220" rx="16" fill="#1E8A5E"/><rect x="262" y="209" width="107" height="167" rx="16" fill="#34A873"/><g fill="#F2ECE2"><rect x="166" y="189" width="22" height="22" rx="4"/><rect x="216" y="189" width="22" height="22" rx="4"/><rect x="166" y="235" width="22" height="22" rx="4"/><rect x="216" y="235" width="22" height="22" rx="4"/><rect x="166" y="281" width="22" height="22" rx="4"/><rect x="216" y="281" width="22" height="22" rx="4"/><rect x="292" y="242" width="20" height="20" rx="4"/><rect x="334" y="242" width="20" height="20" rx="4"/><rect x="292" y="282" width="20" height="20" rx="4"/><rect x="334" y="282" width="20" height="20" rx="4"/></g></svg></div>
     <h1 data-t="hello"></h1>
     <p class="muted" data-t="enterPin"></p>
     <div class="pin" id="pin">
@@ -81,15 +94,15 @@ footer a{color:var(--muted)}
     <section class="card"><h2 data-t="pays"></h2><div id="pays"></div></section>
   </div>
 
-  <footer><span data-t="readOnly"></span><br><span data-t="by"></span> <a href="https://amimar.app" rel="noopener">Amimar</a></footer>
+  <footer><span data-t="readOnly"></span><br><a href="https://amimar.app" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;margin-top:6px"><svg width="18" height="18" viewBox="128 142 256 248" aria-hidden="true"><rect x="143" y="156" width="121" height="220" rx="16" fill="#1E8A5E"/><rect x="262" y="209" width="107" height="167" rx="16" fill="#34A873"/><g fill="#F2ECE2"><rect x="166" y="189" width="22" height="22" rx="4"/><rect x="216" y="189" width="22" height="22" rx="4"/><rect x="166" y="235" width="22" height="22" rx="4"/><rect x="216" y="235" width="22" height="22" rx="4"/><rect x="166" y="281" width="22" height="22" rx="4"/><rect x="216" y="281" width="22" height="22" rx="4"/><rect x="292" y="242" width="20" height="20" rx="4"/><rect x="334" y="242" width="20" height="20" rx="4"/><rect x="292" y="282" width="20" height="20" rx="4"/><rect x="334" y="282" width="20" height="20" rx="4"/></g></svg><span data-t="by"></span> <b style="direction:ltr">Amimar</b></a></footer>
 </main>
 <script>
 (function () {
   var SB = 'https://wgbkeyjxlvnlvnktaceu.supabase.co', KEY = 'sb_publishable_Uml5PUTleBheCLTOLJ7iVQ_BcadaI3g';
   var T = {
-    ar: { hello: 'مرحباً', enterPin: 'اكتب رمز الدخول: آخر 4 أرقام من رقم موبايلك، إلا إذا أعطاك المحل رمزاً آخر.', gone: 'هذا الرابط غير صالح أو أوقفه المحل.', pin: 'الرمز غير صحيح. بقي لك {n} من 5 محاولات، بعدها يتوقف الرابط.', stopped: 'توقف هذا الرابط بعد 5 محاولات خاطئة. اطلب من المحل رابطاً جديداً.', busy: 'محاولات كثيرة من هذا الجهاز. حاول بعد ساعة.', net: 'تعذّر الاتصال. تأكد من الإنترنت وحاول مرة أخرى.', updated: 'حسابك مع المحل كما هو مسجّل الآن.', owe: 'المتبقي عليك', credit: 'رصيد لك', settled: 'الحساب مسدَّد', invoiced: 'المبيعات', paid: 'المدفوع', invs: 'الفواتير', pays: 'الدفعات', inst: 'الأقساط', chq: 'الشيكات', none: 'لا يوجد', paidInst: 'مدفوع', due: 'مستحق', overdue: 'متأخر', ret: 'مرتجع', chqS: ['في الصندوق', 'صُرف', 'مرتجع'], more: 'عرض المزيد', readOnly: 'هذه الصفحة للعرض فقط.', by: 'بواسطة', disc: 'خصم', vat: 'ضريبة', inv: 'فاتورة', of: 'من' },
-    tr: { hello: 'Merhaba', enterPin: 'Giriş kodunu yazın: telefon numaranızın son 4 hanesi (mağaza size başka bir kod vermediyse).', gone: 'Bu bağlantı geçersiz veya mağaza tarafından durduruldu.', pin: 'Kod yanlış. 5 denemeden {n} hakkınız kaldı, sonra bağlantı durur.', stopped: 'Bu bağlantı 5 yanlış denemeden sonra durdu. Mağazadan yeni bir bağlantı isteyin.', busy: 'Bu cihazdan çok fazla deneme. Bir saat sonra tekrar deneyin.', net: 'Bağlanılamadı. İnterneti kontrol edip tekrar deneyin.', updated: 'Mağazadaki hesabınız, şu an kayıtlı olduğu haliyle.', owe: 'Kalan borcunuz', credit: 'Alacağınız', settled: 'Hesap kapalı', invoiced: 'Satışlar', paid: 'Ödenen', invs: 'Faturalar', pays: 'Ödemeler', inst: 'Taksitler', chq: 'Çekler', none: 'Yok', paidInst: 'Ödendi', due: 'Vadesi', overdue: 'Gecikmiş', ret: 'İade', chqS: ['Portföyde', 'Tahsil edildi', 'Karşılıksız'], more: 'Daha fazla', readOnly: 'Bu sayfa yalnızca görüntüleme içindir.', by: 'Hazırlayan:', disc: 'İndirim', vat: 'KDV', inv: 'Fatura', of: '/' },
-    en: { hello: 'Hello', enterPin: 'Enter your code: the last 4 digits of your phone number, unless the shop gave you another code.', gone: 'This link is not valid, or the shop has stopped it.', pin: 'Wrong code. {n} of 5 tries left; then the link stops.', stopped: 'This link stopped after 5 wrong tries. Ask the shop for a new link.', busy: 'Too many tries from this device. Try again in an hour.', net: "Couldn't connect. Check the internet and try again.", updated: 'Your account with the shop, as it stands now.', owe: 'You owe', credit: 'In your favour', settled: 'All settled', invoiced: 'Sales', paid: 'Paid', invs: 'Invoices', pays: 'Payments', inst: 'Instalments', chq: 'Cheques', none: 'None', paidInst: 'Paid', due: 'Due', overdue: 'Overdue', ret: 'Return', chqS: ['In hand', 'Cleared', 'Returned'], more: 'Show more', readOnly: 'This page is for viewing only.', by: 'Made with', disc: 'Discount', vat: 'VAT', inv: 'Invoice', of: 'of' }
+    ar: { acctAt: 'حسابك لدى', hello: 'مرحباً', enterPin: 'اكتب رمز الدخول: آخر 4 أرقام من رقم موبايلك، إلا إذا أعطاك المحل رمزاً آخر.', gone: 'هذا الرابط غير صالح أو أوقفه المحل.', pin: 'الرمز غير صحيح. بقي لك {n} من 5 محاولات، بعدها يتوقف الرابط.', stopped: 'توقف هذا الرابط بعد 5 محاولات خاطئة. اطلب من المحل رابطاً جديداً.', busy: 'محاولات كثيرة من هذا الجهاز. حاول بعد ساعة.', net: 'تعذّر الاتصال. تأكد من الإنترنت وحاول مرة أخرى.', updated: 'حسابك مع المحل كما هو مسجّل الآن.', owe: 'المتبقي عليك', credit: 'رصيد لك', settled: 'الحساب مسدَّد', invoiced: 'المبيعات', paid: 'المدفوع', invs: 'الفواتير', pays: 'الدفعات', inst: 'الأقساط', chq: 'الشيكات', none: 'لا يوجد', paidInst: 'مدفوع', due: 'مستحق', overdue: 'متأخر', ret: 'مرتجع', chqS: ['في الصندوق', 'صُرف', 'مرتجع'], more: 'عرض المزيد', readOnly: 'هذه الصفحة للعرض فقط.', by: 'بواسطة', disc: 'خصم', vat: 'ضريبة', inv: 'فاتورة', of: 'من' },
+    tr: { acctAt: 'Hesabınız:', hello: 'Merhaba', enterPin: 'Giriş kodunu yazın: telefon numaranızın son 4 hanesi (mağaza size başka bir kod vermediyse).', gone: 'Bu bağlantı geçersiz veya mağaza tarafından durduruldu.', pin: 'Kod yanlış. 5 denemeden {n} hakkınız kaldı, sonra bağlantı durur.', stopped: 'Bu bağlantı 5 yanlış denemeden sonra durdu. Mağazadan yeni bir bağlantı isteyin.', busy: 'Bu cihazdan çok fazla deneme. Bir saat sonra tekrar deneyin.', net: 'Bağlanılamadı. İnterneti kontrol edip tekrar deneyin.', updated: 'Mağazadaki hesabınız, şu an kayıtlı olduğu haliyle.', owe: 'Kalan borcunuz', credit: 'Alacağınız', settled: 'Hesap kapalı', invoiced: 'Satışlar', paid: 'Ödenen', invs: 'Faturalar', pays: 'Ödemeler', inst: 'Taksitler', chq: 'Çekler', none: 'Yok', paidInst: 'Ödendi', due: 'Vadesi', overdue: 'Gecikmiş', ret: 'İade', chqS: ['Portföyde', 'Tahsil edildi', 'Karşılıksız'], more: 'Daha fazla', readOnly: 'Bu sayfa yalnızca görüntüleme içindir.', by: 'Hazırlayan:', disc: 'İndirim', vat: 'KDV', inv: 'Fatura', of: '/' },
+    en: { acctAt: 'Your account at', hello: 'Hello', enterPin: 'Enter your code: the last 4 digits of your phone number, unless the shop gave you another code.', gone: 'This link is not valid, or the shop has stopped it.', pin: 'Wrong code. {n} of 5 tries left; then the link stops.', stopped: 'This link stopped after 5 wrong tries. Ask the shop for a new link.', busy: 'Too many tries from this device. Try again in an hour.', net: "Couldn't connect. Check the internet and try again.", updated: 'Your account with the shop, as it stands now.', owe: 'You owe', credit: 'In your favour', settled: 'All settled', invoiced: 'Sales', paid: 'Paid', invs: 'Invoices', pays: 'Payments', inst: 'Instalments', chq: 'Cheques', none: 'None', paidInst: 'Paid', due: 'Due', overdue: 'Overdue', ret: 'Return', chqS: ['In hand', 'Cleared', 'Returned'], more: 'Show more', readOnly: 'This page is for viewing only.', by: 'Made with', disc: 'Discount', vat: 'VAT', inv: 'Invoice', of: 'of' }
   };
   var SYM = { TRY: '₺', USD: '$', EUR: '€', GBP: '£', SAR: 'ر.س', AED: 'د.إ', SYP: 'ل.س', IQD: 'د.ع', EGP: 'ج.م', JOD: 'د.أ', KWD: 'د.ك', QAR: 'ر.ق', LBP: 'ل.ل' };
   var token = (location.hash || '').replace(/^#/, '').trim();
@@ -149,7 +162,7 @@ footer a{color:var(--muted)}
       }
       data = j;
       if (!localStorage.getItem('amimar_cl') && j.lang != null) lang = ['ar', 'tr', 'en'][j.lang] || lang;
-      $('gate').classList.add('hidden'); $('acct').classList.remove('hidden');
+      $('gate').classList.add('hidden'); $('acct').classList.remove('hidden'); $('hero').classList.remove('hidden');
       apply();
     }).catch(function () {
       boxes.forEach(function (b) { b.disabled = false; }); $('err').textContent = T[lang].net;
